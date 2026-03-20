@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx vercel:*)",
+      "WebFetch(domain:ambition-website-mu.vercel.app)"
+    ]
+  }
+}
