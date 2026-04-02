@@ -91,11 +91,8 @@ const moreTransformations = [
 ];
 
 const statOnly = [
-  { name: "Timothy Rafto", sport: "Track & Field", statBefore: "10.95s", statAfter: "10.55s", statLabel: "100m", quote: "I dropped 0.4 seconds in one season. Programming and video analysis made all the difference." },
-  { name: "Jessica Fernandez", sport: "Track & Field", statBefore: "22 km/h", statAfter: "31.6 km/h", statLabel: "Top Speed", quote: "I never thought I could drop that much time. The process works.", description: "20m sprint from 3.76s to 3.20s. Semi-velocity 10m split down to 1.14s." },
-  { name: "Peto Tufeski", sport: "Football", statBefore: "30 km/h", statAfter: "33 km/h", statLabel: "Top Speed", description: "Stride length improved from 1.85m to 2.05m per step." },
   { name: "Liam Flack", sport: "Multi-Sport", statBefore: "28 km/h", statAfter: "35.8 km/h", statLabel: "Top Speed", quote: "Anthony assessed me from day 1, broke down my mechanics and progressed me from 28 km/h to 35.8 km/h. His measurements are specific — not wishy washy drills or exercises." },
-  { name: "Abdullah", sport: "Football", statBefore: "27 km/h", statAfter: "34.8 km/h", statLabel: "Top Speed", quote: "Ambition's coaching is on another level. I wish I started years ago." },
+  { name: "Nik P", sport: "Football", statBefore: "29.1 km/h", statAfter: "33 km/h", statLabel: "Top Speed", quote: "I sprinted twice with 33 km/h — that's amazing! Already feeling more coordinated while bounding. Acceleration is better, played against pro clubs and had pretty good performance.", description: "+4 km/h in just 3 weeks. Online athlete from Ukraine, 2nd Division Academy." },
 ];
 
 const testimonials = [
@@ -159,6 +156,51 @@ export default function SuccessStoriesPage() {
         </div>
       </section>
 
+      {/* Pro Athletes */}
+      <section className="py-24 sm:py-32 bg-gray-900 overflow-hidden">
+        <div className="absolute left-1/2 w-[600px] h-[600px] bg-accent/5 rounded-full blur-[150px] pointer-events-none" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="mb-12">
+              <div className="accent-line mb-6" />
+              <h2 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
+                Pro athletes in the system.
+              </h2>
+              <p className="text-gray-400 max-w-lg">Olympic, European professional football, and international athletes who&apos;ve been through the program.</p>
+              <p className="text-lg sm:text-xl font-bold text-white/80 mt-6">Paralympic Gold Medalists. 4 Million Euro Transfers. Bundesliga. International Caps.</p>
+            </div>
+          </FadeIn>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {proAthletes.map((athlete, i) => (
+              <FadeIn key={athlete.name} delay={i * 120}>
+                <div className="dark-card rounded-xl overflow-hidden">
+                  {athlete.youtubeId && (
+                    <ProAthleteVideo youtubeId={athlete.youtubeId} name={athlete.name} />
+                  )}
+                  {!athlete.youtubeId && athlete.image && (
+                    <div className="relative aspect-video">
+                      <Image src={athlete.image} alt={athlete.name} fill className="object-cover" />
+                    </div>
+                  )}
+                  <div className="p-6">
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {athlete.tags.map((tag) => (
+                        <span key={tag} className="px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-accent font-bold bg-accent/10 border border-accent/20 rounded-full">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <h3 className="text-lg font-bold text-white mb-1">{athlete.name}</h3>
+                    <p className="text-accent text-xs uppercase tracking-[0.15em] font-semibold mb-2">{athlete.role}</p>
+                    <p className="text-sm text-gray-400">{athlete.achievement}</p>
+                  </div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Featured Transformations */}
       <Section>
         <FadeIn>
@@ -212,7 +254,7 @@ export default function SuccessStoriesPage() {
               <p className="text-gray-400 max-w-lg">Side-by-side video comparison. Same athlete, different mechanics.</p>
             </div>
           </FadeIn>
-          <div className="max-w-2xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
             <FadeIn>
               <BeforeAfterVideo
                 name="Maksim"
@@ -221,6 +263,55 @@ export default function SuccessStoriesPage() {
                 afterSrc="/maksim-after.mp4"
                 achievement="Mechanics Overhaul"
                 description="Complete rebuild of acceleration posture, arm drive, and ground contact mechanics. Watch the difference in body position and drive phase."
+              />
+            </FadeIn>
+            <FadeIn delay={120}>
+              <BeforeAfterVideo
+                name="Abdullah"
+                sport="Football"
+                beforeSrc="/abdullah-before.mov"
+                afterSrc="/abdullah-after.mp4"
+                achievement="27 → 34.8 km/h"
+                description="Complete speed transformation. Acceleration mechanics and stride pattern rebuilt from the ground up."
+              />
+            </FadeIn>
+            <FadeIn delay={240}>
+              <BeforeAfterVideo
+                name="Xavi"
+                sport="Football"
+                beforeSrc="T7jTr0gDuOQ"
+                afterSrc="llNpzewDksc"
+                achievement="21 → 30.7 km/h"
+                description="Nearly 10 km/h speed gain. Complete mechanical rebuild of sprint technique and acceleration pattern."
+              />
+            </FadeIn>
+            <FadeIn delay={360}>
+              <BeforeAfterVideo
+                name="James"
+                sport="Football"
+                beforeSrc="gyseZZW6pEs"
+                afterSrc="u_tv5CGXf84"
+                achievement="23 → 31 km/h"
+                description="+8 km/h top speed gain. Faster than senior professional footballers — at age 12."
+              />
+            </FadeIn>
+            <FadeIn delay={480}>
+              <BeforeAfterVideo
+                name="Dom"
+                sport="Football"
+                beforeSrc="/dom-before-after.mp4"
+                achievement="Power Transformation"
+                description="Side-by-side power development. Watch the difference in force production and explosive movement."
+              />
+            </FadeIn>
+            <FadeIn delay={600}>
+              <BeforeAfterVideo
+                name="Dylan"
+                sport="Football"
+                beforeSrc="U_UzSxt6KnU"
+                afterSrc="wMcRBX_l0sY"
+                achievement="Speed Transformation"
+                description="Complete sprint mechanics overhaul. Watch the difference in technique and explosiveness."
               />
             </FadeIn>
           </div>
@@ -265,50 +356,6 @@ export default function SuccessStoriesPage() {
           ))}
         </div>
       </Section>
-
-      {/* Pro Athletes */}
-      <section className="py-24 sm:py-32 bg-gray-900 overflow-hidden">
-        <div className="absolute left-1/2 w-[600px] h-[600px] bg-accent/5 rounded-full blur-[150px] pointer-events-none" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <FadeIn>
-            <div className="mb-12">
-              <div className="accent-line mb-6" />
-              <h2 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
-                Pro athletes in the system.
-              </h2>
-              <p className="text-gray-400 max-w-lg">Olympic, European professional football, and international athletes who&apos;ve been through the program.</p>
-            </div>
-          </FadeIn>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {proAthletes.map((athlete, i) => (
-              <FadeIn key={athlete.name} delay={i * 120}>
-                <div className="dark-card rounded-xl overflow-hidden">
-                  {athlete.youtubeId && (
-                    <ProAthleteVideo youtubeId={athlete.youtubeId} name={athlete.name} />
-                  )}
-                  {!athlete.youtubeId && athlete.image && (
-                    <div className="relative aspect-video">
-                      <Image src={athlete.image} alt={athlete.name} fill className="object-cover" />
-                    </div>
-                  )}
-                  <div className="p-6">
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {athlete.tags.map((tag) => (
-                        <span key={tag} className="px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-accent font-bold bg-accent/10 border border-accent/20 rounded-full">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                    <h3 className="text-lg font-bold text-white mb-1">{athlete.name}</h3>
-                    <p className="text-accent text-xs uppercase tracking-[0.15em] font-semibold mb-2">{athlete.role}</p>
-                    <p className="text-sm text-gray-400">{athlete.achievement}</p>
-                  </div>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
 
       <CTASection title="Start your story." description="Apply for an assessment and see what's possible for your speed." />
     </>
