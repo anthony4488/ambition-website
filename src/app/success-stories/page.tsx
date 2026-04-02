@@ -85,7 +85,7 @@ const moreTransformations = [
   { name: "Abi O", sport: "Football", statBefore: "30 km/h", statAfter: "36.4 km/h", statLabel: "Top Speed", youtubeId: "6kiM5ea_GvQ", description: "20m sprint from 3.06s to 2.84s. 10m split from 1.90s to 1.73s. Speed that transfers directly to the pitch." },
   { name: "Jess", sport: "Track & Field", statBefore: "22 km/h", statAfter: "30 km/h", statLabel: "Top Speed", youtubeId: "l5m0wwJFq-Q" },
   { name: "Pete", sport: "Football", statAfter: "36 km/h", statLabel: "Top Speed", youtubeId: "G9y9TiQwrAI" },
-  { name: "Adam Kadouh", sport: "Football", statBefore: "15.6 km/h", statAfter: "18 km/h", statLabel: "50m Speed", tag: "LA LIGA PATHWAY", description: "Rebuilt from the ground up — acceleration mechanics and stride length completely overhauled." },
+
   { name: "Virginia Champion", sport: "Track & Field", statAfter: "10.54s", statLabel: "100m", youtubeId: "hTZLMjnLFds", tag: "STATE CHAMPION", description: "Online client from the USA. 10 D1 scholarship offers. State Champion. D1 Bound." },
   { name: "Speed Ab", sport: "Football", statAfter: "—", statLabel: "Acceleration", youtubeId: "nV6l8hzgfQE", description: "The first 10 meters is where games are won." },
 ];
