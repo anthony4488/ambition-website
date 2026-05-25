@@ -35,13 +35,6 @@ const components = [
   { title: "Continuous Acceleration", description: "Most players lose speed at the moment of contact with the ball. We train you to turn the ball into a tool for speed.", icon: Zap },
 ];
 
-const results = [
-  { name: "Adam Kadouh", stat: "La Liga Academy — European trials" },
-  { name: "Billy Francis", stat: "31 → 35.3 km/h — Semi-pro breakthrough" },
-  { name: "Marc Sylla", stat: "28 → 34 km/h — 10m split: 1.85s → 1.68s" },
-  { name: "Peto Tufeski", stat: "30 → 33 km/h — Stride: 1.85m → 2.05m" },
-];
-
 const programDetails = [
   { icon: Clock, label: "6x 80-min sessions/week", detail: "Data and biomechanical-driven. Every session has a specific target and reasoning." },
   { icon: Users, label: "Max 12 players per group", detail: "Specific, consistent feedback from Anthony (Head of Program) every session." },
@@ -356,62 +349,6 @@ export default function FootballSchoolPage() {
         </div>
       </section>
 
-      {/* Fullback as Goal Scorer — positioning reframe from George Francis chat */}
-      <Section>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          <FadeIn className="lg:col-span-7">
-            <div className="accent-line mb-6" />
-            <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">Positioning Reframe</p>
-            <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4 leading-tight">
-              Fullback as a <span className="text-accent">goal scorer.</span>
-            </h2>
-            <div className="space-y-4 text-gray-600 leading-relaxed text-base sm:text-lg">
-              <p>
-                Most fullbacks are coached to <em>assist</em>. Get the cross in. Win the duel. Recover.
-              </p>
-              <p>
-                That ceiling is low. <strong className="text-gray-900">Shots make goals. Goals make top right-backs. Almost no fullback in the world thinks like a goal scorer — that&apos;s the gap.</strong>
-              </p>
-              <p>
-                We coach the Marcelo / Dani Alves / Trent archetype: scan before receiving, fake the shot to bend the defender, cut inside instead of crossing, position for tap-ins in the box. Subtle re-framing. Massive output shift.
-              </p>
-            </div>
-            <blockquote className="mt-7 border-l-4 border-l-accent pl-5 italic text-gray-700">
-              &ldquo;Shots will get you goals. Goals will make you become a top right-back. Only a small amount of fullbacks score goals.&rdquo;
-              <span className="block text-xs text-gray-400 not-italic mt-2 uppercase tracking-[0.2em] font-bold">— Anthony, to George Francis</span>
-            </blockquote>
-          </FadeIn>
-
-          <FadeIn delay={150} className="lg:col-span-5">
-            <div className="rounded-2xl bg-gray-900 text-white p-8 shadow-xl space-y-5">
-              <p className="text-[10px] text-accent uppercase tracking-[0.3em] font-bold">George Francis — the proof</p>
-              <p className="text-sm text-gray-300 leading-relaxed">
-                Came in as a defensive specialist. Reframed to attacking threat. The output in his next 8 weeks:
-              </p>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-2xl font-black text-white leading-none">1 goal · 6-0 win</p>
-                  <p className="text-xs text-gray-400 mt-1">First match after the reframe (Jul 2023)</p>
-                </div>
-                <div className="h-px bg-white/10" />
-                <div>
-                  <p className="text-2xl font-black text-accent leading-none">2 goals · 3-2 win</p>
-                  <p className="text-xs text-gray-400 mt-1">A year later — two in the same match (Jun 2024)</p>
-                </div>
-              </div>
-              <blockquote className="text-sm text-gray-300 italic pt-3 border-t border-white/10 leading-relaxed">
-                &ldquo;Every skill set we done paid off honestly. Subconsciously pulled everyone out.&rdquo;
-                <span className="block text-[10px] text-gray-500 not-italic mt-2 uppercase tracking-[0.2em] font-bold">— George, mid-program</span>
-              </blockquote>
-            </div>
-          </FadeIn>
-        </div>
-        <FadeIn delay={300}>
-          <p className="mt-10 max-w-3xl mx-auto text-center text-gray-500 italic text-sm">
-            Same player. Same training week. New position in his own head. That&apos;s coaching — not a drill, a re-framing.
-          </p>
-        </FadeIn>
-      </Section>
 
       {/* Mid-page CTA — route to contact / apply area */}
       <section className="relative py-24 sm:py-32 bg-gray-50 overflow-hidden border-y border-gray-200">
@@ -530,33 +467,6 @@ export default function FootballSchoolPage() {
         </div>
       </section>
 
-      {/* Results (white) */}
-      <Section>
-        <FadeIn>
-          <div className="accent-line mb-6" />
-          <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-16">On-pitch results.</h2>
-        </FadeIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-3xl">
-          {results.map((result, i) => (
-            <FadeIn key={result.name} delay={i * 100}>
-              <div className="light-card rounded-xl p-7 border-l-2 border-l-accent/60">
-                <h3 className="text-gray-900 font-bold mb-3">{result.name}</h3>
-                <div className="flex items-center gap-2">
-                  <ArrowRight size={14} className="text-accent shrink-0" />
-                  <p className="text-accent text-sm font-semibold">{result.stat}</p>
-                </div>
-              </div>
-            </FadeIn>
-          ))}
-        </div>
-        <FadeIn delay={500}>
-          <div className="mt-8">
-            <Link href="/success-stories" className="inline-flex items-center gap-2 text-accent text-sm font-semibold uppercase tracking-wider hover:gap-3 transition-all">
-              See all transformations <ArrowRight size={14} />
-            </Link>
-          </div>
-        </FadeIn>
-      </Section>
 
       {/* Waitlist — Football School not yet open */}
       <section id="waitlist" className="relative py-28 sm:py-36 bg-black overflow-hidden">

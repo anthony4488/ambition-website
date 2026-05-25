@@ -4,27 +4,12 @@ import { Section } from "@/components/Section";
 import { FadeIn } from "@/components/FadeIn";
 import { ApplyHashRedirect } from "@/components/ApplyHashRedirect";
 import Link from "next/link";
-import { Gauge, Dumbbell, Brain, Footprints, Activity, BarChart3, MapPin, Clock, ArrowRight, Check, ShieldCheck } from "lucide-react";
+import { Gauge, Dumbbell, Brain, Footprints, MapPin, Clock, ArrowRight, Check, ShieldCheck } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Speed School — Ambition Sports Performance",
   description: "From 17 km/h to 38 km/h. We identify limiting factors and solve them one by one. Laser timing, 240fps video, data-driven speed development.",
 };
-
-const pillars = [
-  { title: "Ground Contact Time", description: "How long your foot stays on the ground. Less time = more speed. Most athletes waste energy here — and no one has ever told them.", icon: Footprints },
-  { title: "Reactive Strength", description: "Your ability to absorb and redirect force instantly. This is what makes first steps explosive. It's trainable — and most coaches ignore it.", icon: Dumbbell },
-  { title: "Force Production", description: "How much force you put into the ground per step. More force at the right angle = faster acceleration. We measure this to the decimal.", icon: Gauge },
-  { title: "Nervous System Efficiency", description: "How fast your brain fires signals to your muscles. Plyometrics, reactive drills, neural training. The invisible driver of speed.", icon: Brain },
-  { title: "Speed Endurance", description: "Maintaining top speed under fatigue. Critical for repeat-sprint sports. Most athletes decay — we train you to hold.", icon: Activity },
-  { title: "Testing & Data", description: "Laser timing gates (0.01s precision). 240fps video analysis. 20+ indicators. Progress you can see — not guess at.", icon: BarChart3 },
-];
-
-const methodology = [
-  { step: "01", title: "Diagnose", description: "Comprehensive biomechanical assessment. Laser timing gates, 240fps slow-motion capture, 20+ performance indicators. We find exactly what's capping your speed output." },
-  { step: "02", title: "Prescribe", description: "Personalised protocol targeting YOUR specific limiters. Not a template. Not generic drills. Every exercise is tied to what the assessment found." },
-  { step: "03", title: "Measure", description: "Regular re-testing against your baseline. Objective data showing exactly what's improving — and what's next. Every number tracked to the second decimal point." },
-];
 
 const locations = [
   { name: "Georges Hall", address: "Crest Soccer Fields, Georges Hall NSW 2198", sessions: "Mon-Fri: 3:30-8:45 PM — Sat-Sun: 10:20 AM-3:35 PM" },
@@ -274,64 +259,6 @@ export default function SpeedSchoolPage() {
         </FadeIn>
       </Section>
 
-      {/* What We Solve (white) */}
-      <Section>
-        <FadeIn>
-          <div className="accent-line mb-6" />
-          <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">What we measure. What we fix.</h2>
-          <p className="text-gray-400 mb-16 max-w-lg">Every pillar is assessed, tracked, and trained with objective data. Not guesswork.</p>
-        </FadeIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {pillars.map((pillar, i) => (
-            <FadeIn key={pillar.title} delay={i * 80}>
-              <div className="light-card rounded-xl p-7 h-full border-l-2 border-l-accent/60">
-                <pillar.icon size={24} className="text-accent mb-5" strokeWidth={1.5} />
-                <h3 className="text-base font-bold text-gray-900 mb-2">{pillar.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{pillar.description}</p>
-              </div>
-            </FadeIn>
-          ))}
-        </div>
-      </Section>
-
-      {/* Methodology (gray bg) */}
-      <section className="py-24 sm:py-32 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <FadeIn>
-            <div className="accent-line mb-6" />
-            <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">The process.</h2>
-            <p className="text-gray-500 max-w-2xl leading-relaxed mb-14">Diagnose, prescribe, measure. Every session sits on top of objective data — laser timing, 240fps capture, repeatable testing.</p>
-          </FadeIn>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-            <FadeIn className="lg:col-span-5 lg:sticky lg:top-24">
-              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl ring-1 ring-black/5 bg-gray-200">
-                <Image
-                  src="/speed-school-testing-setup.jpg"
-                  alt="Athlete sprinting through laser timing gates while coach films at 240fps from behind a tripod — real diagnostic session"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width:1024px) 100vw, 42vw"
-                />
-              </div>
-              <p className="text-[11px] text-gray-500 italic mt-3 leading-relaxed">A real assessment in progress — laser timing gates capturing splits to the hundredth, 240fps camera filming alongside for biomechanical breakdown.</p>
-            </FadeIn>
-            <div className="lg:col-span-7 space-y-8">
-              {methodology.map((step, i) => (
-                <FadeIn key={step.title} delay={i * 120}>
-                  <div className="relative flex gap-5 sm:gap-7 items-start">
-                    <span className="text-[60px] sm:text-[72px] font-extrabold text-gray-200 leading-none shrink-0">{step.step}</span>
-                    <div className="pt-2">
-                      <h3 className="text-2xl font-bold text-gray-900 mb-2 tracking-tight">{step.title}</h3>
-                      <p className="text-sm text-gray-500 leading-relaxed">{step.description}</p>
-                    </div>
-                  </div>
-                </FadeIn>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Mid-page Proof + Apply CTA */}
       <section className="relative py-24 sm:py-32 bg-gray-900 overflow-hidden border-y border-gray-800">
         <div className="absolute top-0 left-1/4 w-[600px] h-[400px] bg-accent/10 rounded-full blur-[180px] pointer-events-none" />
@@ -417,152 +344,6 @@ export default function SpeedSchoolPage() {
           </FadeIn>
         </div>
       </section>
-
-      {/* The 5 Core Tests + Elite Benchmarks */}
-      <Section>
-        <FadeIn>
-          <div className="mb-12">
-            <div className="accent-line mb-6" />
-            <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">The Traits We Measure</p>
-            <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
-              Six speed traits. Every athlete. <span className="text-accent">Measured against elite.</span>
-            </h2>
-            <p className="text-gray-500 max-w-2xl">Electronic timing. High-speed video. Every trait benchmarked against elite — green / yellow / red gap scoring. Limiting factors named, bottlenecks tackled.</p>
-          </div>
-        </FadeIn>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {[
-            {
-              n: "01",
-              title: "Acceleration / Drive Phase",
-              body: "How quickly the athlete generates horizontal force out of the start. The phase where every metre is bought through the ground — not stolen with effort.",
-              items: ["Drive-phase posture", "Triple extension at toe-off", "Landing under centre of mass", "Horizontal force production"],
-            },
-            {
-              n: "02",
-              title: "Speed Buildup",
-              body: "Whether the athlete continues to accelerate through the transition — or plateaus early. The zone where good athletes separate from elite.",
-              items: ["Acceleration continuity", "Transition into upright running", "Stride frequency development", "Force application at speed"],
-            },
-            {
-              n: "03",
-              title: "Maximum Velocity",
-              body: "Top speed in km/h. The number that wins games. Captured at peak — not at start, not at fatigue.",
-              items: ["Top speed vs. elite benchmarks", "Ground contact efficiency", "Stride length under load", "Frontside mechanics & knee drive"],
-            },
-            {
-              n: "04",
-              title: "Reactive Speed",
-              body: "How fast the athlete processes a stimulus and converts it into a first step. Cognitive reaction meets neuromuscular response.",
-              items: ["Reaction processing speed", "Movement initiation", "First-step explosiveness", "Stimulus-driven acceleration"],
-            },
-            {
-              n: "05",
-              title: "Elastic Power",
-              body: "Horizontal power output and stretch-shortening cycle efficiency. The biggest single leverage point for most athletes — and the one most coaches miss.",
-              items: ["Stretch-shortening cycle efficiency", "Horizontal power output", "Reactive stiffness off the ground", "Elastic energy return"],
-            },
-            {
-              n: "06",
-              title: "Biomechanical Profile",
-              body: "Full video analysis paired with the timing data — joint angles, posture, asymmetries. The qualitative side that numbers alone miss.",
-              items: ["Hip extension at toe-off", "Knee deformation on impact", "Spinal rotation & elbow externality", "Heel recovery height"],
-            },
-          ].map((a, i) => (
-            <FadeIn key={a.n} delay={(i % 3) * 80}>
-              <div className="light-card rounded-xl p-7 h-full border-l-2 border-l-accent/60">
-                <p className="text-[10px] text-accent uppercase tracking-[0.2em] font-bold mb-3">Trait {a.n}</p>
-                <h3 className="text-lg font-bold text-gray-900 mb-3">{a.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed mb-4">{a.body}</p>
-                <ul className="space-y-1.5">
-                  {a.items.map((it) => (
-                    <li key={it} className="text-xs text-gray-600 leading-relaxed flex items-start gap-2">
-                      <span className="text-accent mt-1.5 w-1 h-1 rounded-full bg-accent shrink-0" />
-                      <span>{it}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </FadeIn>
-          ))}
-        </div>
-
-        {/* How we measure — 240fps callout with Anthony's voice */}
-        <FadeIn delay={350}>
-          <div className="mt-14 rounded-2xl bg-gray-50 border border-gray-200 p-6 sm:p-10 shadow-sm">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-              <div className="lg:col-span-5 order-1 lg:order-1 w-full">
-                <div className="relative rounded-xl overflow-hidden bg-black aspect-[9/16] shadow-xl ring-1 ring-black/10 max-w-[320px] mx-auto lg:max-w-none">
-                  <iframe
-                    src="https://iframe.mediadelivery.net/embed/659523/dea18a7c-5330-4e4b-8d7a-28a90e9b8776?autoplay=false&preload=true&responsive=true"
-                    title="Anthony — Why we film at 240fps"
-                    allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-                    allowFullScreen
-                    loading="lazy"
-                    className="absolute inset-0 w-full h-full border-0"
-                  />
-                </div>
-              </div>
-              <div className="lg:col-span-7 order-2 lg:order-2">
-                <p className="text-[10px] text-accent uppercase tracking-[0.25em] font-bold mb-3">How We Measure</p>
-                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 tracking-tight mb-4 leading-tight">
-                  Eyes at full speed miss it. <span className="text-accent">240fps doesn&apos;t.</span>
-                </h3>
-                <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-3">
-                  Most coaches diagnose with their eyes at full speed. The deformation, the braking, the asymmetries — invisible. We film every assessment at 240 frames per second, slow it down, and the limiters become impossible to miss.
-                </p>
-                <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                  You don&apos;t override what an athlete&apos;s body has solved — not without data. That&apos;s the difference between cueing and coaching.
-                </p>
-              </div>
-            </div>
-          </div>
-        </FadeIn>
-
-        {/* Elite benchmarks table */}
-        <FadeIn delay={400}>
-          <div className="mt-14 rounded-2xl bg-gray-900 p-6 sm:p-10 shadow-2xl">
-            <div className="mb-6">
-              <p className="text-[10px] text-accent uppercase tracking-[0.25em] font-bold mb-2">The Numbers We Hunt</p>
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">U16 elite-level benchmarks.</h3>
-              <p className="text-sm text-gray-400 mt-2 leading-relaxed">This is the bar. Every result you produce is plotted against it.</p>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-white/10 text-left">
-                    <th className="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-500 py-3 pr-4">Trait</th>
-                    <th className="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-500 py-3 pr-4">Above Average</th>
-                    <th className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent py-3">Elite</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/10">
-                  <tr>
-                    <td className="py-3 pr-4 text-white font-semibold">Maximum Velocity</td>
-                    <td className="py-3 pr-4 text-gray-400">~28.8 km/h</td>
-                    <td className="py-3 text-accent font-bold">~30.5 km/h</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 pr-4 text-white font-semibold">Elastic Power</td>
-                    <td className="py-3 pr-4 text-gray-400">~2.5m per bound</td>
-                    <td className="py-3 text-accent font-bold">~2.85m per bound</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 pr-4 text-white font-semibold">Acceleration · Speed Buildup · Reactive Speed</td>
-                    <td className="py-3 pr-4 text-gray-400" colSpan={2}>
-                      <span className="text-accent font-bold">Full elite benchmarks</span> shared in the assessment report — not on the public site.
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <p className="text-[11px] text-gray-500 italic mt-5 leading-relaxed">
-              Benchmarks shown for U16 athletes. Senior, adult and youth brackets adjusted accordingly. We hold the same standard for every athlete in the system.
-            </p>
-          </div>
-        </FadeIn>
-      </Section>
 
       {/* The Training Prescription — 3 Tiers */}
       <section className="py-24 sm:py-32 bg-gray-50">
