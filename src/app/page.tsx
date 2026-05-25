@@ -4,6 +4,7 @@ import { Section } from "@/components/Section";
 import { CTASection } from "@/components/CTASection";
 import { FadeIn } from "@/components/FadeIn";
 import { ProAthleteVideo } from "@/components/ProAthleteVideo";
+import { LazyBunny } from "@/components/LazyBunny";
 import { CredibilityStrip } from "@/components/CredibilityStrip";
 import { ArrowRight, Play, ChevronDown } from "lucide-react";
 
@@ -171,13 +172,10 @@ export default function HomePage() {
           </FadeIn>
           <FadeIn delay={150} className="lg:col-span-5 w-full">
             <div className="relative rounded-2xl overflow-hidden bg-black aspect-[9/16] shadow-2xl ring-1 ring-black/10 max-w-[340px] mx-auto lg:max-w-none">
-              <iframe
-                src="https://iframe.mediadelivery.net/embed/659523/f30e334e-8110-434d-8df0-2da6f9cddb0d?autoplay=false&preload=true&responsive=true"
+              <LazyBunny
+                videoId="f30e334e-8110-434d-8df0-2da6f9cddb0d"
+                poster="/speed-school-bound.jpg"
                 title="1,000 athletes. Every one got faster."
-                allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-                allowFullScreen
-                loading="lazy"
-                className="absolute inset-0 w-full h-full border-0"
               />
             </div>
             <p className="text-center text-[11px] text-gray-500 italic mt-3">Anthony: 23 years, 1,000+ athletes, every one got faster.</p>
