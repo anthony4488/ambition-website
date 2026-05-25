@@ -24,13 +24,15 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="md:col-span-2">
-            <Image
-              src="/logo.png"
-              alt="Ambition Sports Performance"
-              width={248}
-              height={155}
-              className="h-20 w-auto brightness-0 invert mb-5"
-            />
+            <div className="inline-block rounded-2xl bg-white p-4 mb-5 shadow-md">
+              <Image
+                src="/logo.png"
+                alt="Ambition Sports Performance"
+                width={248}
+                height={155}
+                className="h-16 w-auto"
+              />
+            </div>
             <p className="mt-2 text-sm text-gray-400 max-w-sm leading-relaxed">
               World-class speed development for athletes at every level.
               Sydney-based, globally recognised.
