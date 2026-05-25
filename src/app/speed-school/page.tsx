@@ -77,19 +77,19 @@ export default function SpeedSchoolPage() {
           </FadeIn>
           <FadeIn delay={200}>
             <div className="bg-gray-900 rounded-2xl shadow-2xl overflow-hidden">
-              {/* Hero image — Hais, the +19 km/h proof athlete */}
+              {/* Hero image — Sean Dulic, pro footballer in the system */}
               <div className="relative h-48 sm:h-56 w-full">
                 <Image
-                  src="/hais-running.jpg"
-                  alt="Haisam — sprinting through the system that took him from 18 km/h to 37 km/h"
+                  src="/sean-dulic.jpg"
+                  alt="Sean Dulic — professional footballer who trains in the Ambition speed system"
                   fill
                   className="object-cover"
                   sizes="(max-width:1024px) 100vw, 50vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
                 <div className="absolute bottom-4 left-5 right-5">
-                  <p className="text-[10px] text-accent uppercase tracking-[0.25em] font-bold">Real Athlete · Real Numbers</p>
-                  <p className="text-white font-extrabold text-xl tracking-tight mt-1">Haisam — 18 → 37 km/h</p>
+                  <p className="text-[10px] text-accent uppercase tracking-[0.25em] font-bold">Pro Footballer · In The System</p>
+                  <p className="text-white font-extrabold text-xl tracking-tight mt-1">Sean Dulic — Bundesliga · Germany U23</p>
                 </div>
               </div>
               <div className="p-8 sm:p-10">
