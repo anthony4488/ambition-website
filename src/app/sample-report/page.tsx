@@ -91,7 +91,7 @@ export default function SampleReportPage() {
         <div className="mt-10 rounded-2xl bg-accent/10 p-8 text-center">
           <h2 className="text-2xl font-extrabold tracking-tight text-gray-900">Want this for your athlete?</h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-gray-600">
-            The assessment is $199. You leave knowing exactly what's limiting speed — and the plan to fix it.
+            The assessment is $199. You leave knowing exactly what&apos;s limiting speed — and the plan to fix it.
           </p>
           <Link
             href="/apply"
