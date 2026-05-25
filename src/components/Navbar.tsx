@@ -47,14 +47,14 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-[84px] sm:h-24">
-          <Link href="/" className={"flex items-center gap-3 group rounded-xl transition-all " + (scrolled ? "" : "bg-white/95 px-3 py-1.5 shadow-md")}>
+          <Link href="/" className="flex items-center gap-3 group">
             <Image
               src="/logo.png"
               alt="Ambition Sports Performance"
               width={248}
               height={155}
               className={`h-14 sm:h-16 w-auto transition-all duration-300 ${
-                scrolled ? "" : ""
+                scrolled ? "" : "brightness-0 invert"
               }`}
               priority
             />

@@ -43,7 +43,7 @@ const proAthletes: WallCard[] = [
   },
   {
     name: "Adam",
-    result: "1.60s / 35.6 km/h",
+    result: "1.60s first 10m",
     context: "La Liga academy signing · 2.1m+ strides · came in barely eating, signed pro in Spain",
     mp4Src: "/adam-proof.mp4",
   },
@@ -252,114 +252,87 @@ export default function SuccessStoriesPage() {
         </div>
       </section>
 
-      {/* Featured Case Study — Adam's full arc (4 chapters from real WhatsApp coaching) */}
+      {/* Athlete Roster — Everyone Else */}
       <section className="relative py-24 sm:py-32 bg-gray-900 overflow-hidden border-t border-gray-800">
-        <div className="absolute right-0 top-1/3 w-[600px] h-[500px] bg-accent/8 rounded-full blur-[180px] pointer-events-none" />
-        <div className="absolute left-0 bottom-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[150px] pointer-events-none" />
+        <div className="absolute right-0 top-1/3 w-[600px] h-[600px] bg-accent/5 rounded-full blur-[150px] pointer-events-none" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
-            <div className="mb-12 max-w-3xl">
+            <div className="mb-12">
               <div className="accent-line mb-6" />
-              <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">The Full Arc · Adam</p>
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-4 leading-[0.95]">
-                From under-eating <span className="text-accent">to La Liga.</span>
+              <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">The Roster</p>
+              <h2 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
+                Trusted by athletes around the world.
               </h2>
-              <p className="text-gray-400 leading-relaxed text-base sm:text-lg">
-                The chapters below are pulled from real coaching conversations across 2024–2025. This is what the system actually looks like — not a stat card, the full work.
-              </p>
+              <p className="text-gray-400 max-w-xl">Junior prodigies, semi-pros, state champions, masters, parents. Every transformation below was filmed, measured, and verified.</p>
             </div>
           </FadeIn>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Chapter 1 — The Diagnosis */}
-            <FadeIn className="lg:col-span-6">
-              <div className="rounded-2xl p-7 sm:p-8 bg-gray-800/50 border border-gray-800 h-full">
-                <p className="text-[10px] text-accent uppercase tracking-[0.3em] font-bold mb-3">Chapter 1 — The Diagnosis</p>
-                <h3 className="text-2xl font-extrabold text-white tracking-tight mb-4 leading-tight">
-                  &ldquo;You don&apos;t eat like sh*t. You barely eat.&rdquo;
-                </h3>
-                <p className="text-sm sm:text-base text-gray-300 leading-relaxed mb-4">
-                  Adam came in believing his nutrition was the problem because he ate &ldquo;badly.&rdquo; The actual problem was he wasn&apos;t eating enough — period. Anthony reframed it on day one, then made him photograph every meal for 48 hours to prove it.
-                </p>
-                <p className="text-xs text-gray-500 italic">
-                  *&ldquo;I&apos;m gonna change your life just through diet lol.&rdquo;* — Anthony, opening message
-                </p>
-              </div>
-            </FadeIn>
-
-            {/* Chapter 2 — The Fix */}
-            <FadeIn delay={100} className="lg:col-span-6">
-              <div className="rounded-2xl p-7 sm:p-8 bg-gray-800/50 border border-gray-800 h-full">
-                <p className="text-[10px] text-accent uppercase tracking-[0.3em] font-bold mb-3">Chapter 2 — The Fix</p>
-                <h3 className="text-2xl font-extrabold text-white tracking-tight mb-4 leading-tight">
-                  Macros, carbs, and the squat link.
-                </h3>
-                <p className="text-sm sm:text-base text-gray-300 leading-relaxed mb-4">
-                  Daily macros. Specific pre-training meals. The carb-glycogen mechanism explained — and tied directly to first-15m sprint speed. Adam stopped guessing about food and started fuelling for performance.
-                </p>
-                <p className="text-xs text-gray-500 italic">
-                  *&ldquo;Carbs are your major importance — protein is muscle recovery, but carbs are what fire explosive movement.&rdquo;*
-                </p>
-              </div>
-            </FadeIn>
-
-            {/* Chapter 3 — The Unlock */}
-            <FadeIn delay={200} className="lg:col-span-6">
-              <div className="rounded-2xl p-7 sm:p-8 bg-gray-800/50 border-2 border-accent/40 h-full">
-                <p className="text-[10px] text-accent uppercase tracking-[0.3em] font-bold mb-3">Chapter 3 — The Unlock</p>
-                <h3 className="text-2xl font-extrabold text-white tracking-tight mb-4 leading-tight">
-                  1.60s over the first 10 metres.
-                </h3>
-                <p className="text-sm sm:text-base text-gray-300 leading-relaxed mb-4">
-                  Months of structured strength + nutrition + mechanics — then the test: <strong className="text-white">1.60s, 0–10m from a 50cm start.</strong> Faster than the fastest U23 academy athlete in published research. Stride length above 2.1m on grass. Not fresh.
-                </p>
-                <p className="text-xs text-accent italic font-bold">
-                  *&ldquo;1.60 today, 0-10 from 50cm start is world-class first 10 metre. You blitz them.&rdquo;*
-                </p>
-              </div>
-            </FadeIn>
-
-            {/* Chapter 4 — The Result */}
-            <FadeIn delay={300} className="lg:col-span-6">
-              <div className="rounded-2xl p-7 sm:p-8 bg-gray-800/50 border-2 border-accent/40 h-full">
-                <p className="text-[10px] text-accent uppercase tracking-[0.3em] font-bold mb-3">Chapter 4 — The Result</p>
-                <h3 className="text-2xl font-extrabold text-white tracking-tight mb-4 leading-tight">
-                  La Liga academy signing.
-                </h3>
-                <p className="text-sm sm:text-base text-gray-300 leading-relaxed mb-4">
-                  Adam signed pro in Spain. Coaching continued through the move — heat adaptation, gym programming inside the academy environment, video review of matches. The system travels.
-                </p>
-                <p className="text-xs text-gray-300 italic font-bold">
-                  Adam: *&ldquo;Yeah I played very well on this tour, my speed and power felt good also my strength.&rdquo;*
-                </p>
-              </div>
-            </FadeIn>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {wall.map((c, i) => (
+              <FadeIn key={c.name} delay={(i % 3) * 80}>
+                <MediaCard card={c} />
+              </FadeIn>
+            ))}
           </div>
-
-          {/* Stat strip — Adam's numbers */}
-          <FadeIn delay={400}>
-            <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {[
-                { v: "1.60s", l: "0–10m (50cm start)" },
-                { v: "2.1m+", l: "stride length on grass" },
-                { v: "35.6 km/h", l: "top-end speed" },
-                { v: "La Liga", l: "academy signing" },
-              ].map((s) => (
-                <div key={s.l} className="rounded-xl p-5 bg-gray-800/40 border border-gray-800 text-center">
-                  <p className="text-2xl sm:text-3xl font-black text-accent leading-none mb-2">{s.v}</p>
-                  <p className="text-[10px] text-gray-400 uppercase tracking-[0.15em] font-bold">{s.l}</p>
-                </div>
-              ))}
-            </div>
-          </FadeIn>
-
-          <FadeIn delay={500}>
-            <p className="mt-10 max-w-3xl mx-auto text-center text-gray-500 text-sm italic leading-relaxed">
-              The chapters above are condensed from 388 messages across 19 months of weekly coaching. Same system available to every athlete who applies — across Speed School (in-person Sydney) or Online Coaching (worldwide).
-            </p>
-          </FadeIn>
         </div>
       </section>
+
+      {/* WhatsApp messages */}
+      <section className="py-24 sm:py-32 bg-gray-900 border-t border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="mb-12">
+              <div className="accent-line mb-6" />
+              <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">What Athletes Say</p>
+              <h2 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
+                Straight from the group chat.
+              </h2>
+              <p className="text-gray-400 max-w-xl">Real, unedited messages from athletes, parents, and coaches mid-program.</p>
+            </div>
+          </FadeIn>
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 [&>*]:mb-5 [&>*]:break-inside-avoid">
+            {whatsappWall.map((m, i) => (
+              <FadeIn key={m.src} delay={(i % 3) * 80}>
+                <div className="rounded-2xl overflow-hidden bg-gray-950 border border-gray-800 relative">
+                  <span className="absolute top-3 right-3 z-10 bg-black/55 backdrop-blur px-2 py-1 rounded text-[10px] tracking-[0.15em] font-bold text-gray-400">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <Image
+                    src={m.src}
+                    alt={`Real client message — ${m.name}`}
+                    width={600}
+                    height={900}
+                    className="w-full h-auto block"
+                  />
+                  <p className="px-4 py-3 text-xs text-gray-400 italic text-center border-t border-gray-800 leading-relaxed">
+                    <strong className="text-white not-italic">{m.name}</strong> · {m.caption}
+                  </p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Talking-head video testimonials */}
+      <Section>
+        <FadeIn>
+          <div className="mb-12">
+            <div className="accent-line mb-6" />
+            <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">In Their Own Words</p>
+            <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
+              Hear it from them.
+            </h2>
+            <p className="text-gray-500 max-w-lg">Real athletes. Unscripted. On camera.</p>
+          </div>
+        </FadeIn>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {talkingHeads.map((t, i) => (
+            <FadeIn key={i} delay={i * 120}>
+              <TestimonialVideo {...t} />
+            </FadeIn>
+          ))}
+        </div>
+      </Section>
 
       {/* Real Client Voices — verbatim quotes from private WhatsApp coaching threads */}
       <Section>
@@ -444,88 +417,6 @@ export default function SuccessStoriesPage() {
             None of these were filmed. None scripted. Just what athletes actually wrote to me — mid-program, mid-breakthrough, when it was landing.
           </p>
         </FadeIn>
-      </Section>
-
-      {/* Athlete Roster — Everyone Else */}
-      <section className="relative py-24 sm:py-32 bg-gray-900 overflow-hidden border-t border-gray-800">
-        <div className="absolute right-0 top-1/3 w-[600px] h-[600px] bg-accent/5 rounded-full blur-[150px] pointer-events-none" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <FadeIn>
-            <div className="mb-12">
-              <div className="accent-line mb-6" />
-              <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">The Roster</p>
-              <h2 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
-                Trusted by athletes around the world.
-              </h2>
-              <p className="text-gray-400 max-w-xl">Junior prodigies, semi-pros, state champions, masters, parents. Every transformation below was filmed, measured, and verified.</p>
-            </div>
-          </FadeIn>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {wall.map((c, i) => (
-              <FadeIn key={c.name} delay={(i % 3) * 80}>
-                <MediaCard card={c} />
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* WhatsApp messages */}
-      <section className="py-24 sm:py-32 bg-gray-900 border-t border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <FadeIn>
-            <div className="mb-12">
-              <div className="accent-line mb-6" />
-              <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">What Athletes Say</p>
-              <h2 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
-                Straight from the group chat.
-              </h2>
-              <p className="text-gray-400 max-w-xl">Real, unedited messages from athletes, parents, and coaches mid-program.</p>
-            </div>
-          </FadeIn>
-          <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 [&>*]:mb-5 [&>*]:break-inside-avoid">
-            {whatsappWall.map((m, i) => (
-              <FadeIn key={m.src} delay={(i % 3) * 80}>
-                <div className="rounded-2xl overflow-hidden bg-gray-950 border border-gray-800 relative">
-                  <span className="absolute top-3 right-3 z-10 bg-black/55 backdrop-blur px-2 py-1 rounded text-[10px] tracking-[0.15em] font-bold text-gray-400">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <Image
-                    src={m.src}
-                    alt={`Real client message — ${m.name}`}
-                    width={600}
-                    height={900}
-                    className="w-full h-auto block"
-                  />
-                  <p className="px-4 py-3 text-xs text-gray-400 italic text-center border-t border-gray-800 leading-relaxed">
-                    <strong className="text-white not-italic">{m.name}</strong> · {m.caption}
-                  </p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Talking-head video testimonials */}
-      <Section>
-        <FadeIn>
-          <div className="mb-12">
-            <div className="accent-line mb-6" />
-            <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">In Their Own Words</p>
-            <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
-              Hear it from them.
-            </h2>
-            <p className="text-gray-500 max-w-lg">Real athletes. Unscripted. On camera.</p>
-          </div>
-        </FadeIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {talkingHeads.map((t, i) => (
-            <FadeIn key={i} delay={i * 120}>
-              <TestimonialVideo {...t} />
-            </FadeIn>
-          ))}
-        </div>
       </Section>
 
       {/* The big expectation anchor */}
