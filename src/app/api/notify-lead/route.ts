@@ -1,18 +1,18 @@
 import { NextRequest } from "next/server";
+import { enrollNurture } from "@/lib/enrollNurture";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// Instant lead alert via Telegram. Set TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID.
-// No-ops cleanly until those are configured, so the form never breaks.
+// Fires on every application submit: (1) enroll the lead in the auto-nurture
+// sequence (touch 0 sent immediately), (2) instant Telegram alert to Anthony.
+// Each step is independent + non-fatal so the form never breaks.
 
 const esc = (s: unknown) =>
   String(s ?? "—").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const str = (v: unknown) => (typeof v === "string" ? v : undefined);
 
 export async function POST(req: NextRequest) {
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.TELEGRAM_CHAT_ID;
-
   let b: Record<string, unknown> = {};
   try {
     b = await req.json();
@@ -20,7 +20,17 @@ export async function POST(req: NextRequest) {
     return Response.json({ ok: false, error: "invalid JSON" }, { status: 400 });
   }
 
-  if (!token || !chatId) return Response.json({ ok: false, skipped: "telegram not configured" });
+  // 1) Auto-nurture enrollment (fires touch 0 email + SMS)
+  try {
+    await enrollNurture({ name: str(b.name), email: str(b.email), phone: str(b.phone), source: str(b.source) });
+  } catch {
+    /* non-fatal */
+  }
+
+  // 2) Telegram alert
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+  if (!token || !chatId) return Response.json({ ok: true, telegram: "not configured" });
 
   const qualified = b.qualified === true;
   const lines = [
