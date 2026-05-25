@@ -759,35 +759,6 @@ export default function SpeedSchoolPage() {
       </Section>
 
 
-      {/* Proof callout — push to success-stories */}
-      <section className="relative py-24 sm:py-32 bg-black overflow-hidden border-t border-gray-800">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[160px]" />
-          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[140px]" />
-        </div>
-        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <FadeIn>
-            <p className="text-accent text-xs uppercase tracking-[0.3em] mb-6 font-semibold">Proof Over Promises</p>
-          </FadeIn>
-          <FadeIn delay={100}>
-            <h2 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[0.95] mb-8">
-              Every transformation filmed.<br />
-              <span className="text-accent">Every number measured.</span>
-            </h2>
-          </FadeIn>
-          <FadeIn delay={200}>
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
-              Paralympic gold. Bundesliga. La Liga academy. €1.5M transfers. State champions. D1 scholarships. NPL debutants. Every transformation backed by timing data and video.
-            </p>
-          </FadeIn>
-          <FadeIn delay={300}>
-            <Link href="/success-stories" className="inline-flex items-center gap-2 px-8 py-5 bg-accent text-white font-bold text-sm uppercase tracking-wider rounded-full hover:bg-orange-500 transition-colors shadow-lg shadow-accent/30">
-              See The Success Stories <ArrowRight size={18} />
-            </Link>
-          </FadeIn>
-        </div>
-      </section>
-
       {/* Locations (white) */}
       <Section>
         <FadeIn>
@@ -810,68 +781,6 @@ export default function SpeedSchoolPage() {
           ))}
         </div>
       </Section>
-
-      {/* The Library — high-performing Anthony deep-dives */}
-      <section className="py-24 sm:py-32 bg-gray-900 overflow-hidden relative">
-        <div className="absolute right-0 top-0 w-[500px] h-[400px] bg-accent/8 rounded-full blur-[170px] pointer-events-none" />
-        <div className="absolute left-0 bottom-0 w-[500px] h-[400px] bg-accent/5 rounded-full blur-[160px] pointer-events-none" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <FadeIn>
-            <div className="mb-12 max-w-3xl">
-              <div className="accent-line mb-6" />
-              <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">The Library</p>
-              <h2 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-4 leading-tight">
-                Deep-dives on what actually <span className="text-accent">moves the needle.</span>
-              </h2>
-              <p className="text-gray-400 leading-relaxed">
-                The breakdowns the audience kept coming back to — pulled straight from the @ambitionsportsperformance feed.
-              </p>
-            </div>
-          </FadeIn>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {[
-              {
-                guid: "d1e81ef0-d3cb-46e7-ad2e-3bcd5b497c20",
-                title: "How height changes EVERYTHING about speed training",
-                blurb: "Why two athletes with the same time train completely different. Limb length is the fixed variable — everything else is dialled around it.",
-                stat: "136K views · 2,367 shares",
-              },
-              {
-                guid: "1277728c-f2fa-4e67-9fc0-3e52990a9aef",
-                title: "The correlation secret to ELITE speed",
-                blurb: "What separates a 10.2 sprinter from a 10.6. The hidden variable most coaches never measure.",
-                stat: "62K views · 2,024 saves",
-              },
-              {
-                guid: "8815dc33-8e1e-4e2a-a85c-cd341169d7e6",
-                title: "The REAL reason you're not improving your speed",
-                blurb: "The neural inhibition barrier — why your nervous system keeps capping the same gear, and what unlocks the next.",
-                stat: "Neural deep-dive",
-              },
-            ].map((v) => (
-              <FadeIn key={v.guid}>
-                <div className="flex flex-col">
-                  <div className="relative rounded-2xl overflow-hidden bg-black aspect-[9/16] shadow-2xl ring-1 ring-white/10">
-                    <iframe
-                      src={`https://iframe.mediadelivery.net/embed/659523/${v.guid}?autoplay=false&preload=true&responsive=true`}
-                      title={v.title}
-                      allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-                      allowFullScreen
-                      loading="lazy"
-                      className="absolute inset-0 w-full h-full border-0"
-                    />
-                  </div>
-                  <div className="mt-4">
-                    <p className="text-[10px] text-accent uppercase tracking-[0.25em] font-bold mb-2">{v.stat}</p>
-                    <h3 className="text-base sm:text-lg font-bold text-white mb-2 leading-snug">{v.title}</h3>
-                    <p className="text-xs sm:text-sm text-gray-400 leading-relaxed">{v.blurb}</p>
-                  </div>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* FAQ — common questions for in-person speed training */}
       <Section>

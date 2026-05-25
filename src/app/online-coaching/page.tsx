@@ -37,40 +37,11 @@ const blocks = [
   { n: "05", weeks: "Weeks 25–30", name: "Peaking + Expression", items: ["Speed expression at full output", "Match readiness", "Testing and performance lock"] },
 ];
 
-const processSteps = [
-  { n: "01", title: "Apply & Qualify", lead: "Two short steps. Application, then a quick call to confirm fit.", items: [
-    { h: "Application", p: "Submit the form. We review every application within 24 hours." },
-    { h: "Qualification Call", p: "A 10-minute call to confirm fit and lock in the $200 assessment." },
-  ]},
-  { n: "02", title: "Get Assessed", lead: "Film at home. Full biomechanical breakdown within 5–7 business days.", items: [
-    { h: "Assessment Filming", p: "5 tests filmed on your phone. 60–90 minutes total. Protocol delivered via WhatsApp." },
-    { h: "Biomechanical Report", p: "8–10 page report. Every metric measured against elite benchmarks." },
-    { h: "15-Minute Voiceover", p: "Anthony walks through the data, names the #1 limiter, explains what to fix first." },
-  ]},
-  { n: "03", title: "Begin Program", lead: "If the assessment shows fit, we move from data into action.", items: [
-    { h: "Program Conversation", p: "A second call to discuss the 30-week build and confirm direction." },
-    { h: "Custom Build", p: "Program built around the athlete's limiters from the assessment — not a template." },
-    { h: "WhatsApp Onboarding", p: "Shared coaching thread opens. Block 1 drops. Training begins." },
-  ]},
-  { n: "04", title: "Train & Peak", lead: "30 weeks of structured progression — peaking at the right time, not by chance.", items: [
-    { h: "Weekly Coaching Cycle", p: "Train, film, upload via WhatsApp. Anthony reviews and adjusts. Every week. 30 weeks." },
-    { h: "6-Week Periodization", p: "Foundation → Acceleration → Max Velocity → Power → Peaking. The nervous system peaks on cue." },
-    { h: "Peaked Performance", p: "Month 7. Athlete retests against baseline. Faster, more powerful, ready to express." },
-  ]},
-];
-
 const weekFlow = [
   { day: "Monday", title: "Block Drop", body: "Anthony sends the week's programming via WhatsApp — every session, drill, and load. Demo videos and form cues included." },
   { day: "Tue–Fri", title: "Train + Film", body: "The athlete runs the sessions, films key exercises on their phone — typically technical work and prescribed sprints. 30 seconds per drill." },
   { day: "End of Week", title: "Review + Check-In", body: "Anthony reviews uploaded footage, sends specific form feedback, and delivers a voice-note check-in — what got hit, what got missed, what to adjust." },
   { day: "Sunday", title: "Next Week's Plan", body: "Repeat. Every week. For 30 weeks." },
-];
-
-const pillars = [
-  { n: "01", title: "Biomechanical Measurement", body: "Every metric measured. Top speed, ground contact time, reactive strength, force direction — nothing assumed." },
-  { n: "02", title: "Custom Bottleneck Identification", body: "The #1 speed limiter named explicitly. Not generic advice — specific, data-driven coaching." },
-  { n: "03", title: "Periodised Programming", body: "30 weeks. 5 training blocks. Every block builds on the last. Nervous system peaks at the right time — not burned out by week 8." },
-  { n: "04", title: "Constant Contact Coaching", body: "Weekly WhatsApp check-ins. Daily access. Form reviews on every uploaded session. No athlete left behind." },
 ];
 
 const builtFor = [
@@ -347,42 +318,6 @@ export default function OnlineCoachingPage() {
       </Section>
 
       {/* Process — 4 Step Journey */}
-      <section className="py-24 sm:py-32 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <FadeIn>
-            <div className="mb-12">
-              <div className="accent-line mb-6" />
-              <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">The Full Journey</p>
-              <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
-                Application to <span className="text-accent">peak performance</span> — in 4 steps.
-              </h2>
-              <p className="text-gray-500 max-w-2xl">From the moment you apply through to month 7 of training. Every step mapped, measured, and built for the athlete.</p>
-            </div>
-          </FadeIn>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {processSteps.map((step) => (
-              <FadeIn key={step.n}>
-                <div className="bg-white rounded-xl p-7 h-full shadow-sm border border-gray-100">
-                  <div className="flex items-baseline gap-3 mb-4">
-                    <span className="text-3xl font-black text-accent">{step.n}</span>
-                    <h3 className="text-xl font-bold text-gray-900">{step.title}</h3>
-                  </div>
-                  <p className="text-sm text-gray-500 italic mb-5 leading-relaxed">{step.lead}</p>
-                  <ol className="space-y-4 border-l-2 border-gray-100 pl-5">
-                    {step.items.map((it) => (
-                      <li key={it.h}>
-                        <h4 className="text-sm font-bold text-gray-900 mb-1">{it.h}</h4>
-                        <p className="text-xs text-gray-500 leading-relaxed">{it.p}</p>
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* A Week Inside The Program */}
       <Section>
         <FadeIn>
@@ -444,35 +379,6 @@ export default function OnlineCoachingPage() {
       </Section>
 
       {/* The Speed Diagnostic System™ Framework */}
-      <section className="py-24 sm:py-32 bg-gray-900 overflow-hidden">
-        <div className="absolute right-0 top-0 w-[500px] h-[500px] bg-accent/8 rounded-full blur-[150px] pointer-events-none" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <FadeIn>
-            <div className="mb-12">
-              <div className="accent-line mb-6" />
-              <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">Introduction</p>
-              <h2 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
-                The <span className="text-accent">Speed Diagnostic System</span>&trade;
-              </h2>
-              <p className="text-gray-400 max-w-2xl leading-relaxed">
-                A proven coaching framework designed specifically for athletes who want to get measurably faster — without guessing, without templates, without burnout.
-              </p>
-            </div>
-          </FadeIn>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {pillars.map((p) => (
-              <FadeIn key={p.n}>
-                <div className="rounded-xl p-7 bg-gray-800/60 border border-gray-800 h-full hover:border-accent/30 transition-colors">
-                  <p className="text-[10px] text-accent uppercase tracking-[0.2em] font-bold mb-3">0{p.n.slice(1)}</p>
-                  <h3 className="text-lg font-bold text-white mb-3">{p.title}</h3>
-                  <p className="text-sm text-gray-400 leading-relaxed">{p.body}</p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Coach pull quote */}
       <section className="py-20 sm:py-24 bg-black border-y border-gray-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
