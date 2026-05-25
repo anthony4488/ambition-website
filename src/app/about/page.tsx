@@ -371,49 +371,6 @@ export default function AboutPage() {
         </FadeIn>
       </Section>
 
-      {/* Pain vs Injury — coaching philosophy callout (Nik disc bulge story) */}
-      <Section>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          <FadeIn className="lg:col-span-7">
-            <div className="accent-line mb-6" />
-            <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">How I Coach Through Injury</p>
-            <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4 leading-tight">
-              We don&apos;t quit. <span className="text-accent">We de-risk.</span>
-            </h2>
-            <div className="space-y-4 text-gray-600 leading-relaxed text-base sm:text-lg">
-              <p>
-                Most coaches do one of two things when an athlete gets hurt: stop everything, or ignore it and push. Both lose months.
-              </p>
-              <p>
-                When <strong className="text-gray-900">Nik developed a disc bulge mid-program</strong>, we didn&apos;t quit. We paused the heavy lifting for 4 weeks, kept the speed and plyometric work he could do pain-free, layered in core and posture rebuild so it didn&apos;t happen again — and brought the loading back when his body was ready.
-              </p>
-              <p>
-                Pain is feedback. Injury is structural damage. They&apos;re not the same thing, and most physios over-medicalise the gap between them.
-              </p>
-            </div>
-          </FadeIn>
-          <FadeIn delay={150} className="lg:col-span-5">
-            <div className="rounded-2xl bg-gray-900 text-white p-8 shadow-xl space-y-5">
-              <p className="text-[10px] text-accent uppercase tracking-[0.3em] font-bold">The Outcome</p>
-              <div className="space-y-2">
-                <p className="text-5xl font-black text-accent leading-none">30.7 km/h</p>
-                <p className="text-sm text-gray-300 leading-relaxed pt-2">
-                  Top speed on a 30m sprint — recorded 1 December 2025, about a month after the disc bulge was diagnosed. Held the gains. Kept training pain-permitting through the recovery window.
-                </p>
-              </div>
-              <p className="text-xs text-gray-500 italic pt-3 border-t border-white/10">
-                Nik Plokhotniuk · disc bulge handled in-program, Oct → Dec 2025
-              </p>
-            </div>
-          </FadeIn>
-        </div>
-        <FadeIn delay={300}>
-          <p className="mt-10 max-w-3xl mx-auto text-center text-gray-500 italic text-sm">
-            Most committed programs ignore the body. Most cautious programs ignore the work. We do neither. That&apos;s why athletes keep paying after injury, not before.
-          </p>
-        </FadeIn>
-      </Section>
-
       {/* CTA */}
       <section className="relative py-28 sm:py-36 bg-black overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
