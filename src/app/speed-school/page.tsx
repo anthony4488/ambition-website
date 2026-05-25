@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Image from "next/image";
 import { Section } from "@/components/Section";
 import { FadeIn } from "@/components/FadeIn";
+import { ApplyHashRedirect } from "@/components/ApplyHashRedirect";
 import Link from "next/link";
 import { Gauge, Dumbbell, Brain, Footprints, Activity, BarChart3, MapPin, Clock, ArrowRight, Check, ShieldCheck } from "lucide-react";
 
@@ -34,6 +35,7 @@ const locations = [
 export default function SpeedSchoolPage() {
   return (
     <>
+      <ApplyHashRedirect />
       {/* Hero (dark) */}
       <section className="relative min-h-[70vh] flex items-end overflow-hidden bg-gray-900">
         <div className="absolute inset-0">
