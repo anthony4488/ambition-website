@@ -17,6 +17,8 @@ const links = [
   { href: "/contact", label: "Contact" },
 ];
 
+const LANDING = ["/apply", "/welcome"];
+
 export function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -32,6 +34,8 @@ export function Navbar() {
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
+
+  if (LANDING.includes(pathname)) return null; // focused landing pages: logo only, no nav
 
   return (
     <nav

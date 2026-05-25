@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { Instagram, Youtube, Mail } from "lucide-react";
 
 const navLinks = [
@@ -11,6 +14,8 @@ const navLinks = [
 ];
 
 export function Footer() {
+  const pathname = usePathname();
+  if (["/apply", "/welcome"].includes(pathname)) return null;
   return (
     <footer className="bg-gray-900 text-white relative">
       {/* Top gradient border */}

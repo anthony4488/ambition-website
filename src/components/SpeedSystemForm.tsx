@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { ArrowRight, ArrowLeft, Check, Loader2 } from "lucide-react";
 
@@ -58,6 +59,7 @@ export function SpeedSystemForm() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [shake, setShake] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   const current = STEPS[step];
   const value = answers[current?.id] ?? "";
@@ -123,11 +125,7 @@ export function SpeedSystemForm() {
         body: JSON.stringify({ ...a, source: "speed-system-apply", qualified }),
       }).catch(() => {});
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const w = window as any;
-      if (typeof w.fbq === "function") w.fbq("track", "Lead", { content_name: "Speed System Application" });
-
-      setStatus("success");
+      router.push("/welcome"); // nurture page fires the Meta Pixel Lead
     } catch {
       setStatus("error");
     }

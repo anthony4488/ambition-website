@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { ArrowRight, CheckCircle, Clock, Shield, Zap } from "lucide-react";
 
@@ -153,6 +154,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
 
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const validate = (): string => {
     if (!form.name.trim()) return "Please enter the athlete's full name.";
@@ -254,29 +256,25 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
         if (dbErr) throw dbErr;
       }
 
-      fetch("/api/whatsapp-notify", {
+      fetch("/api/notify-lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: form.name,
           phone: form.phone,
-          age: form.ageRange,
+          email: form.email,
+          suburb: form.state || "",
           sport: program === "football" ? `Football · ${form.fbPosition}` : program === "speed" ? form.sportPosition : form.athleteLevel,
-          program,
+          age: form.ageRange,
+          goal: program === "online" ? form.onlineGoal : program === "speed" ? form.speedGoal : form.fbGoal,
+          budget: form.commitmentLevel || "",
+          commit: form.commitLength || form.sessionsPerWeek || "",
+          source,
+          qualified: true,
         }),
       }).catch(() => {});
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const w = window as any;
-      if (typeof window !== "undefined" && typeof w.fbq === "function") {
-        w.fbq("track", "Lead", {
-          content_name: `Application — ${program}`,
-          content_category:
-            program === "online" ? form.commitmentLevel : program === "speed" ? form.speedGoal : form.fbGoal,
-        });
-      }
-
-      setStatus("success");
+      router.push("/welcome"); // nurture page fires the Meta Pixel Lead
     } catch {
       setStatus("error");
     }

@@ -11,6 +11,10 @@ export const metadata: Metadata = {
 export default function ApplyPage() {
   return (
     <main className="min-h-screen bg-white">
+      <header className="flex justify-center border-b border-gray-100 py-5">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo.png" alt="Ambition Sports Performance" className="h-9 w-auto" />
+      </header>
       <SpeedSystemForm />
     </main>
   );
