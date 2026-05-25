@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import Image from "next/image";
 import { Section } from "@/components/Section";
 import { FadeIn } from "@/components/FadeIn";
-import { EnquiryForm } from "@/components/EnquiryForm";
 import Link from "next/link";
 import { Gauge, Dumbbell, Brain, Footprints, Activity, BarChart3, MapPin, Clock, ArrowRight, Check, ShieldCheck } from "lucide-react";
 
@@ -407,7 +406,7 @@ export default function SpeedSchoolPage() {
                 See All Success Stories <ArrowRight size={15} />
               </Link>
               <a
-                href="#apply"
+                href="/apply"
                 className="inline-flex items-center gap-2 px-7 py-4 bg-accent text-white font-bold text-sm uppercase tracking-wider rounded-full hover:bg-orange-500 transition-colors shadow-lg shadow-accent/30"
               >
                 Apply For Speed School <ArrowRight size={15} />
@@ -1015,13 +1014,21 @@ export default function SpeedSchoolPage() {
             </div>
             <div className="lg:col-span-7">
               <FadeIn delay={150}>
-                <div className="bg-white rounded-2xl p-6 sm:p-10 shadow-2xl">
-                  <div className="mb-6 pb-6 border-b border-gray-100">
-                    <p className="text-[10px] text-accent uppercase tracking-[0.25em] font-bold mb-2">Speed School Application</p>
-                    <h3 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight leading-tight">Limited intake. Apply now.</h3>
-                    <p className="text-sm text-gray-500 mt-2 leading-relaxed">Speed-specific questions. We&apos;ll know exactly where to start.</p>
-                  </div>
-                  <EnquiryForm source="speed-school-apply" program="speed" />
+                <div className="bg-white rounded-2xl p-8 sm:p-10 shadow-2xl text-center">
+                  <p className="text-[10px] text-accent uppercase tracking-[0.25em] font-bold mb-2">Speed School Application</p>
+                  <h3 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight leading-tight">Strict intake. Apply to qualify.</h3>
+                  <p className="text-sm text-gray-500 mt-3 leading-relaxed">
+                    A 90-second application qualifies you before we book anything.<br />
+                    Sydney athletes only · $199 assessment · serious athletes only.
+                  </p>
+                  <Link
+                    href="/apply"
+                    className="group mt-7 inline-flex w-full items-center justify-center gap-3 rounded-full bg-accent px-8 py-4 text-sm font-extrabold uppercase tracking-[0.15em] text-white transition hover:bg-orange-500 hover:shadow-xl hover:shadow-accent/30"
+                  >
+                    Start your application
+                    <ArrowRight size={18} className="transition group-hover:translate-x-1" strokeWidth={2.5} />
+                  </Link>
+                  <p className="mt-4 text-[11px] text-gray-400">Reviewed within 24 hours · Limited spots</p>
                 </div>
               </FadeIn>
             </div>
