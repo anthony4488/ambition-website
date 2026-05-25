@@ -8,6 +8,7 @@ import { Menu, X } from "lucide-react";
 
 const links = [
   { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
   { href: "/speed-school", label: "Speed School" },
   { href: "/football-school", label: "Football School" },
   { href: "/online-coaching", label: "Online Coaching" },
@@ -41,14 +42,14 @@ export function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-[72px] sm:h-20">
+        <div className="flex items-center justify-between h-[84px] sm:h-24">
           <Link href="/" className="flex items-center gap-3 group">
             <Image
               src="/logo.png"
               alt="Ambition Sports Performance"
-              width={160}
-              height={40}
-              className={`h-9 sm:h-10 w-auto transition-all duration-300 ${
+              width={248}
+              height={155}
+              className={`h-14 sm:h-16 w-auto transition-all duration-300 ${
                 scrolled ? "" : "brightness-0 invert"
               }`}
               priority

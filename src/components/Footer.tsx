@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Instagram, Youtube, Mail, Phone } from "lucide-react";
+import { Instagram, Youtube, Mail } from "lucide-react";
 
 const navLinks = [
   { href: "/speed-school", label: "Speed School" },
@@ -22,9 +22,9 @@ export function Footer() {
             <Image
               src="/logo.png"
               alt="Ambition Sports Performance"
-              width={180}
-              height={45}
-              className="h-10 w-auto brightness-0 invert mb-4"
+              width={248}
+              height={155}
+              className="h-20 w-auto brightness-0 invert mb-5"
             />
             <p className="mt-2 text-sm text-gray-400 max-w-sm leading-relaxed">
               World-class speed development for athletes at every level.
@@ -71,9 +71,6 @@ export function Footer() {
               <a href="mailto:info@ambitionsportsperformance.com" className="flex items-center gap-2.5 text-sm text-gray-400 hover:text-white transition-colors">
                 <Mail size={14} /> info@ambitionsportsperformance.com
               </a>
-              <a href="tel:+61450205033" className="flex items-center gap-2.5 text-sm text-gray-400 hover:text-white transition-colors">
-                <Phone size={14} /> +61 450 205 033
-              </a>
             </div>
 
             {/* Follow us callout */}
@@ -86,13 +83,21 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-16 pt-8 border-t border-white/10 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <span className="text-[11px] text-gray-600 uppercase tracking-[0.15em]">
             &copy; {new Date().getFullYear()} Ambition Sports Performance
           </span>
-          <span className="text-[11px] text-gray-700 uppercase tracking-[0.15em]">
-            Sydney, Australia
-          </span>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] uppercase tracking-[0.15em]">
+            <Link href="/privacy" className="text-gray-600 hover:text-accent transition-colors">
+              Privacy
+            </Link>
+            <span className="text-gray-800">·</span>
+            <Link href="/terms" className="text-gray-600 hover:text-accent transition-colors">
+              Terms &amp; Session Policy
+            </Link>
+            <span className="text-gray-800">·</span>
+            <span className="text-gray-700">Sydney, Australia</span>
+          </div>
         </div>
       </div>
     </footer>

@@ -3,7 +3,6 @@ import Image from "next/image";
 import { Section } from "@/components/Section";
 import { CTASection } from "@/components/CTASection";
 import { FadeIn } from "@/components/FadeIn";
-import { AthleteCard } from "@/components/AthleteCard";
 import { ProAthleteVideo } from "@/components/ProAthleteVideo";
 import { CredibilityStrip } from "@/components/CredibilityStrip";
 import { ArrowRight, Play, ChevronDown } from "lucide-react";
@@ -11,27 +10,30 @@ import { ArrowRight, Play, ChevronDown } from "lucide-react";
 const services = [
   {
     title: "Speed School",
-    description: "Sprint mechanics, acceleration, and top-speed development. Our flagship program.",
-    href: "/speed-school",
-    image: "https://znfmisebkqoogpqcqguf.supabase.co/storage/v1/object/public/images/timing-gates-1.jpeg",
-    tag: "Flagship",
+    description: "Six speed traits, every athlete, measured against elite. Sydney in-person — capped groups, retested every block.",
+    href: "/speed-school#apply",
+    image: "/speed-school-hero.jpg",
+    imagePosition: "object-[50%_35%]",
+    tag: "Flagship · Open Now",
     gradient: "from-accent/20 via-transparent to-transparent",
   },
   {
-    title: "Football School",
-    description: "Football-specific speed, agility, and game intelligence for the pitch.",
-    href: "/football-school",
-    image: "https://znfmisebkqoogpqcqguf.supabase.co/storage/v1/object/public/images/timing-gates-2.jpeg",
-    tag: "Sport-Specific",
-    gradient: "from-blue-500/20 via-transparent to-transparent",
+    title: "Online Coaching",
+    description: "The Speed Diagnostic System™ delivered remotely. $200 assessment, optional 30-week program. Worldwide.",
+    href: "/online-coaching#apply",
+    image: "/online-coaching-filming.jpg",
+    imagePosition: "object-[70%_50%]",
+    tag: "Open Now · Worldwide",
+    gradient: "from-purple-500/20 via-transparent to-transparent",
   },
   {
-    title: "Online Coaching",
-    description: "Personalised programming, video analysis, and consultations — worldwide.",
-    href: "/online-coaching",
-    image: "/online-coaching-hero.jpg",
-    tag: "Remote",
-    gradient: "from-purple-500/20 via-transparent to-transparent",
+    title: "Football School",
+    description: "The Total Footballer program — world-class benchmarked. U11–U15 mornings. Waitlist open ahead of intake.",
+    href: "/football-school#waitlist",
+    image: "/deanna-dribble.png",
+    imagePosition: "object-[50%_30%]",
+    tag: "Coming Soon · Waitlist",
+    gradient: "from-gray-700/40 via-transparent to-transparent",
   },
 ];
 
@@ -40,13 +42,6 @@ const stats = [
   { value: "15+", label: "Pro Athletes" },
   { value: "38+", label: "km/h Top Speeds" },
   { value: "+5", label: "km/h Avg Improvement" },
-];
-
-const results = [
-  { name: "George Francis", statBefore: "18 km/h", statAfter: "35.5 km/h", statLabel: "Top Speed", sport: "Football", youtubeId: "g_H63fOBaNs" },
-  { name: "Marc Sylla", statBefore: "28 km/h", statAfter: "34 km/h", statLabel: "Top Speed", sport: "Football", youtubeId: "_EFSqA7eqek" },
-  { name: "Tim R", statBefore: "28 km/h", statAfter: "34 km/h", statLabel: "Top Speed", sport: "Football", youtubeId: "_tRGs6CwR90" },
-  { name: "Jess", statBefore: "22 km/h", statAfter: "30 km/h", statLabel: "Top Speed", sport: "Track & Field", youtubeId: "l5m0wwJFq-Q" },
 ];
 
 const proAthletes = [
@@ -80,10 +75,10 @@ export default function HomePage() {
       <section className="relative min-h-screen flex items-end overflow-hidden bg-gray-900">
         <div className="absolute inset-0">
           <Image
-            src="https://znfmisebkqoogpqcqguf.supabase.co/storage/v1/object/public/images/timing-gates-1.jpeg"
-            alt="Speed training"
+            src="/home-hero.jpg"
+            alt="Athlete sprinting through timing gates — the Speed Diagnostic System in action"
             fill
-            className="object-cover object-center opacity-30"
+            className="object-cover object-[60%_50%] opacity-35"
             priority
           />
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/85 to-gray-900/50" />
@@ -99,7 +94,7 @@ export default function HomePage() {
             <div className="accent-line mb-8" />
           </FadeIn>
           <FadeIn delay={100}>
-            <h1 className="text-5xl sm:text-7xl lg:text-[6.5rem] font-extrabold text-white leading-[0.92] mb-8 max-w-5xl tracking-tight">
+            <h1 className="text-5xl sm:text-7xl lg:text-[6.5rem] font-extrabold text-white leading-[1] sm:leading-[0.92] mb-8 max-w-5xl tracking-tight">
               Built for
               <br />
               <span className="shimmer-text">speed.</span>
@@ -132,7 +127,7 @@ export default function HomePage() {
           {/* Stats bar — larger numbers */}
           <FadeIn delay={500}>
             <div className="mt-20 pt-10 border-t border-white/10">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 sm:gap-8">
                 {stats.map((stat, i) => (
                   <div key={stat.label} className="relative">
                     <div className="text-3xl sm:text-4xl lg:text-5xl font-extrabold stat-value tracking-tight">{stat.value}</div>
@@ -156,92 +151,120 @@ export default function HomePage() {
       {/* === CREDIBILITY STRIP === */}
       <CredibilityStrip />
 
-      {/* === FEATURED TRANSFORMATION — GEORGE F (dark) === */}
-      <section className="py-24 sm:py-32 bg-gray-900 border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-center">
-            <FadeIn>
-              <div className="lg:col-span-3 rounded-2xl overflow-hidden shadow-2xl shadow-black/40">
-                <AthleteCard
-                  name="George Francis"
-                  sport="Football"
-                  statBefore="18 km/h"
-                  statAfter="35.5 km/h"
-                  statLabel="Top Speed"
-                  youtubeId="g_H63fOBaNs"
-                  tag="FEATURED TRANSFORMATION"
-                  variant="dark"
-                />
-              </div>
-            </FadeIn>
-            <FadeIn delay={200}>
-              <div className="lg:col-span-2">
-                <p className="text-accent text-xs uppercase tracking-[0.3em] mb-4 font-semibold">Featured Transformation</p>
-                <h2 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-4 leading-tight">
-                  Average to Elite.<br />
-                  <span className="hero-gradient-text">Same Athlete.</span>
-                </h2>
-                <div className="flex items-center gap-4 mb-8 p-4 rounded-xl bg-white/[0.04] border border-white/[0.08]">
-                  <span className="text-gray-500 text-lg line-through">18 km/h</span>
-                  <ArrowRight size={16} className="text-accent" />
-                  <span className="text-accent font-extrabold text-4xl">35.5</span>
-                  <span className="text-gray-500 text-sm self-end mb-1">km/h</span>
-                </div>
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  George came in running 18 km/h — well below average for his age group.
-                  No one had ever analysed his mechanics.
-                </p>
-                <p className="text-gray-400 leading-relaxed mb-8">
-                  Through targeted biomechanical fixes across multiple training phases,
-                  he hit 35.5 km/h — faster than most semi-professional footballers.
-                  His stride length, hip position, and ground contact were all rebuilt from scratch.
-                </p>
-                <Link
-                  href="/success-stories"
-                  className="inline-flex items-center gap-2 text-accent text-sm font-semibold uppercase tracking-wider hover:gap-3 transition-all"
-                >
-                  See more transformations <ArrowRight size={14} />
-                </Link>
-              </div>
-            </FadeIn>
-          </div>
-        </div>
-      </section>
-
       {/* === WHO WE ARE (light) === */}
       <Section>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <FadeIn>
-            <div>
-              <div className="accent-line mb-6" />
-              <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-6 leading-tight tracking-tight">
-                The science of
-                <br />speed, applied.
-              </h2>
-              <p className="text-gray-600 text-lg leading-relaxed mb-4">
-                Everyone wants to blame genetics. &ldquo;He&apos;s just not built for speed.&rdquo; We&apos;ve taken athletes from 17 km/h to 38 km/h. Not hope. Not luck. By identifying limiting factors and solving them one by one.
-              </p>
-              <p className="text-gray-600 leading-relaxed mb-4">
-                Ground contact time. Reactive strength. Force production. Nervous system efficiency. We measure what others guess at — and fix what actually matters.
-              </p>
-              <p className="text-accent font-semibold leading-relaxed">
-                It&apos;s not a genetic deficit. It&apos;s a knowledge deficit.
-              </p>
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          <FadeIn className="lg:col-span-7">
+            <div className="accent-line mb-6" />
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6 leading-tight tracking-tight">
+              The science of speed, <span className="text-accent">applied.</span>
+            </h2>
+            <p className="text-gray-600 text-base sm:text-lg leading-relaxed mb-4">
+              Everyone wants to blame genetics. &ldquo;He&apos;s just not built for speed.&rdquo; We&apos;ve taken athletes from 17 km/h to 38 km/h. Not hope. Not luck. By identifying limiting factors and solving them one by one.
+            </p>
+            <p className="text-gray-600 leading-relaxed mb-5">
+              Ground contact time. Reactive strength. Force production. Nervous system efficiency. We measure what others guess at — and fix what actually matters.
+            </p>
+            <p className="text-accent text-xl font-bold leading-relaxed">
+              It&apos;s not a genetic deficit. It&apos;s a knowledge deficit.
+            </p>
           </FadeIn>
-          <FadeIn delay={200}>
-            <div className="relative aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl">
-              <Image
-                src="https://znfmisebkqoogpqcqguf.supabase.co/storage/v1/object/public/images/hais%20image%20.jpeg"
-                alt="Ambition coaching"
-                fill
-                className="object-cover"
+          <FadeIn delay={150} className="lg:col-span-5 w-full">
+            <div className="relative rounded-2xl overflow-hidden bg-black aspect-[9/16] shadow-2xl ring-1 ring-black/10 max-w-[340px] mx-auto lg:max-w-none">
+              <iframe
+                src="https://iframe.mediadelivery.net/embed/659523/f30e334e-8110-434d-8df0-2da6f9cddb0d?autoplay=false&preload=true&responsive=true"
+                title="1,000 athletes. Every one got faster."
+                allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                allowFullScreen
+                loading="lazy"
+                className="absolute inset-0 w-full h-full border-0"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
             </div>
+            <p className="text-center text-[11px] text-gray-500 italic mt-3">Anthony: 23 years, 1,000+ athletes, every one got faster.</p>
           </FadeIn>
         </div>
       </Section>
+
+      {/* === CONSOLIDATED CREDIBILITY BAND — founder clubs + athlete leagues === */}
+      <section className="py-16 sm:py-20 bg-gray-50 border-y border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 sm:space-y-14">
+
+          {/* Row 1 — Anthony's playing clubs */}
+          <div>
+            <FadeIn>
+              <div className="text-center mb-7">
+                <p className="text-[10px] text-accent uppercase tracking-[0.3em] mb-2 font-bold">Founded By An Ex-Professional Footballer</p>
+                <p className="text-gray-700 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+                  Anthony played across <strong className="text-gray-900">6 first-division clubs in 5 countries</strong>.
+                </p>
+              </div>
+            </FadeIn>
+            <FadeIn delay={100}>
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-4 sm:gap-6 items-center justify-items-center max-w-4xl mx-auto">
+                {[
+                  { name: "Stoke City FC", country: "England", logo: "/clubs/stoke.jpg" },
+                  { name: "Maritimo", country: "Portugal", logo: "/clubs/maritimo.jpg" },
+                  { name: "FK Rabotnicki", country: "Macedonia", logo: "/clubs/rabotnicki.jpg" },
+                  { name: "Rapid Wien", country: "Austria", logo: "/clubs/rapid-wien.jpg" },
+                  { name: "PAE Veria", country: "Greece", logo: "/clubs/pae-veria.jpg" },
+                  { name: "Anorthosis", country: "Cyprus", logo: "/clubs/anorthosis.jpg" },
+                ].map((club) => (
+                  <div key={club.name} className="text-center group">
+                    <div className="relative w-14 h-14 sm:w-20 sm:h-20 mx-auto mb-2 transition-transform duration-300 group-hover:scale-110">
+                      <Image src={club.logo} alt={`${club.name} crest`} fill className="object-contain" />
+                    </div>
+                    <p className="text-[9px] sm:text-[10px] text-gray-500 uppercase tracking-[0.1em] leading-tight font-semibold">{club.country}</p>
+                  </div>
+                ))}
+              </div>
+            </FadeIn>
+          </div>
+
+          {/* Divider */}
+          <div className="flex items-center gap-4 max-w-3xl mx-auto">
+            <span className="flex-1 h-px bg-gray-200" />
+            <span className="text-[10px] text-gray-400 uppercase tracking-[0.3em] font-bold">And Now</span>
+            <span className="flex-1 h-px bg-gray-200" />
+          </div>
+
+          {/* Row 2 — Where the athletes compete now */}
+          <div>
+            <FadeIn>
+              <div className="text-center mb-7">
+                <p className="text-[10px] text-accent uppercase tracking-[0.3em] mb-2 font-bold">Athletes In The System Compete At</p>
+                <p className="text-gray-700 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+                  Paralympic gold. Bundesliga. La Liga academy. <strong className="text-gray-900">200+ athletes through the same system.</strong>
+                </p>
+              </div>
+            </FadeIn>
+            <FadeIn delay={100}>
+              <div className="flex flex-wrap items-center justify-center gap-x-5 sm:gap-x-8 gap-y-3 max-w-5xl mx-auto">
+                {[
+                  { label: "Bundesliga", className: "text-lg sm:text-2xl font-black tracking-tight", style: { fontFamily: 'Georgia, serif', letterSpacing: '0.06em' } },
+                  { label: "PARALYMPIC", className: "text-lg sm:text-2xl font-black tracking-[0.15em]" },
+                  { label: "La Liga", className: "text-lg sm:text-2xl font-extrabold italic" },
+                  { label: "SURINAME FA", className: "text-lg sm:text-2xl font-black tracking-tight" },
+                  { label: "NPL", className: "text-lg sm:text-2xl font-black tracking-[0.2em]" },
+                  { label: "A-LEAGUE", className: "text-lg sm:text-2xl font-extrabold tracking-wider" },
+                ].map((lg, i, arr) => (
+                  <div key={lg.label} className="flex items-center gap-x-5 sm:gap-x-8">
+                    <span className={`text-gray-700 ${lg.className}`} style={lg.style}>{lg.label}</span>
+                    {i < arr.length - 1 && <span className="hidden sm:block w-1 h-1 rounded-full bg-gray-300" />}
+                  </div>
+                ))}
+              </div>
+            </FadeIn>
+          </div>
+
+          <FadeIn delay={300}>
+            <div className="text-center">
+              <Link href="/about" className="inline-flex items-center gap-2 text-accent text-sm font-semibold uppercase tracking-wider hover:gap-3 transition-all">
+                Read Anthony&apos;s Story <ArrowRight size={14} />
+              </Link>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
 
       {/* === PROGRAMS (light gray bg) === */}
       <section className="py-24 sm:py-32 bg-gray-50">
@@ -264,7 +287,7 @@ export default function HomePage() {
             {services.map((service, i) => (
               <FadeIn key={service.title} delay={i * 120}>
                 <Link href={service.href} className="group block relative aspect-[3/4] rounded-2xl overflow-hidden shadow-lg">
-                  <Image src={service.image} alt={service.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                  <Image src={service.image} alt={service.title} fill className={`object-cover ${service.imagePosition || ""} transition-transform duration-700 group-hover:scale-105`} />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                   {/* Unique gradient overlay per card */}
                   <div className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
@@ -298,33 +321,153 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* === INSIDE THE SYSTEM — what the work actually looks like === */}
+      <Section>
+        <FadeIn>
+          <div className="max-w-3xl mb-12">
+            <div className="accent-line mb-6" />
+            <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">Inside The System</p>
+            <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4 leading-tight">
+              We measure what others guess at.<br />
+              <span className="text-accent">Then we fix it.</span>
+            </h2>
+            <p className="text-gray-600 leading-relaxed text-base sm:text-lg">
+              Every athlete in the system runs through the same two-step loop. Biomechanics get filmed and angle-tagged on the line — joint by joint, stride by stride. The limiters that show up on the screen then get trained on the field, in real positions, with real load.
+            </p>
+          </div>
+        </FadeIn>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+          <FadeIn delay={100}>
+            <div className="group relative rounded-2xl overflow-hidden bg-gray-100 aspect-[4/5] shadow-lg ring-1 ring-black/5">
+              <Image
+                src="/billy-angle-analysis.jpg"
+                alt="Athlete sprinting toward a tripod-mounted camera on the white line — knee-angle annotation at 149° overlaid on the leading leg"
+                fill
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                sizes="(max-width:1024px) 100vw, 50vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/30 to-transparent" />
+              <div className="absolute top-5 left-5">
+                <span className="px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-white font-bold bg-accent/90 backdrop-blur rounded-full">01 · Diagnose</span>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-2 tracking-tight">Filmed. Angle-tagged. <span className="text-accent">Impossible to miss.</span></h3>
+                <p className="text-sm text-gray-200 leading-relaxed max-w-md">
+                  Tripod on the line, 240fps capture, joint angles measured to the degree. The deformation, braking and asymmetries the naked eye misses become the limiters we train against.
+                </p>
+              </div>
+            </div>
+          </FadeIn>
+          <FadeIn delay={200}>
+            <div className="group relative rounded-2xl overflow-hidden bg-gray-100 aspect-[4/5] shadow-lg ring-1 ring-black/5">
+              <Image
+                src="/adam-band-drive.jpg"
+                alt="Adam in resistance-band-loaded drive-phase position — forward lean, full triple extension, driving horizontally into the ground"
+                fill
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                sizes="(max-width:1024px) 100vw, 50vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/30 to-transparent" />
+              <div className="absolute top-5 left-5">
+                <span className="px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-white font-bold bg-accent/90 backdrop-blur rounded-full">02 · Prescribe</span>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-2 tracking-tight">Force into the ground. <span className="text-accent">Built on the field.</span></h3>
+                <p className="text-sm text-gray-200 leading-relaxed max-w-md">
+                  Once the assessment names the limiter, the prescription is specific — band-resisted acceleration, horizontal force, the exact position the athlete must own. Adam: La Liga academy signing. 1.60s over 10 metres.
+                </p>
+              </div>
+            </div>
+          </FadeIn>
+        </div>
+        <FadeIn delay={350}>
+          <p className="text-center text-gray-500 text-sm sm:text-base italic mt-10 max-w-2xl mx-auto leading-relaxed">
+            Same loop, every athlete. Diagnose with data → prescribe against the limiter → re-test against the baseline. That&apos;s how the numbers move.
+          </p>
+        </FadeIn>
+      </Section>
+
       {/* === RESULTS (white with subtle pattern) === */}
       <section className="py-20 sm:py-28 relative">
         <div className="absolute inset-0 pattern-dots pointer-events-none" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
-            <div className="text-center mb-16">
+            <div className="text-center mb-12">
               <div className="accent-line mx-auto mb-6" />
               <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
                 Results speak.
               </h2>
-              <p className="text-gray-400 max-w-md mx-auto">
+              <p className="text-gray-500 max-w-lg mx-auto">
                 Measured improvements across every athlete. No guesswork — just data.
               </p>
             </div>
           </FadeIn>
 
+          {/* 2 Featured Pros */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <FadeIn>
+              <Link href="/success-stories" className="group block relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl">
+                <Image src="/sean-dulic.jpg" alt="Sean Dulic — Bundesliga" fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
+                <div className="absolute top-5 left-5">
+                  <span className="px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-white font-bold bg-accent/90 backdrop-blur rounded-full">Pro · Bundesliga</span>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-7">
+                  <h3 className="text-3xl font-extrabold text-white mb-1 tracking-tight">Sean Dulic</h3>
+                  <p className="text-accent text-xs uppercase tracking-[0.2em] font-bold mb-3">Bundesliga · Germany U23</p>
+                  <p className="text-sm text-gray-200 leading-relaxed max-w-sm">Pro footballer competing in top-flight European football.</p>
+                </div>
+              </Link>
+            </FadeIn>
+            <FadeIn delay={120}>
+              <Link href="/success-stories" className="group block relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl">
+                <Image src="/gleofilo-suriname.png" alt="Gleofilo Hasselbaink — Suriname NT" fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
+                <div className="absolute top-5 left-5">
+                  <span className="px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-white font-bold bg-accent/90 backdrop-blur rounded-full">Pro · €1.5M Transfer</span>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-7">
+                  <h3 className="text-3xl font-extrabold text-white mb-1 tracking-tight">Gleofilo Hasselbaink</h3>
+                  <p className="text-accent text-xs uppercase tracking-[0.2em] font-bold mb-3">Suriname National Team · €1.5M</p>
+                  <p className="text-sm text-gray-200 leading-relaxed max-w-sm">International footballer · senior national team caps.</p>
+                </div>
+              </Link>
+            </FadeIn>
+          </div>
+
+          {/* Wall — 4 athletes from the roster */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {results.map((result, i) => (
-              <FadeIn key={result.name} delay={i * 100}>
-                <AthleteCard {...result} />
+            {[
+              { name: "George Francis", result: "18 → 34 km/h", context: "Average to elite · stride, hip, contact rebuilt", bunnyId: "3e0332a8-49cb-4ac7-9422-4dd81a207078" },
+              { name: "Hadi", result: "30 → 35 km/h", context: "Injured & plateaued → 35 km/h in 8 weeks", bunnyId: "07451a44-854c-46b3-a0c8-877797f015ac" },
+              { name: "Virginia State Champion", result: "10.54s · 10 D1 offers", context: "USA · full remote programming", bunnyId: "2a49170c-a185-45e8-a3dc-5e7efcc1f4c0" },
+              { name: "Hais", result: "18 → 37 km/h", context: "+19 km/h · Head Coach, Ambition", bunnyId: "eef5e679-3d4a-4b31-9f38-ad8be3a29a4e" },
+            ].map((c, i) => (
+              <FadeIn key={c.name} delay={(i % 4) * 80}>
+                <div className="rounded-xl overflow-hidden bg-white border border-gray-100 hover:border-accent/30 transition-colors h-full flex flex-col shadow-sm">
+                  <div className="relative aspect-video bg-black">
+                    <iframe
+                      loading="lazy"
+                      src={`https://iframe.mediadelivery.net/embed/659523/${c.bunnyId}?autoplay=false&preload=true&responsive=true`}
+                      title={`${c.name} testimonial`}
+                      allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                      allowFullScreen
+                      className="absolute inset-0 w-full h-full border-0"
+                    />
+                  </div>
+                  <div className="p-4 flex-1 flex flex-col">
+                    <p className="font-bold text-gray-900 text-sm">{c.name}</p>
+                    <p className="text-accent text-xs font-bold mt-1">{c.result}</p>
+                    <p className="text-[11px] text-gray-500 leading-relaxed mt-1.5">{c.context}</p>
+                  </div>
+                </div>
               </FadeIn>
             ))}
           </div>
 
           <FadeIn delay={500}>
             <div className="mt-12 text-center">
-              <Link href="/success-stories" className="inline-flex items-center gap-2 text-accent text-sm font-semibold uppercase tracking-wider hover:gap-3 transition-all">
+              <Link href="/success-stories" className="inline-flex items-center gap-2 px-7 py-4 bg-gray-900 text-white font-bold text-sm uppercase tracking-wider rounded-full hover:bg-black transition-colors">
                 All Success Stories <ArrowRight size={14} />
               </Link>
             </div>
@@ -332,60 +475,81 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* === COACHING TEAM (gray bg) === */}
-      <section className="py-24 sm:py-32 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            <FadeIn>
-              <div>
-                <div className="accent-line mb-6" />
-                <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-6">
-                  The coaches.
-                </h2>
-                <p className="text-gray-500 leading-relaxed">
-                  Led by specialists who live and breathe speed development.
-                  Every session is coached — never just supervised.
-                </p>
+      {/* === COACHING TEAM (dark, image-led) === */}
+      <section className="py-24 sm:py-32 bg-gray-900 overflow-hidden relative">
+        <div className="absolute right-0 top-1/3 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[150px] pointer-events-none" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="mb-16 max-w-2xl">
+              <div className="accent-line mb-6" />
+              <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">The Coaches</p>
+              <h2 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-4 leading-tight">
+                Led by specialists who <span className="text-accent">live and breathe</span> speed.
+              </h2>
+              <p className="text-gray-400 leading-relaxed">
+                Every session is coached — never just supervised. The same system that built our coaches builds our athletes.
+              </p>
+            </div>
+          </FadeIn>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <FadeIn delay={100}>
+              <div className="group relative rounded-2xl overflow-hidden bg-gray-800/60 border border-gray-800 hover:border-accent/30 transition-colors">
+                <div className="relative aspect-[4/5] sm:aspect-[5/4] overflow-hidden">
+                  <Image
+                    src="/founder/anthony-main.jpeg"
+                    alt="Anthony Atanasov coaching on field"
+                    fill
+                    className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
+                  <div className="absolute top-5 left-5">
+                    <span className="px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-white font-bold bg-accent/90 backdrop-blur rounded-full">Founder</span>
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
+                    <h3 className="text-3xl sm:text-4xl font-extrabold text-white mb-2 tracking-tight">Anthony Atanasov</h3>
+                    <p className="text-accent text-xs uppercase tracking-[0.2em] mb-4 font-bold">Head Coach &amp; Program Director</p>
+                    <div className="flex flex-wrap gap-1.5 mb-4">
+                      <span className="px-2.5 py-1 text-[10px] uppercase tracking-[0.15em] text-white/80 bg-white/10 backdrop-blur border border-white/15 rounded-full font-semibold">Ex-Pro Footballer</span>
+                      <span className="px-2.5 py-1 text-[10px] uppercase tracking-[0.15em] text-white/80 bg-white/10 backdrop-blur border border-white/15 rounded-full font-semibold">20+ Years</span>
+                      <span className="px-2.5 py-1 text-[10px] uppercase tracking-[0.15em] text-white/80 bg-white/10 backdrop-blur border border-white/15 rounded-full font-semibold">Biomechanics</span>
+                    </div>
+                    <p className="text-sm text-gray-300 leading-relaxed max-w-md">
+                      Ex-professional footballer with 20+ years of elite athletic experience. Biomechanical and speed specialist who has developed Paralympic gold medalists and professional footballers across Europe.
+                    </p>
+                  </div>
+                </div>
               </div>
             </FadeIn>
-            <div className="space-y-5">
-              <FadeIn delay={100}>
-                <div className="light-card rounded-xl p-6 flex items-start gap-6">
-                  <div className="relative w-24 h-24 rounded-2xl overflow-hidden shrink-0 ring-2 ring-accent/10">
-                    <Image src="/anthony-profile.png" alt="Anthony Atanasov" fill className="object-cover" />
+
+            <FadeIn delay={200}>
+              <div className="group relative rounded-2xl overflow-hidden bg-gray-800/60 border border-gray-800 hover:border-accent/30 transition-colors">
+                <div className="relative aspect-[4/5] sm:aspect-[5/4] overflow-hidden">
+                  <Image
+                    src="/hais-running.jpg"
+                    alt="Haisam Wylie sprint training"
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
+                  <div className="absolute top-5 left-5">
+                    <span className="px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-white font-bold bg-accent/90 backdrop-blur rounded-full">Head Coach</span>
                   </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900">Anthony Atanasov</h3>
-                    <p className="text-accent text-xs uppercase tracking-[0.15em] mb-2 font-semibold">Head Coach & Founder</p>
-                    <div className="flex flex-wrap gap-1.5 mb-3">
-                      <span className="px-2 py-0.5 text-[9px] uppercase tracking-[0.15em] text-gray-500 bg-gray-100 rounded-full font-medium">Ex-Professional Footballer</span>
-                      <span className="px-2 py-0.5 text-[9px] uppercase tracking-[0.15em] text-gray-500 bg-gray-100 rounded-full font-medium">20+ Years</span>
+                  <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
+                    <h3 className="text-3xl sm:text-4xl font-extrabold text-white mb-2 tracking-tight">Haisam Wylie</h3>
+                    <p className="text-accent text-xs uppercase tracking-[0.2em] mb-4 font-bold">Head Coach · 18 → 37 km/h</p>
+                    <div className="flex flex-wrap gap-1.5 mb-4">
+                      <span className="px-2.5 py-1 text-[10px] uppercase tracking-[0.15em] text-white/80 bg-white/10 backdrop-blur border border-white/15 rounded-full font-semibold">500+ Hours</span>
+                      <span className="px-2.5 py-1 text-[10px] uppercase tracking-[0.15em] text-white/80 bg-white/10 backdrop-blur border border-white/15 rounded-full font-semibold">6+ Years In System</span>
+                      <span className="px-2.5 py-1 text-[10px] uppercase tracking-[0.15em] text-white/80 bg-white/10 backdrop-blur border border-white/15 rounded-full font-semibold">+19 km/h Transformation</span>
                     </div>
-                    <p className="text-sm text-gray-500 leading-relaxed">
-                      Program Director. Ex-professional footballer with 20+ years elite athletic experience. Biomechanical and speed specialist who has developed Paralympic gold medalists and professional footballers across Europe.
+                    <p className="text-sm text-gray-300 leading-relaxed max-w-md">
+                      6+ years inside the diagnostic system. Personal transformation from sub-average to 37 km/h elite — now coaching with the same system that built him.
                     </p>
                   </div>
                 </div>
-              </FadeIn>
-              <FadeIn delay={200}>
-                <div className="light-card rounded-xl p-6 flex items-start gap-6">
-                  <div className="relative w-24 h-24 rounded-2xl overflow-hidden shrink-0 ring-2 ring-accent/10">
-                    <Image src="/hais-running.jpg" alt="Haisam Wylie" fill className="object-cover" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900">Haisam Wylie</h3>
-                    <p className="text-accent text-xs uppercase tracking-[0.15em] mb-2 font-semibold">Performance Coach</p>
-                    <div className="flex flex-wrap gap-1.5 mb-3">
-                      <span className="px-2 py-0.5 text-[9px] uppercase tracking-[0.15em] text-gray-500 bg-gray-100 rounded-full font-medium">500+ Coaching Hours</span>
-                      <span className="px-2 py-0.5 text-[9px] uppercase tracking-[0.15em] text-gray-500 bg-gray-100 rounded-full font-medium">6+ Years in System</span>
-                    </div>
-                    <p className="text-sm text-gray-500 leading-relaxed">
-                      Head Coach. 6+ years in the diagnostic system with 500+ coaching hours. Personal transformation from sub-average to 37 km/h elite level — coaching with the same system that built him.
-                    </p>
-                  </div>
-                </div>
-              </FadeIn>
-            </div>
+              </div>
+            </FadeIn>
           </div>
         </div>
       </section>
@@ -401,6 +565,7 @@ export default function HomePage() {
                 Pro athletes in the system.
               </h2>
               <p className="text-gray-400 max-w-lg">Olympic, European professional football, and international athletes who&apos;ve been through the program.</p>
+              <p className="text-lg sm:text-xl font-bold text-white/80 mt-6">Paralympic Gold Medalists. 4 Million Euro Transfers. Bundesliga. International Caps.</p>
             </div>
           </FadeIn>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

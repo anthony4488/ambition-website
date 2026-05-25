@@ -3,145 +3,160 @@ import Image from "next/image";
 import { Section } from "@/components/Section";
 import { CTASection } from "@/components/CTASection";
 import { FadeIn } from "@/components/FadeIn";
-import { AthleteCard } from "@/components/AthleteCard";
 import { ProAthleteVideo } from "@/components/ProAthleteVideo";
 import { TestimonialVideo } from "@/components/TestimonialVideo";
-import { BeforeAfterVideo } from "@/components/BeforeAfterVideo";
 
 export const metadata: Metadata = {
   title: "Success Stories — Ambition Sports Performance",
   description: "Real athletes, real results. Video transformations and speed data from our programs.",
 };
 
-const featured = [
+type WallCard = {
+  name: string;
+  result: string;
+  context: string;
+  bunnyId?: string;
+  youtubeId?: string;
+  mp4Src?: string;
+  image?: string;
+  quoteOnly?: { quote: string };
+};
+
+const proAthletes: WallCard[] = [
   {
-    name: "George Francis",
-    sport: "Football",
-    statBefore: "18 km/h",
-    statAfter: "35.5 km/h",
-    statLabel: "Top Speed",
-    tag: "AVERAGE TO ELITE",
-    youtubeId: "g_H63fOBaNs",
-    quote: "Anthony identified issues in my mechanics that no one else had picked up on.",
-    description: "George came in running 18 km/h — well below average. His stride length, hip position, and ground contact were rebuilt from scratch across multiple phases.",
+    name: "Jonathan Wong",
+    result: "Paralympic Gold Medalist",
+    context: "Malaysia · Olympic & Paralympic athlete",
+    bunnyId: "417d5af6-ffdb-40ab-9d7e-4b013d544d2e",
+  },
+  {
+    name: "Sean Dulic",
+    result: "Bundesliga · Germany U23",
+    context: "Pro footballer · top-flight European football",
+    image: "/sean-dulic.jpg",
+  },
+  {
+    name: "Gleofilo Hasselbaink",
+    result: "€1.5M transfer · Suriname NT",
+    context: "International footballer · senior national team",
+    image: "/gleofilo-suriname.png",
   },
   {
     name: "Adam",
-    sport: "Pro Football",
-    statAfter: "1.60s / 35.6 km/h",
-    statLabel: "0-10m",
-    tag: "LA LIGA SIGNING",
-    youtubeId: "eFzb4-BfkeM",
-    quote: "My speed and power felt good. I was a step ahead of everyone.",
-    description: "Came in barely eating. Now hitting 2.1m+ strides and signed to a La Liga academy in Spain.",
-  },
-  {
-    name: "Haisam Wylie",
-    sport: "Sprinting",
-    statBefore: "15 km/h",
-    statAfter: "35.6 km/h",
-    statLabel: "Top Speed",
-    tag: "+137% SPEED",
-    youtubeId: "60Cbilmxqm0",
-    quote: "The system completely rebuilt how I move.",
-    description: "20m sprint from 3.45s to 2.84s. Stride length from 1.48m to 2.15m. Now Head Coach at Ambition, coaching with the same system that transformed him.",
-  },
-  {
-    name: "Billy Francis",
-    sport: "Football",
-    statBefore: "31 km/h",
-    statAfter: "35.3 km/h",
-    statLabel: "Top Speed",
-    tag: "SEMI PRO BREAKTHROUGH",
-    youtubeId: "WivbBokZt9I",
-    description: "20m sprint from 3.04s to 2.85s. 10m split from 1.95s to 1.83s. More improvement than most athletes gain in an entire career.",
-  },
-  {
-    name: "James",
-    sport: "Football",
-    statBefore: "23 km/h",
-    statAfter: "32.8 km/h",
-    statLabel: "Top Speed",
-    tag: "JUNIOR PRODIGY",
-    youtubeId: "L-GYyboePYU",
-    description: "9 km/h max velocity gain in 14 months. 25% improvement across all athletic KPIs. Now faster than senior professional footballers — at age 12. Systematic programming vs random training.",
-  },
-  {
-    name: "Marc Sylla",
-    sport: "Football",
-    statBefore: "28 km/h",
-    statAfter: "34 km/h",
-    statLabel: "Top Speed",
-    tag: "FOOTBALL MECHANICS",
-    youtubeId: "_EFSqA7eqek",
-    quote: "My first-step acceleration is night and day compared to where I started.",
-    description: "Plateaued at 28 km/h for months. Broke through with targeted mechanical fixes in 4 weeks.",
+    result: "1.60s / 35.6 km/h",
+    context: "La Liga academy signing · 2.1m+ strides · came in barely eating, signed pro in Spain",
+    mp4Src: "/adam-proof.mp4",
   },
 ];
 
-const moreTransformations = [
-  { name: "Hadi", sport: "Football", statBefore: "30 km/h", statAfter: "35 km/h", statLabel: "Top Speed", youtubeId: "icEHywvHhAg", tag: "INJURY COMEBACK", description: "Constant injuries, plateaued speed. Rewired movement patterns in 8 weeks." },
-  { name: "Tim R", sport: "Football", statBefore: "28 km/h", statAfter: "34 km/h", statLabel: "Top Speed", youtubeId: "_tRGs6CwR90", description: "+6 km/h of hidden speed potential unlocked." },
-  { name: "Abi O", sport: "Football", statBefore: "30 km/h", statAfter: "36.4 km/h", statLabel: "Top Speed", youtubeId: "6kiM5ea_GvQ", description: "20m sprint from 3.06s to 2.84s. 10m split from 1.90s to 1.73s. Speed that transfers directly to the pitch." },
-  { name: "Jess", sport: "Track & Field", statBefore: "22 km/h", statAfter: "30 km/h", statLabel: "Top Speed", youtubeId: "l5m0wwJFq-Q" },
-  { name: "Pete", sport: "Football", statAfter: "36 km/h", statLabel: "Top Speed", youtubeId: "G9y9TiQwrAI" },
-
-  { name: "Virginia Champion", sport: "Track & Field", statAfter: "10.54s", statLabel: "100m", youtubeId: "hTZLMjnLFds", tag: "STATE CHAMPION", description: "Online client from the USA. 10 D1 scholarship offers. State Champion. D1 Bound." },
-  { name: "Speed Ab", sport: "Football", statAfter: "—", statLabel: "Acceleration", youtubeId: "nV6l8hzgfQE", description: "The first 10 meters is where games are won." },
-];
-
-const statOnly = [
-  { name: "Liam Flack", sport: "Multi-Sport", statBefore: "28 km/h", statAfter: "35.8 km/h", statLabel: "Top Speed", quote: "Anthony assessed me from day 1, broke down my mechanics and progressed me from 28 km/h to 35.8 km/h. His measurements are specific — not wishy washy drills or exercises." },
-  { name: "Nik P", sport: "Football", statBefore: "29.1 km/h", statAfter: "33 km/h", statLabel: "Top Speed", quote: "I sprinted twice with 33 km/h — that's amazing! Already feeling more coordinated while bounding. Acceleration is better, played against pro clubs and had pretty good performance.", description: "+4 km/h in just 3 weeks. Online athlete from Ukraine, 2nd Division Academy." },
-];
-
-const testimonials = [
+const wall: WallCard[] = [
+  { name: "James", result: "23 → 32 km/h", context: "+9 km/h max velocity · 25% KPI gain · 14 months", bunnyId: "2ea7ecba-23c4-4d1c-b513-0157f1b307d7" },
+  { name: "Xavi", result: "23 → 32 km/h", context: "Coordination · ground power · reactive off every contact · 17 months", bunnyId: "a31a6862-c26c-4337-878c-87a6b0ac94c4" },
+  { name: "Maksim", result: "23 → 32 km/h", context: "+27.2% avg speed · +56% bound power · -27% across splits · 3 years", bunnyId: "9ad7f8a3-4d47-4948-a72f-db1f06180c8f" },
+  { name: "George Francis", result: "18 → 34 km/h", context: "Average to elite · stride, hip, contact rebuilt · faster than most semi-pros", bunnyId: "3e0332a8-49cb-4ac7-9422-4dd81a207078" },
+  { name: "Hadi", result: "30 → 35 km/h", context: "Injured & plateaued → 35 km/h in 8 weeks", bunnyId: "07451a44-854c-46b3-a0c8-877797f015ac" },
+  { name: "Abi", result: "1.7s first 10m", context: "Elite footballer · explosive starting power", bunnyId: "30ee2823-2ddb-4a82-868d-8eb4af683d3b" },
+  { name: "Pete", result: "32 → 35 km/h", context: "Top-end speed gain · +3 km/h", bunnyId: "c3b2ea11-6058-4fe1-8754-729275fa0560" },
+  { name: "Tim", result: "28 → 34 km/h", context: "Top-end speed gain · +6 km/h", bunnyId: "d675a248-c256-4b08-a6f8-f295226a3ffb" },
+  { name: "Hais", result: "18 → 37 km/h", context: "+19 km/h · below average to elite · Head Coach, Ambition", bunnyId: "eef5e679-3d4a-4b31-9f38-ad8be3a29a4e" },
+  { name: "Virginia State Champion (USA)", result: "10.54s 100m · 10 D1 offers", context: "State Champion · D1 bound · full remote programming", bunnyId: "2a49170c-a185-45e8-a3dc-5e7efcc1f4c0" },
+  { name: "Tristan", result: "+9.2% top speed in 6 weeks", context: "10.5% faster over 10m · 6-week block result", bunnyId: "175de651-afca-4e89-adc7-d2d48bf704b2" },
+  { name: "Nik (clip 1)", result: "29 → 33 km/h", context: "+4 km/h top speed · clip 1 of 2", bunnyId: "ff3d1722-2007-4e0b-9556-8e62031d442a" },
+  { name: "Nik (clip 2)", result: "29 → 33 km/h", context: "+4 km/h top speed · clip 2 of 2", bunnyId: "37ff42e1-f7ad-4194-9d99-0e68c7ba4776" },
+  { name: "Billy", result: "Low 20s → 36 km/h", context: "1.60s 0–10m · elite acceleration · semi-pro breakthrough", bunnyId: "02e84ac0-1687-461f-8bf3-9005a9ff68cf" },
+  { name: "Jess", result: "21 → 27.3 km/h", context: "Age 14 · A-League Women's Youth U18 (4 years up) · +6.3 km/h", bunnyId: "4c1d5826-3253-4657-81c5-19b1d4bb8fad" },
+  { name: "Dylan", result: "35 km/h top speed", context: "European trialist · Portugal · NPL U20s debut for Hills", bunnyId: "9d01d2ff-8af0-4ffe-ae3b-84bd8c85d293" },
+  { name: "Marc Sylla", result: "28 → 34 km/h", context: "Plateaued for months · broke through with mechanical fixes in 4 weeks", youtubeId: "_EFSqA7eqek" },
+  { name: "Abdullah", result: "27 → 34.8 km/h", context: "Complete mechanical rebuild · acceleration posture, arm drive, ground contact", mp4Src: "/abdullah-after.mp4" },
+  { name: "Dom", result: "Power Transformation", context: "Side-by-side power development · force production rebuilt", mp4Src: "/dom-before-after.mp4" },
+  { name: "Speed Ab", result: "Elite Acceleration", context: "First 10 meters is where games are won", youtubeId: "nV6l8hzgfQE" },
   {
-    name: "Athlete",
+    name: "Liam Flack",
+    result: "28 → 34 km/h",
+    context: "Multi-sport · specific measurements, no wishy-washy drills",
+    quoteOnly: { quote: "Anthony assessed me from day 1, broke down my mechanics and progressed me from 28 km/h to 34 km/h. His measurements are specific — not wishy washy drills or exercises." },
+  },
+];
+
+const whatsappWall = [
+  { src: "/screenshots/testimonial-1.jpeg", name: "Maciek", caption: "week 2 PB — “sprints feel weirdly easy”" },
+  { src: "/screenshots/testimonial-2.jpeg", name: "Track session", caption: "jumped a basketball-hoop PR after a sprint block" },
+  { src: "/screenshots/testimonial-3.jpeg", name: "Parent of Stefan", caption: "10 weeks in — “a lot lighter on his feet, even scored a goal”" },
+  { src: "/screenshots/testimonial-4.jpeg", name: "Match feedback", caption: "“feeling so much more powerful in terms of taking man on with speed”" },
+  { src: "/screenshots/testimonial-5.jpeg", name: "Issac’s mum", caption: "“I’m fast because of Anthony” — Issac’s own words" },
+  { src: "/screenshots/testimonial-6.jpeg", name: "Ayman’s parent", caption: "stronger 1-on-1, more advantage passing & dribbling" },
+  { src: "/screenshots/testimonial-7.jpeg", name: "Match feedback", caption: "“extra quad strength from front squats helped my acceleration massively” — best game, would have had 2 assists ❤️" },
+];
+
+const talkingHeads = [
+  {
+    name: "NPL Senior Debut",
     sport: "Football",
     videoSrc: "/testimonial-1.mp4",
     quote: "I've been at Ambition Sports Performance for around a year now and I gotta thank Hais and Anthony for really helping me improve my power, my speed in general. I've also become a lot leaner since I came here and it's also helped me make my debut for senior football in the NPL.",
     achievement: "NPL Senior Debut",
   },
   {
-    name: "Athlete",
+    name: "Speed & Power",
     sport: "Football",
     videoSrc: "/testimonial-2.mp4",
     quote: "Hais and Anthony have helped me build speed, chasing down players and making runs behind quicker and they've helped me build power, pushing players off the ball and having that longer stride length.",
     achievement: "Speed & Power Development",
   },
   {
-    name: "Athlete",
+    name: "European Trials",
     sport: "Football",
     videoSrc: "/testimonial-3.mp4",
     quote: "For the last three years, Anthony and Hais have both helped me become a better footballer, got me stronger on the field, quicker, which also helped me for trials in Europe and Spain, and I'm going to Portugal as well. And also last year helped me debut in the 20s for Hills in the NPL.",
-    achievement: "European Trials — NPL U20s Debut",
+    achievement: "European Trials · NPL U20s Debut",
   },
 ];
 
-const proAthletes = [
-  {
-    name: "Jonathan Wong",
-    role: "Paralympic Gold Medalist",
-    achievement: "Paralympic Gold — Malaysia",
-    tags: ["PARALYMPIC GOLD", "MALAYSIA"],
-    youtubeId: "kWksIynHYs0",
-  },
-  {
-    name: "Sean Dulic",
-    role: "Pro Footballer",
-    achievement: "Bundesliga — Germany U23",
-    tags: ["BUNDESLIGA", "GERMANY U23"],
-    image: "/sean-dulic.jpg",
-  },
-  {
-    name: "Gleofilo Hasselbaink",
-    role: "International Footballer",
-    achievement: "Suriname National Team — 1.5M euro transfer",
-    tags: ["SURINAME NT", "1.5M TRANSFER"],
-    image: "/gleofilo-suriname.png",
-  },
-];
+function MediaCard({ card }: { card: WallCard }) {
+  return (
+    <div className="rounded-xl overflow-hidden bg-gray-800/60 border border-gray-800 hover:border-accent/30 transition-colors h-full flex flex-col">
+      <div className="relative aspect-video bg-black">
+        {card.bunnyId && (
+          <iframe
+            loading="lazy"
+            src={`https://iframe.mediadelivery.net/embed/659523/${card.bunnyId}?autoplay=false&preload=true&responsive=true`}
+            title={`${card.name} testimonial`}
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+            allowFullScreen
+            className="absolute inset-0 w-full h-full border-0"
+          />
+        )}
+        {card.youtubeId && (
+          <ProAthleteVideo youtubeId={card.youtubeId} name={card.name} />
+        )}
+        {card.mp4Src && (
+          <video
+            src={card.mp4Src}
+            controls
+            playsInline
+            preload="metadata"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        )}
+        {card.image && (
+          <Image src={card.image} alt={card.name} fill className="object-cover" />
+        )}
+        {card.quoteOnly && (
+          <div className="absolute inset-0 p-6 flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-900 to-black">
+            <p className="text-sm italic text-gray-300 leading-relaxed text-center">
+              &ldquo;{card.quoteOnly.quote}&rdquo;
+            </p>
+          </div>
+        )}
+      </div>
+      <div className="p-5 flex-1 flex flex-col">
+        <p className="font-bold text-white text-base">{card.name}</p>
+        <p className="text-accent text-sm font-semibold mt-1">{card.result}</p>
+        <p className="text-xs text-gray-400 leading-relaxed mt-2">{card.context}</p>
+      </div>
+    </div>
+  );
+}
 
 export default function SuccessStoriesPage() {
   return (
@@ -156,43 +171,79 @@ export default function SuccessStoriesPage() {
         </div>
       </section>
 
-      {/* Pro Athletes */}
-      <section className="py-24 sm:py-32 bg-gray-900 overflow-hidden">
-        <div className="absolute left-1/2 w-[600px] h-[600px] bg-accent/5 rounded-full blur-[150px] pointer-events-none" />
+      {/* Featured transformation — 30 → 35 km/h in 8 weeks */}
+      <section className="relative py-20 sm:py-24 bg-gray-900 overflow-hidden border-t border-gray-800">
+        <div className="absolute left-1/4 top-0 w-[500px] h-[400px] bg-accent/8 rounded-full blur-[160px] pointer-events-none" />
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <FadeIn className="lg:col-span-7">
+              <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">Featured Transformation</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-4 leading-tight">
+                Stuck with injuries.<br />
+                <span className="text-accent">30 → 35 km/h in 8 weeks.</span>
+              </h2>
+              <p className="text-sm sm:text-base text-gray-300 leading-relaxed mb-3">
+                Plateaued for months on incorrect programming for his body. Assessed, deficits named categorically, system rewired, programmed specifically.
+              </p>
+              <p className="text-sm sm:text-base text-gray-300 leading-relaxed">
+                No magic. Detailed, specific guidance of a tailored system. <strong className="text-white">8 weeks later — 5 km/h faster.</strong>
+              </p>
+            </FadeIn>
+            <FadeIn delay={150} className="lg:col-span-5 w-full">
+              <div className="relative rounded-2xl overflow-hidden bg-black aspect-[9/16] shadow-2xl ring-1 ring-white/10 max-w-[320px] mx-auto lg:max-w-none">
+                <iframe
+                  src="https://iframe.mediadelivery.net/embed/659523/44265746-c59c-49da-b772-db3ceb373dbb?autoplay=false&preload=true&responsive=true"
+                  title="Featured transformation — 30 to 35 km/h in 8 weeks"
+                  allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                  allowFullScreen
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full border-0"
+                />
+              </div>
+            </FadeIn>
+          </div>
+        </div>
+      </section>
+
+      {/* Pro Athletes — Top Tier */}
+      <section className="relative py-24 sm:py-32 bg-gray-900 overflow-hidden border-t border-gray-800">
+        <div className="absolute left-1/2 -translate-x-1/2 top-0 w-[800px] h-[400px] bg-accent/8 rounded-full blur-[150px] pointer-events-none" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="mb-12">
               <div className="accent-line mb-6" />
+              <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">Top Tier</p>
               <h2 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
-                Pro athletes in the system.
+                Professional athletes in the system.
               </h2>
-              <p className="text-gray-400 max-w-lg">Olympic, European professional football, and international athletes who&apos;ve been through the program.</p>
-              <p className="text-lg sm:text-xl font-bold text-white/80 mt-6">Paralympic Gold Medalists. 4 Million Euro Transfers. Bundesliga. International Caps.</p>
+              <p className="text-gray-400 max-w-lg">Paralympic gold. Bundesliga. La Liga. International caps. €1.5M transfers. The system holds up at the highest level.</p>
             </div>
           </FadeIn>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {proAthletes.map((athlete, i) => (
-              <FadeIn key={athlete.name} delay={i * 120}>
-                <div className="dark-card rounded-xl overflow-hidden">
-                  {athlete.youtubeId && (
-                    <ProAthleteVideo youtubeId={athlete.youtubeId} name={athlete.name} />
-                  )}
-                  {!athlete.youtubeId && athlete.image && (
-                    <div className="relative aspect-video">
-                      <Image src={athlete.image} alt={athlete.name} fill className="object-cover" />
-                    </div>
-                  )}
-                  <div className="p-6">
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {athlete.tags.map((tag) => (
-                        <span key={tag} className="px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-accent font-bold bg-accent/10 border border-accent/20 rounded-full">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                    <h3 className="text-lg font-bold text-white mb-1">{athlete.name}</h3>
-                    <p className="text-accent text-xs uppercase tracking-[0.15em] font-semibold mb-2">{athlete.role}</p>
-                    <p className="text-sm text-gray-400">{athlete.achievement}</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            {proAthletes.map((a, i) => (
+              <FadeIn key={a.name} delay={(i % 4) * 100}>
+                <div className="rounded-xl overflow-hidden bg-gray-800/60 border-2 border-accent/30 hover:border-accent/60 transition-colors h-full flex flex-col">
+                  <div className="relative aspect-video bg-black">
+                    {a.bunnyId && (
+                      <iframe
+                        loading="lazy"
+                        src={`https://iframe.mediadelivery.net/embed/659523/${a.bunnyId}?autoplay=false&preload=true&responsive=true`}
+                        title={`${a.name} feature`}
+                        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                        allowFullScreen
+                        className="absolute inset-0 w-full h-full border-0"
+                      />
+                    )}
+                    {a.image && <Image src={a.image} alt={a.name} fill className="object-cover" />}
+                    {a.mp4Src && (
+                      <video src={a.mp4Src} controls playsInline preload="metadata" className="absolute inset-0 w-full h-full object-cover" />
+                    )}
+                  </div>
+                  <div className="p-5 flex-1 flex flex-col">
+                    <span className="self-start px-2.5 py-0.5 text-[9px] uppercase tracking-[0.2em] text-accent font-bold bg-accent/10 border border-accent/30 rounded-full mb-3">PRO</span>
+                    <p className="font-bold text-white text-base">{a.name}</p>
+                    <p className="text-accent text-sm font-semibold mt-1">{a.result}</p>
+                    <p className="text-xs text-gray-400 leading-relaxed mt-2">{a.context}</p>
                   </div>
                 </div>
               </FadeIn>
@@ -201,136 +252,275 @@ export default function SuccessStoriesPage() {
         </div>
       </section>
 
-      {/* Featured Transformations */}
+      {/* Featured Case Study — Adam's full arc (4 chapters from real WhatsApp coaching) */}
+      <section className="relative py-24 sm:py-32 bg-gray-900 overflow-hidden border-t border-gray-800">
+        <div className="absolute right-0 top-1/3 w-[600px] h-[500px] bg-accent/8 rounded-full blur-[180px] pointer-events-none" />
+        <div className="absolute left-0 bottom-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[150px] pointer-events-none" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="mb-12 max-w-3xl">
+              <div className="accent-line mb-6" />
+              <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">The Full Arc · Adam</p>
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-4 leading-[0.95]">
+                From under-eating <span className="text-accent">to La Liga.</span>
+              </h2>
+              <p className="text-gray-400 leading-relaxed text-base sm:text-lg">
+                The chapters below are pulled from real coaching conversations across 2024–2025. This is what the system actually looks like — not a stat card, the full work.
+              </p>
+            </div>
+          </FadeIn>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Chapter 1 — The Diagnosis */}
+            <FadeIn className="lg:col-span-6">
+              <div className="rounded-2xl p-7 sm:p-8 bg-gray-800/50 border border-gray-800 h-full">
+                <p className="text-[10px] text-accent uppercase tracking-[0.3em] font-bold mb-3">Chapter 1 — The Diagnosis</p>
+                <h3 className="text-2xl font-extrabold text-white tracking-tight mb-4 leading-tight">
+                  &ldquo;You don&apos;t eat like sh*t. You barely eat.&rdquo;
+                </h3>
+                <p className="text-sm sm:text-base text-gray-300 leading-relaxed mb-4">
+                  Adam came in believing his nutrition was the problem because he ate &ldquo;badly.&rdquo; The actual problem was he wasn&apos;t eating enough — period. Anthony reframed it on day one, then made him photograph every meal for 48 hours to prove it.
+                </p>
+                <p className="text-xs text-gray-500 italic">
+                  *&ldquo;I&apos;m gonna change your life just through diet lol.&rdquo;* — Anthony, opening message
+                </p>
+              </div>
+            </FadeIn>
+
+            {/* Chapter 2 — The Fix */}
+            <FadeIn delay={100} className="lg:col-span-6">
+              <div className="rounded-2xl p-7 sm:p-8 bg-gray-800/50 border border-gray-800 h-full">
+                <p className="text-[10px] text-accent uppercase tracking-[0.3em] font-bold mb-3">Chapter 2 — The Fix</p>
+                <h3 className="text-2xl font-extrabold text-white tracking-tight mb-4 leading-tight">
+                  Macros, carbs, and the squat link.
+                </h3>
+                <p className="text-sm sm:text-base text-gray-300 leading-relaxed mb-4">
+                  Daily macros. Specific pre-training meals. The carb-glycogen mechanism explained — and tied directly to first-15m sprint speed. Adam stopped guessing about food and started fuelling for performance.
+                </p>
+                <p className="text-xs text-gray-500 italic">
+                  *&ldquo;Carbs are your major importance — protein is muscle recovery, but carbs are what fire explosive movement.&rdquo;*
+                </p>
+              </div>
+            </FadeIn>
+
+            {/* Chapter 3 — The Unlock */}
+            <FadeIn delay={200} className="lg:col-span-6">
+              <div className="rounded-2xl p-7 sm:p-8 bg-gray-800/50 border-2 border-accent/40 h-full">
+                <p className="text-[10px] text-accent uppercase tracking-[0.3em] font-bold mb-3">Chapter 3 — The Unlock</p>
+                <h3 className="text-2xl font-extrabold text-white tracking-tight mb-4 leading-tight">
+                  1.60s over the first 10 metres.
+                </h3>
+                <p className="text-sm sm:text-base text-gray-300 leading-relaxed mb-4">
+                  Months of structured strength + nutrition + mechanics — then the test: <strong className="text-white">1.60s, 0–10m from a 50cm start.</strong> Faster than the fastest U23 academy athlete in published research. Stride length above 2.1m on grass. Not fresh.
+                </p>
+                <p className="text-xs text-accent italic font-bold">
+                  *&ldquo;1.60 today, 0-10 from 50cm start is world-class first 10 metre. You blitz them.&rdquo;*
+                </p>
+              </div>
+            </FadeIn>
+
+            {/* Chapter 4 — The Result */}
+            <FadeIn delay={300} className="lg:col-span-6">
+              <div className="rounded-2xl p-7 sm:p-8 bg-gray-800/50 border-2 border-accent/40 h-full">
+                <p className="text-[10px] text-accent uppercase tracking-[0.3em] font-bold mb-3">Chapter 4 — The Result</p>
+                <h3 className="text-2xl font-extrabold text-white tracking-tight mb-4 leading-tight">
+                  La Liga academy signing.
+                </h3>
+                <p className="text-sm sm:text-base text-gray-300 leading-relaxed mb-4">
+                  Adam signed pro in Spain. Coaching continued through the move — heat adaptation, gym programming inside the academy environment, video review of matches. The system travels.
+                </p>
+                <p className="text-xs text-gray-300 italic font-bold">
+                  Adam: *&ldquo;Yeah I played very well on this tour, my speed and power felt good also my strength.&rdquo;*
+                </p>
+              </div>
+            </FadeIn>
+          </div>
+
+          {/* Stat strip — Adam's numbers */}
+          <FadeIn delay={400}>
+            <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {[
+                { v: "1.60s", l: "0–10m (50cm start)" },
+                { v: "2.1m+", l: "stride length on grass" },
+                { v: "35.6 km/h", l: "top-end speed" },
+                { v: "La Liga", l: "academy signing" },
+              ].map((s) => (
+                <div key={s.l} className="rounded-xl p-5 bg-gray-800/40 border border-gray-800 text-center">
+                  <p className="text-2xl sm:text-3xl font-black text-accent leading-none mb-2">{s.v}</p>
+                  <p className="text-[10px] text-gray-400 uppercase tracking-[0.15em] font-bold">{s.l}</p>
+                </div>
+              ))}
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={500}>
+            <p className="mt-10 max-w-3xl mx-auto text-center text-gray-500 text-sm italic leading-relaxed">
+              The chapters above are condensed from 388 messages across 19 months of weekly coaching. Same system available to every athlete who applies — across Speed School (in-person Sydney) or Online Coaching (worldwide).
+            </p>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* Real Client Voices — verbatim quotes from private WhatsApp coaching threads */}
       <Section>
         <FadeIn>
-          <div className="mb-12">
+          <div className="mb-12 max-w-3xl">
             <div className="accent-line mb-6" />
-            <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
-              Featured transformations.
+            <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">Real Client Voices</p>
+            <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4 leading-tight">
+              Mid-program. Mid-coaching. <span className="text-accent">Mid-breakthrough.</span>
             </h2>
-            <p className="text-gray-400 max-w-lg">Watch the journey. Every result is backed by laser-timed data and 240fps video analysis.</p>
+            <p className="text-gray-500 leading-relaxed text-base sm:text-lg">
+              Pulled verbatim from private WhatsApp threads with athletes in the system right now. Unedited, in context, with permission. This is what coaching actually sounds like when it&apos;s working.
+            </p>
           </div>
         </FadeIn>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {featured.map((a, i) => (
-            <FadeIn key={a.name} delay={(i % 2) * 120}>
-              <AthleteCard {...a} />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {[
+            {
+              quote: "I sprinted twice with 33 km/h. That's amazing.",
+              athlete: "Nik Plokhotniuk",
+              context: "Week 3 of Phase 1 — from 29.1 km/h baseline",
+            },
+            {
+              quote: "Massive improvements already.",
+              athlete: "Nik Plokhotniuk",
+              context: "After the first bounding-focused block",
+            },
+            {
+              quote: "Yeah man with your guidance. Next year is big.",
+              athlete: "George Francis",
+              context: "End-of-season check-in after multi-goal games",
+            },
+            {
+              quote: "Had no nervous feeling. Just honestly didn't care. Things are becoming more habitual.",
+              athlete: "Marco (NPL North NSW)",
+              context: "After 6 months on the program — pre-game state",
+            },
+            {
+              quote: "Finally feel what you mean about pure quads — even 40kg burns.",
+              athlete: "Marco (NPL North NSW)",
+              context: "After form correction on hack squat",
+            },
+            {
+              quote: "My acceleration off the mark I've felt heaps better lately.",
+              athlete: "Adam",
+              context: "Pre-La Liga move — Spain tour feedback",
+            },
+            {
+              quote: "Feeling more confident every week. On the ball. Like so calm.",
+              athlete: "George Francis",
+              context: "Mid-season after positioning reframe",
+            },
+            {
+              quote: "Started every game. 3rd most amount of minutes. Played more than a half every game.",
+              athlete: "Maksim",
+              context: "Tournament reporting after off-season strength block",
+            },
+            {
+              quote: "I rewatched my last game — we played a pro club and had a pretty good performance, acceleration is better.",
+              athlete: "Nik Plokhotniuk",
+              context: "After Phase 2 — sprint mechanics work",
+            },
+          ].map((t, i) => (
+            <FadeIn key={i} delay={(i % 3) * 80}>
+              <div className="light-card rounded-xl p-6 sm:p-7 h-full flex flex-col">
+                <p className="text-3xl text-accent/40 font-black leading-none mb-2">&ldquo;</p>
+                <p className="text-base sm:text-lg text-gray-800 leading-snug mb-5 flex-1 font-medium">
+                  {t.quote}
+                </p>
+                <div className="pt-4 border-t border-gray-100">
+                  <p className="text-sm font-bold text-gray-900">{t.athlete}</p>
+                  <p className="text-xs text-gray-500 italic mt-0.5">{t.context}</p>
+                </div>
+              </div>
             </FadeIn>
           ))}
         </div>
+
+        <FadeIn delay={400}>
+          <p className="text-center text-gray-400 text-sm italic mt-10 max-w-3xl mx-auto">
+            None of these were filmed. None scripted. Just what athletes actually wrote to me — mid-program, mid-breakthrough, when it was landing.
+          </p>
+        </FadeIn>
       </Section>
 
-      {/* More Transformations */}
-      <section className="py-24 sm:py-32 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Athlete Roster — Everyone Else */}
+      <section className="relative py-24 sm:py-32 bg-gray-900 overflow-hidden border-t border-gray-800">
+        <div className="absolute right-0 top-1/3 w-[600px] h-[600px] bg-accent/5 rounded-full blur-[150px] pointer-events-none" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="mb-12">
               <div className="accent-line mb-6" />
-              <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
-                More transformations.
+              <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">The Roster</p>
+              <h2 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
+                Trusted by athletes around the world.
               </h2>
+              <p className="text-gray-400 max-w-xl">Junior prodigies, semi-pros, state champions, masters, parents. Every transformation below was filmed, measured, and verified.</p>
             </div>
           </FadeIn>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {moreTransformations.map((a, i) => (
-              <FadeIn key={a.name} delay={(i % 3) * 100}>
-                <AthleteCard {...a} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {wall.map((c, i) => (
+              <FadeIn key={c.name} delay={(i % 3) * 80}>
+                <MediaCard card={c} />
               </FadeIn>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Before & After — Maksim */}
-      <section className="py-24 sm:py-32 bg-gray-50">
+      {/* WhatsApp messages */}
+      <section className="py-24 sm:py-32 bg-gray-900 border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="mb-12">
               <div className="accent-line mb-6" />
-              <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
-                Before &amp; after.
+              <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">What Athletes Say</p>
+              <h2 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
+                Straight from the group chat.
               </h2>
-              <p className="text-gray-400 max-w-lg">Side-by-side video comparison. Same athlete, different mechanics.</p>
+              <p className="text-gray-400 max-w-xl">Real, unedited messages from athletes, parents, and coaches mid-program.</p>
             </div>
           </FadeIn>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
-            <FadeIn>
-              <BeforeAfterVideo
-                name="Maksim"
-                sport="Football"
-                beforeSrc="/maksim-before.mp4"
-                afterSrc="/maksim-after.mp4"
-                achievement="Mechanics Overhaul"
-                description="Complete rebuild of acceleration posture, arm drive, and ground contact mechanics. Watch the difference in body position and drive phase."
-              />
-            </FadeIn>
-            <FadeIn delay={120}>
-              <BeforeAfterVideo
-                name="Abdullah"
-                sport="Football"
-                beforeSrc="/abdullah-before.mov"
-                afterSrc="/abdullah-after.mp4"
-                achievement="27 → 34.8 km/h"
-                description="Complete speed transformation. Acceleration mechanics and stride pattern rebuilt from the ground up."
-              />
-            </FadeIn>
-            <FadeIn delay={240}>
-              <BeforeAfterVideo
-                name="Xavi"
-                sport="Football"
-                beforeSrc="T7jTr0gDuOQ"
-                afterSrc="llNpzewDksc"
-                achievement="21 → 30.7 km/h"
-                description="Nearly 10 km/h speed gain. Complete mechanical rebuild of sprint technique and acceleration pattern."
-              />
-            </FadeIn>
-            <FadeIn delay={360}>
-              <BeforeAfterVideo
-                name="James"
-                sport="Football"
-                beforeSrc="gyseZZW6pEs"
-                afterSrc="u_tv5CGXf84"
-                achievement="23 → 31 km/h"
-                description="+8 km/h top speed gain. Faster than senior professional footballers — at age 12."
-              />
-            </FadeIn>
-            <FadeIn delay={480}>
-              <BeforeAfterVideo
-                name="Dom"
-                sport="Football"
-                beforeSrc="/dom-before-after.mp4"
-                achievement="Power Transformation"
-                description="Side-by-side power development. Watch the difference in force production and explosive movement."
-              />
-            </FadeIn>
-            <FadeIn delay={600}>
-              <BeforeAfterVideo
-                name="Dylan"
-                sport="Football"
-                beforeSrc="U_UzSxt6KnU"
-                afterSrc="wMcRBX_l0sY"
-                achievement="Speed Transformation"
-                description="Complete sprint mechanics overhaul. Watch the difference in technique and explosiveness."
-              />
-            </FadeIn>
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 [&>*]:mb-5 [&>*]:break-inside-avoid">
+            {whatsappWall.map((m, i) => (
+              <FadeIn key={m.src} delay={(i % 3) * 80}>
+                <div className="rounded-2xl overflow-hidden bg-gray-950 border border-gray-800 relative">
+                  <span className="absolute top-3 right-3 z-10 bg-black/55 backdrop-blur px-2 py-1 rounded text-[10px] tracking-[0.15em] font-bold text-gray-400">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <Image
+                    src={m.src}
+                    alt={`Real client message — ${m.name}`}
+                    width={600}
+                    height={900}
+                    className="w-full h-auto block"
+                  />
+                  <p className="px-4 py-3 text-xs text-gray-400 italic text-center border-t border-gray-800 leading-relaxed">
+                    <strong className="text-white not-italic">{m.name}</strong> · {m.caption}
+                  </p>
+                </div>
+              </FadeIn>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Athlete Testimonials */}
+      {/* Talking-head video testimonials */}
       <Section>
         <FadeIn>
           <div className="mb-12">
             <div className="accent-line mb-6" />
+            <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">In Their Own Words</p>
             <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
               Hear it from them.
             </h2>
-            <p className="text-gray-400 max-w-lg">Real athletes. Unscripted. In their own words.</p>
+            <p className="text-gray-500 max-w-lg">Real athletes. Unscripted. On camera.</p>
           </div>
         </FadeIn>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.map((t, i) => (
+          {talkingHeads.map((t, i) => (
             <FadeIn key={i} delay={i * 120}>
               <TestimonialVideo {...t} />
             </FadeIn>
@@ -338,27 +528,55 @@ export default function SuccessStoriesPage() {
         </div>
       </Section>
 
-      {/* Stat-only Results */}
-      <Section>
-        <FadeIn>
-          <div className="mb-12">
-            <div className="accent-line mb-6" />
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
-              More results.
-            </h2>
-          </div>
-        </FadeIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {statOnly.map((a, i) => (
-            <FadeIn key={a.name} delay={(i % 3) * 100}>
-              <AthleteCard {...a} />
-            </FadeIn>
-          ))}
+      {/* The big expectation anchor */}
+      <section className="relative py-32 sm:py-40 bg-black overflow-hidden border-t border-gray-800">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-accent/10 rounded-full blur-[180px]" />
+          <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[150px]" />
         </div>
-      </Section>
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <FadeIn>
+            <p className="text-accent text-xs uppercase tracking-[0.3em] mb-6 font-semibold">What To Expect</p>
+          </FadeIn>
+          <FadeIn delay={100}>
+            <h2 className="text-5xl sm:text-7xl lg:text-8xl font-black text-white tracking-tight leading-[0.95] mb-10">
+              Look at the proof.<br />
+              <span className="text-accent">This is the standard.</span>
+            </h2>
+          </FadeIn>
+          <FadeIn delay={200}>
+            <p className="text-xl sm:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed font-medium">
+              Across hundreds of athletes, the pattern is consistent. In your first{" "}
+              <span className="text-white font-bold">24 to 36 months</span> on the system you should expect a{" "}
+              <span className="text-accent font-extrabold">20–35% improvement</span> in top speed and a{" "}
+              <span className="text-accent font-extrabold">5–15% reduction</span> in 0–10m sprint times.
+            </p>
+          </FadeIn>
+          <FadeIn delay={300}>
+            <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
+              <div className="p-6 rounded-xl bg-white/5 border border-white/10 backdrop-blur">
+                <div className="text-4xl sm:text-5xl font-black text-accent mb-2">+20–35%</div>
+                <p className="text-xs text-gray-300 uppercase tracking-wider font-semibold">Top Speed</p>
+              </div>
+              <div className="p-6 rounded-xl bg-white/5 border border-white/10 backdrop-blur">
+                <div className="text-4xl sm:text-5xl font-black text-accent mb-2">−5–15%</div>
+                <p className="text-xs text-gray-300 uppercase tracking-wider font-semibold">0–10m Sprint Time</p>
+              </div>
+              <div className="p-6 rounded-xl bg-white/5 border border-white/10 backdrop-blur">
+                <div className="text-4xl sm:text-5xl font-black text-accent mb-2">24–36 mo</div>
+                <p className="text-xs text-gray-300 uppercase tracking-wider font-semibold">Typical Window</p>
+              </div>
+            </div>
+          </FadeIn>
+          <FadeIn delay={400}>
+            <p className="mt-14 max-w-3xl mx-auto text-xs sm:text-sm text-gray-500 leading-relaxed italic border-t border-gray-800 pt-8">
+              Disclaimer — results above represent a range observed across our existing roster. Your outcome depends on your sport and discipline, your training age, your current ability, and — most importantly — your willingness to execute the program as prescribed, every session, with no delay and no excuses. Speed development is non-negotiable on consistency. Take the instructions on, do the work, and the numbers follow.
+            </p>
+          </FadeIn>
+        </div>
+      </section>
 
       <CTASection title="Start your story." description="Apply for an assessment and see what's possible for your speed." />
     </>
   );
 }
-
