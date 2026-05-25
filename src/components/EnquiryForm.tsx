@@ -274,7 +274,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
         }),
       }).catch(() => {});
 
-      router.push("/welcome"); // nurture page fires the Meta Pixel Lead
+      router.push("/welcome?name=" + encodeURIComponent(form.name || "") + "&email=" + encodeURIComponent(form.email || "")); // nurture/booking page fires the Meta Pixel Lead
     } catch {
       setStatus("error");
     }

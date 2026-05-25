@@ -125,7 +125,7 @@ export function SpeedSystemForm() {
         body: JSON.stringify({ ...a, source: "speed-system-apply", qualified }),
       }).catch(() => {});
 
-      router.push("/welcome"); // nurture page fires the Meta Pixel Lead
+      router.push("/welcome?name=" + encodeURIComponent(a.name || "") + "&email=" + encodeURIComponent(a.email || "")); // nurture/booking page fires the Meta Pixel Lead
     } catch {
       setStatus("error");
     }
