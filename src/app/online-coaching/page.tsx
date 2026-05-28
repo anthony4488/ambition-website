@@ -238,10 +238,6 @@ export default function OnlineCoachingPage() {
                   After the report is delivered, Anthony records a <strong className="text-white">15-minute walkthrough</strong> — talking through what every number means for the athlete specifically. Where they sit nationally and globally. What&apos;s limiting their speed. What to fix first. What to ignore.
                 </p>
                 <p className="text-gray-300 leading-relaxed font-semibold">Real coaching language. Not a templated review.</p>
-                <a href="https://anthony-report-deploy.vercel.app" target="_blank" rel="noopener" className="mt-auto inline-flex items-center gap-2 px-6 py-3 bg-accent text-white font-bold text-sm uppercase tracking-wider rounded-full hover:bg-orange-500 transition-colors self-start">
-                  View Sample Report <ArrowRight size={14} />
-                </a>
-                <p className="text-xs text-gray-400 mt-3 italic">Real report we delivered for an athlete. Fully unredacted.</p>
               </div>
             </FadeIn>
           </div>
@@ -277,9 +273,6 @@ export default function OnlineCoachingPage() {
                   </FadeIn>
                 ))}
               </div>
-              <p className="text-[11px] text-gray-500 italic mt-6 text-center">
-                Sample report at <a href="https://anthony-report-deploy.vercel.app" target="_blank" rel="noopener" className="text-accent hover:underline">anthony-report-deploy.vercel.app</a> — a real athlete&apos;s report, fully unredacted.
-              </p>
             </div>
           </FadeIn>
         </div>
