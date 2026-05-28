@@ -42,12 +42,6 @@ const colorFor = (pct: number) =>
   : pct >= 70 ? "text-orange-500"
   : "text-red-500";
 
-const bgFor = (pct: number) =>
-  pct >= 95 ? "bg-green-500"
-  : pct >= 85 ? "bg-amber-400"
-  : pct >= 70 ? "bg-orange-500"
-  : "bg-red-500";
-
 // Decision-tree diagnosis (Anthony's voice, no fluff)
 type GapKey = "acceleration" | "top_speed" | "elastic_power" | "reactive_strength" | "full_acceleration";
 
@@ -205,7 +199,6 @@ export function SpeedAuditCalculator() {
     }
   }
 
-  const fmtPct = (v: number | null) => (v === null ? "—" : `${v}%`);
   const topSpeedKmh = u.fly10 ? flyToKmh(u.fly10).toFixed(1) : "—";
   const eliteTopSpeed = flyToKmh(elite.fly10).toFixed(1);
 
