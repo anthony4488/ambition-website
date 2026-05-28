@@ -13,43 +13,44 @@ type Step =
   | { id: string; type: "text" | "email" | "tel"; q: string; sub?: string; placeholder: string };
 
 const STEPS: Step[] = [
-  { id: "age", type: "radio", q: "How old is your athlete?", options: ["11–13", "13–15", "15–17", "17+"] },
+  { id: "age", type: "radio", q: "How old are you?", sub: "Built for serious athletes — adults and committed older youth.", options: ["Under 18", "18–24", "25–34", "35+"] },
   {
     id: "goal",
     type: "radio",
-    q: "What's the goal for your athlete?",
-    sub: "We only work with people who want to go all the way to the top.",
-    options: ["Get scouted / play at the highest level", "Make a representative or academy team"],
+    q: "What's your goal?",
+    sub: "We only work with athletes serious about getting measurably faster.",
+    options: ["Compete at a higher level (semi-pro / pro)", "Get faster for my sport", "Come back from injury faster & stronger"],
   },
   {
-    id: "budget",
+    id: "level",
     type: "radio",
-    q: "What's your weekly budget for your athlete's development?",
-    options: ["$130–$150 / week", "$150–$180 / week", "$180+ / week"],
+    q: "What level do you compete at?",
+    options: ["Semi-pro / academy / NPL", "Club / amateur — actively competing", "Training seriously / returning"],
   },
   {
     id: "commit",
     type: "radio",
-    q: "How long are you willing to commit?",
-    options: ["6–12 months minimum", "12+ months — whatever it takes"],
+    q: "How committed are you to the work?",
+    sub: "This is coached to your phone — you film your sessions, you do the program.",
+    options: ["All in — every week, whatever it takes", "Committed — I need the structure"],
   },
-  { id: "sport", type: "text", q: "What sport does your athlete play?", placeholder: "e.g. Football, Rugby, Athletics" },
-  { id: "suburb", type: "text", q: "What suburb are you in?", sub: "Sydney athletes only.", placeholder: "e.g. Parramatta" },
-  { id: "name", type: "text", q: "Athlete's full name", placeholder: "Full name" },
+  {
+    id: "invest",
+    type: "radio",
+    q: "Ready to invest in a structured coaching program?",
+    sub: "This is a multi-thousand-dollar program over several months — built around you, not an app subscription.",
+    options: ["Yes — ready to invest in the right program", "Show me it's worth it first", "Just exploring for now"],
+  },
+  { id: "sport", type: "text", q: "What sport do you play?", placeholder: "e.g. Football, Rugby, Athletics, Track" },
+  { id: "name", type: "text", q: "Your full name", placeholder: "Full name" },
   { id: "email", type: "email", q: "What's your email?", placeholder: "you@email.com" },
   {
     id: "phone",
     type: "tel",
     q: "Best phone number?",
-    sub: "We may call to follow up — calls come from a Sydney number.",
+    sub: "We'll text you to book your online assessment.",
     placeholder: "+61 4XX XXX XXX",
   },
-];
-
-const SYD = [
-  "sydney", "parramatta", "blacktown", "liverpool", "penrith", "bankstown", "ryde", "manly",
-  "bondi", "chatswood", "hornsby", "campbelltown", "castle hill", "hills", "western sydney",
-  "north shore", "eastern suburbs", "inner west", "cronulla", "sutherland", "nsw",
 ];
 
 export function SpeedSystemForm() {
@@ -95,18 +96,17 @@ export function SpeedSystemForm() {
   async function submit() {
     setStatus("submitting");
     const a = answers;
-    const sydney = SYD.some((s) => (a.suburb || "").toLowerCase().includes(s));
-    const qualified = sydney;
+    const qualified = !((a.invest || "").toLowerCase().includes("exploring"));
     const notes = [
-      "Program: SPEED SYSTEM",
+      "Program: ONLINE COACHING",
       `Email: ${a.email}`,
       `Age: ${a.age}`,
       `Goal: ${a.goal}`,
-      `Budget: ${a.budget}`,
+      `Level: ${a.level}`,
       `Commitment: ${a.commit}`,
+      `Investment: ${a.invest}`,
       `Sport: ${a.sport}`,
-      `Suburb: ${a.suburb}`,
-      `Qualified: ${qualified ? "YES" : "REVIEW (suburb may be outside Sydney)"}`,
+      `Qualified: ${qualified ? "YES" : "REVIEW (just exploring)"}`,
     ].join(" | ");
 
     try {
@@ -114,7 +114,7 @@ export function SpeedSystemForm() {
         const { error } = await supabase.from("assessment_leads").insert({
           name: a.name,
           phone: a.phone,
-          source: "speed-system-apply",
+          source: "online-apply",
           notes,
         });
         if (error) throw error;
@@ -122,7 +122,7 @@ export function SpeedSystemForm() {
       fetch("/api/notify-lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...a, source: "speed-system-apply", qualified }),
+        body: JSON.stringify({ ...a, source: "online-apply", qualified }),
       }).catch(() => {});
 
       router.push("/welcome?name=" + encodeURIComponent(a.name || "") + "&email=" + encodeURIComponent(a.email || "")); // nurture/booking page fires the Meta Pixel Lead
@@ -140,10 +140,10 @@ export function SpeedSystemForm() {
         </div>
         <h2 className="text-3xl font-extrabold tracking-tight text-gray-900">Application received.</h2>
         <p className="mx-auto mt-4 max-w-md text-gray-600">
-          We&apos;ll review it within 24 hours. If your athlete&apos;s the right fit, Anthony will be in
-          touch to lock in the $199 assessment.
+          We&apos;ll review it within 24 hours. If you&apos;re the right fit, Anthony will be in touch to
+          book your online assessment.
         </p>
-        <p className="mt-5 text-xs italic text-gray-400">Keep your phone close — calls come from a Sydney number.</p>
+        <p className="mt-5 text-xs italic text-gray-400">Keep your phone close — we&apos;ll text you to get started.</p>
       </div>
     );
   }
@@ -152,16 +152,16 @@ export function SpeedSystemForm() {
   if (!started) {
     return (
       <div className="mx-auto max-w-2xl px-6 py-20 text-center">
-        <p className="text-xs font-bold uppercase tracking-[0.25em] text-accent">Ambition Speed System</p>
+        <p className="text-xs font-bold uppercase tracking-[0.25em] text-accent">Ambition Online Coaching</p>
         <h1 className="mt-3 text-4xl font-extrabold leading-tight tracking-tight text-gray-900 sm:text-5xl">
           Application only.
           <br />
-          <span className="text-accent">Sydney athletes only.</span>
+          <span className="text-accent">Coached online — anywhere.</span>
         </h1>
         <div className="mx-auto mt-6 max-w-md space-y-1.5 text-sm text-gray-600">
-          <p>This is NOT a free trial. NOT a casual session.</p>
-          <p>Assessment <span className="font-semibold text-gray-900">$199</span> · Ongoing system <span className="font-semibold text-gray-900">$130–160/week</span>.</p>
-          <p>Serious athletes only — don&apos;t apply if that&apos;s not you.</p>
+          <p>This is NOT a free app. NOT a cheap monthly plan.</p>
+          <p>Online assessment → a measured, individualised program built on your numbers.</p>
+          <p>A serious, multi-month investment in getting genuinely faster. If you want a quick fix, this isn&apos;t for you.</p>
         </div>
         <button
           onClick={() => setStarted(true)}

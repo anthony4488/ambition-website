@@ -1,10 +1,10 @@
-// Auto-nurture engine: 4 touches over 7 days, email (Resend) + SMS (Twilio).
+// Auto-nurture engine: 4 touches over 7 days, email (Resend) + SMS (ClickSend).
 // Fires for website form leads AND Facebook lead-form leads. No-ops cleanly
-// until RESEND_API_KEY / TWILIO_* are configured.
+// until RESEND_API_KEY / CLICKSEND_* are configured.
 
 const SITE = process.env.NEXT_PUBLIC_APP_URL || "https://ambitionsportsperformance.com";
 const BOOK = "https://calendly.com/ambitionsportsperformance-info/30min";
-const SAMPLE = SITE + "/sample-report";
+const STORIES = SITE + "/success-stories";
 const APPLY = SITE + "/apply";
 
 export interface Touch {
@@ -30,55 +30,126 @@ const wrap = (body: string, unsub: string) => `
 const btn = (href: string, label: string) =>
   `<a href="${href}" style="display:inline-block;background:#FF8C42;color:#fff;font-weight:700;text-decoration:none;padding:14px 28px;border-radius:9999px;margin:8px 0">${label}</a>`;
 
-export const TOUCHES: Touch[] = [
+const TOUCHES_ONLINE: Touch[] = [
   {
     dayOffset: 0,
     email: {
-      subject: "Your application's in — let's book your assessment",
+      subject: "You're in - let's book your online assessment",
       html: (n, u) =>
         wrap(
           `<p>${firstName(n)},</p>
-           <p>Your application's in. We review every one by hand — but you don't have to wait for us to call. Lock in your assessment now and pick a time that suits:</p>
-           <p style="text-align:center">${btn(BOOK, "Book your assessment call")}</p>
-           <p>On the call we map exactly what's limiting your speed — no guessing, numbers not opinions.</p>
-           <p>— Anthony</p>`,
+           <p>Your application's in. The next step is your <strong>online assessment</strong> - I break down your sprint, measure what's actually limiting you, and map exactly what to fix. You don't have to wait for us to call - grab a time that suits:</p>
+           <p style="text-align:center">${btn(BOOK, "Book your online assessment")}</p>
+           <p>No guessing. Numbers, not opinions.</p>
+           <p>- Anthony</p>`,
           u
         ),
     },
-    sms: (n) => `${firstName(n)} — your Ambition application is in. Book your assessment here: ${BOOK} — Anthony`,
+    sms: (n) => `${firstName(n)} - thanks for applying for online speed coaching. Next step is a quick call - grab a time: ${BOOK} - Anthony`,
   },
   {
     dayOffset: 1,
     email: {
-      subject: "This is exactly what we'll measure (sample report inside)",
+      subject: "You don't need to be in my gym to get faster",
       html: (n, u) =>
         wrap(
           `<p>${firstName(n)},</p>
-           <p>Most coaches guess. We measure. Here's a <strong>real sample of the report</strong> every athlete gets — ground contact, top speed, stride, force, the #1 limiter named explicitly, and the prescription to fix it:</p>
-           <p style="text-align:center">${btn(SAMPLE, "See a sample report")}</p>
-           <p>That's what the $199 assessment delivers. Want yours?</p>
-           <p style="text-align:center">${btn(BOOK, "Book the assessment")}</p>
-           <p>— Anthony</p>`,
+           <p>Most coaches guess. I measure - then build the exact fix. And I do it <strong>online, wherever you are.</strong></p>
+           <p>One athlete I coach entirely remotely went from 28 to 34 km/h. Another, two weeks in: <em>"didn't expect that much gains."</em> Same system - to your phone.</p>
+           <p style="text-align:center">${btn(STORIES, "See the results")}</p>
+           <p>Ready to find your limiter?</p>
+           <p style="text-align:center">${btn(BOOK, "Book your online assessment")}</p>
+           <p>- Anthony</p>`,
           u
         ),
     },
-    sms: (n) => `${firstName(n)}, this is what we build for every athlete — a real sample report: ${SAMPLE}  Book your own assessment: ${BOOK}`,
+    sms: (n) => `${firstName(n)} - I coach athletes to 34 km/h entirely online, wherever they are. Same system, your phone. See it: ${STORIES}  Book a call: ${BOOK}`,
   },
   {
     dayOffset: 3,
     email: {
-      subject: "“Is $199 worth it?”",
+      subject: "Years of training around a problem no one measured",
       html: (n, u) =>
         wrap(
           `<p>${firstName(n)},</p>
-           <p>Fair question. Here's the honest answer: most athletes spend years — and a lot of money — training around a problem nobody's measured.</p>
-           <p>The assessment finds the actual limiter in one session: 240fps video, laser timing, 20+ indicators. You leave knowing exactly what to fix first. That's the difference between guessing and a plan.</p>
-           <p style="text-align:center">${btn(BOOK, "Book your assessment")}</p>
-           <p>— Anthony</p>`,
+           <p>Here's the honest truth: most athletes spend years - and a lot of money - training around a problem nobody's ever measured.</p>
+           <p>Your online assessment finds the actual limiter: I break your sprint down frame by frame - ground contact, stride, where your foot lands - and you walk away knowing exactly what to fix first. That's the difference between guessing and a plan.</p>
+           <p style="text-align:center">${btn(BOOK, "Book your online assessment")}</p>
+           <p>- Anthony</p>`,
           u
         ),
     },
-    sms: (n) => `${firstName(n)} — the $199 assessment finds the exact thing capping your speed in one session. No more guessing. Book: ${BOOK}`,
+    sms: (n) => `${firstName(n)} - most athletes train for years around a problem nobody measured. The online assessment finds the real limiter - let's chat. Book a call: ${BOOK}`,
+  },
+  {
+    dayOffset: 6,
+    email: {
+      subject: "I only take a handful of online athletes at a time",
+      html: (n, u) =>
+        wrap(
+          `<p>${firstName(n)},</p>
+           <p>I cap how many athletes I coach online so it stays specific - your program, your bottlenecks, every rep measured. Spots for this round are nearly gone.</p>
+           <p>If you want yours assessed and a real plan built, now's the time:</p>
+           <p style="text-align:center">${btn(BOOK, "Book your online assessment")}</p>
+           <p>If now's not right, no stress - you can re-apply anytime at ${APPLY}.</p>
+           <p>- Anthony</p>`,
+          u
+        ),
+    },
+    sms: (n) => `${firstName(n)} - I only take a handful of online athletes at a time so the coaching stays specific. Spots nearly gone - book a call: ${BOOK} - Anthony`,
+  },
+];
+
+// F2F / in-person track (Sydney youth + parents → $199 in-person assessment).
+const TOUCHES_F2F: Touch[] = [
+  {
+    dayOffset: 0,
+    email: {
+      subject: "Your application's in - let's book your assessment",
+      html: (n, u) =>
+        wrap(
+          `<p>${firstName(n)},</p>
+           <p>Your application's in. You don't have to wait for us to call - lock in your assessment and pick a time that suits:</p>
+           <p style="text-align:center">${btn(BOOK, "Book your assessment")}</p>
+           <p>We map exactly what's limiting your athlete's speed - no guessing, numbers not opinions.</p>
+           <p>- Anthony</p>`,
+          u
+        ),
+    },
+    sms: (n) => `${firstName(n)} - thanks for applying for the Ambition Speed System. Next step is a quick call - grab a time: ${BOOK} - Anthony`,
+  },
+  {
+    dayOffset: 1,
+    email: {
+      subject: "The athletes we've helped get faster",
+      html: (n, u) =>
+        wrap(
+          `<p>${firstName(n)},</p>
+           <p>Most coaches guess. We measure - then build the exact plan to fix what's holding an athlete back. Don't take my word for it:</p>
+           <p style="text-align:center">${btn(STORIES, "See our athletes' results")}</p>
+           <p>Want your athlete assessed?</p>
+           <p style="text-align:center">${btn(BOOK, "Book the assessment")}</p>
+           <p>- Anthony</p>`,
+          u
+        ),
+    },
+    sms: (n) => `${firstName(n)} - see the athletes we've helped get faster: ${STORIES}  Book a call: ${BOOK}`,
+  },
+  {
+    dayOffset: 3,
+    email: {
+      subject: "Is the $199 assessment worth it?",
+      html: (n, u) =>
+        wrap(
+          `<p>${firstName(n)},</p>
+           <p>Fair question. Most athletes spend years - and a lot of money - training around a problem nobody's measured.</p>
+           <p>The assessment finds the actual limiter in one session: 240fps video, laser timing, 20+ indicators. You leave knowing exactly what to fix first.</p>
+           <p style="text-align:center">${btn(BOOK, "Book your assessment")}</p>
+           <p>- Anthony</p>`,
+          u
+        ),
+    },
+    sms: (n) => `${firstName(n)} - the $199 assessment finds the exact thing capping your athlete's speed. Let's chat - book a call: ${BOOK}`,
   },
   {
     dayOffset: 6,
@@ -88,16 +159,24 @@ export const TOUCHES: Touch[] = [
         wrap(
           `<p>${firstName(n)},</p>
            <p>We cap how many athletes we take each intake so the coaching stays specific. Spots for this round are nearly gone.</p>
-           <p>If you want your athlete assessed and a real plan built, now's the time:</p>
            <p style="text-align:center">${btn(BOOK, "Book before it closes")}</p>
-           <p>If now's not right, no stress — you can always re-apply at ${APPLY}.</p>
-           <p>— Anthony</p>`,
+           <p>If now's not right, no stress - you can re-apply anytime at ${APPLY}.</p>
+           <p>- Anthony</p>`,
           u
         ),
     },
-    sms: (n) => `${firstName(n)} — last call for this intake, spots nearly gone. Book your assessment: ${BOOK} — Anthony`,
+    sms: (n) => `${firstName(n)} - last call for this intake, spots nearly gone. Book a call: ${BOOK} - Anthony`,
   },
 ];
+
+// Route a lead to the right track by source: anything tagged "online" → online
+// program nurture; everything else → F2F / in-person nurture.
+export function touchesFor(source?: string): Touch[] {
+  return (source || "").toLowerCase().includes("online") ? TOUCHES_ONLINE : TOUCHES_F2F;
+}
+
+// Default export (online track) kept for any direct importers.
+export const TOUCHES = TOUCHES_ONLINE;
 
 // ── Senders (no-op without creds) ──
 export async function sendEmail(to: string, subject: string, html: string) {
@@ -116,21 +195,33 @@ export async function sendEmail(to: string, subject: string, html: string) {
   }
 }
 
+// AU phone → E.164 (+61). ClickSend delivers most reliably with E.164.
+const normaliseAu = (raw: string) => {
+  const s = raw.replace(/[\s()-]/g, "");
+  if (s.startsWith("+")) return s;
+  if (s.startsWith("0")) return "+61" + s.slice(1);
+  if (s.startsWith("61")) return "+" + s;
+  return s;
+};
+
 export async function sendSms(to: string, body: string) {
-  const sid = process.env.TWILIO_ACCOUNT_SID;
-  const token = process.env.TWILIO_AUTH_TOKEN;
-  const from = process.env.TWILIO_FROM_NUMBER;
-  if (!sid || !token || !from || !to) return { ok: false, skipped: true };
+  const username = process.env.CLICKSEND_USERNAME;
+  const apiKey = process.env.CLICKSEND_API_KEY;
+  const from = process.env.CLICKSEND_FROM || "Ambition";
+  if (!username || !apiKey || !to) return { ok: false, skipped: true };
   try {
-    const res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`, {
+    const res = await fetch("https://rest.clicksend.com/v3/sms/send", {
       method: "POST",
       headers: {
-        Authorization: "Basic " + Buffer.from(`${sid}:${token}`).toString("base64"),
-        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: "Basic " + Buffer.from(`${username}:${apiKey}`).toString("base64"),
+        "Content-Type": "application/json",
       },
-      body: new URLSearchParams({ From: from, To: to, Body: body }),
+      body: JSON.stringify({
+        messages: [{ source: "ambition-web", from, to: normaliseAu(to), body }],
+      }),
     });
-    return { ok: res.ok };
+    const j = await res.json().catch(() => ({}));
+    return { ok: res.ok && j?.response_code === "SUCCESS" };
   } catch {
     return { ok: false };
   }

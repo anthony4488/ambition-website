@@ -17,7 +17,7 @@ const links = [
   { href: "/contact", label: "Contact" },
 ];
 
-const LANDING = ["/apply", "/welcome"];
+const LANDING = ["/apply", "/welcome", "/agreement"];
 
 export function Navbar() {
   const pathname = usePathname();

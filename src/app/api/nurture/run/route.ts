@@ -1,14 +1,13 @@
 import { NextRequest } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
-import { TOUCHES, sendEmail, sendSms } from "@/lib/nurture";
+import { touchesFor, sendSms } from "@/lib/nurture";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-const SITE = process.env.NEXT_PUBLIC_APP_URL || "https://ambitionsportsperformance.com";
-
-// Scheduled by Vercel Cron (daily). Sends the next due touch to active leads.
+// Scheduled by Vercel Cron (daily). Sends the next due SMS touch to active leads.
+// (Email touches are handled by Kit sequences, triggered by tag — not here.)
 export async function GET(req: NextRequest) {
   // Optional shared-secret guard
   const secret = process.env.CRON_SECRET;
@@ -33,18 +32,17 @@ export async function GET(req: NextRequest) {
 
   let sent = 0;
   for (const e of due ?? []) {
-    const touch = TOUCHES[e.step];
+    const T = touchesFor(e.source);
+    const touch = T[e.step];
     if (!touch) {
       await sb.from("nurture_enrollments").update({ status: "completed" }).eq("id", e.id);
       continue;
     }
-    const unsub = `${SITE}/api/nurture/unsubscribe?token=${e.unsubscribe_token}`;
-    if (e.email) await sendEmail(e.email, touch.email.subject, touch.email.html(e.name ?? "", unsub));
     if (e.phone) await sendSms(e.phone, touch.sms(e.name ?? ""));
     sent++;
 
     const nextStep = e.step + 1;
-    const nextTouch = TOUCHES[nextStep];
+    const nextTouch = T[nextStep];
     const created = new Date(e.created_at).getTime();
     await sb
       .from("nurture_enrollments")

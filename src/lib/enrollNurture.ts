@@ -1,10 +1,28 @@
 import { getSupabaseAdmin } from "./supabaseAdmin";
-import { TOUCHES, sendEmail, sendSms } from "./nurture";
+import { touchesFor, sendSms } from "./nurture";
 
-const SITE = process.env.NEXT_PUBLIC_APP_URL || "https://ambitionsportsperformance.com";
+// Email nurture is handled by Kit (ConvertKit): we tag the lead by track and Kit's
+// matching sequence sends the email touches. SMS stays code-driven (ClickSend).
+async function addToKit(email: string, name: string | undefined, source: string | undefined) {
+  const apiKey = process.env.KIT_API_KEY;
+  if (!apiKey) return;
+  const tagId = (source || "").toLowerCase().includes("online")
+    ? process.env.KIT_TAG_ONLINE
+    : process.env.KIT_TAG_F2F;
+  if (!tagId) return;
+  try {
+    await fetch(`https://api.convertkit.com/v3/tags/${tagId}/subscribe`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ api_key: apiKey, email, first_name: (name || "").trim().split(/\s+/)[0] }),
+    });
+  } catch {
+    /* non-fatal */
+  }
+}
 
-// Enroll a lead in the nurture sequence and fire touch 0 immediately.
-// Safe to call on every form submit / FB lead — dedupes on active email.
+// Enroll a lead in the nurture: fire touch-0 SMS immediately + tag into Kit (which
+// runs the email sequence). Safe to call on every form submit / FB lead — dedupes on active email.
 export async function enrollNurture(lead: {
   name?: string;
   email?: string;
@@ -25,23 +43,19 @@ export async function enrollNurture(lead: {
     if (existing) return; // already in an active sequence
   }
 
-  const t1 = TOUCHES[1]?.dayOffset ?? 1;
-  const { data: row } = await sb
-    .from("nurture_enrollments")
-    .insert({
-      name: lead.name ?? null,
-      email: lead.email ?? null,
-      phone: lead.phone ?? null,
-      source: lead.source ?? null,
-      step: 1, // touch 0 sent inline below
-      next_send_at: new Date(Date.now() + t1 * 86400000).toISOString(),
-      last_sent_at: new Date().toISOString(),
-    })
-    .select()
-    .single();
+  const T = touchesFor(lead.source);
+  const t1 = T[1]?.dayOffset ?? 1;
+  await sb.from("nurture_enrollments").insert({
+    name: lead.name ?? null,
+    email: lead.email ?? null,
+    phone: lead.phone ?? null,
+    source: lead.source ?? null,
+    step: 1, // touch 0 fired inline below
+    next_send_at: new Date(Date.now() + t1 * 86400000).toISOString(),
+    last_sent_at: new Date().toISOString(),
+  });
 
-  const t0 = TOUCHES[0];
-  const unsub = `${SITE}/api/nurture/unsubscribe?token=${row?.unsubscribe_token ?? ""}`;
-  if (lead.email) await sendEmail(lead.email, t0.email.subject, t0.email.html(lead.name ?? "", unsub));
+  const t0 = T[0];
   if (lead.phone) await sendSms(lead.phone, t0.sms(lead.name ?? ""));
+  if (lead.email) await addToKit(lead.email, lead.name, lead.source);
 }

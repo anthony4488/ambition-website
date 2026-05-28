@@ -34,17 +34,17 @@ export async function POST(req: NextRequest) {
 
   const qualified = b.qualified === true;
   const lines = [
-    qualified ? "🟢 <b>NEW QUALIFIED APPLICATION</b>" : "🟠 <b>NEW APPLICATION — review location</b>",
+    qualified ? "🟢 <b>NEW QUALIFIED APPLICATION</b>" : "🟠 <b>NEW APPLICATION — review fit</b>",
     "",
     `👤 <b>${esc(b.name)}</b>`,
     `📞 ${esc(b.phone)}`,
     `✉️ ${esc(b.email)}`,
-    `📍 ${esc(b.suburb)}`,
     "",
     `🏅 Sport: ${esc(b.sport)}`,
     `🎂 Age: ${esc(b.age)}`,
     `🎯 Goal: ${esc(b.goal)}`,
-    `💰 Budget: ${esc(b.budget)}`,
+    `📈 ${esc(b.level || b.suburb)}`,
+    `💰 ${esc(b.invest || b.budget)}`,
     `⏳ Commit: ${esc(b.commit)}`,
   ];
 

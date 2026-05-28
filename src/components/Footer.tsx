@@ -15,7 +15,7 @@ const navLinks = [
 
 export function Footer() {
   const pathname = usePathname();
-  if (["/apply", "/welcome"].includes(pathname)) return null;
+  if (["/apply", "/welcome", "/agreement"].includes(pathname)) return null;
   return (
     <footer className="bg-gray-900 text-white relative">
       {/* Top gradient border */}
