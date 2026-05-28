@@ -444,41 +444,30 @@ export default function SpeedSchoolPage() {
           </FadeIn>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          {/* Anthony's verbatim teaching quote — pulled from a real client conversation */}
-          <FadeIn className="lg:col-span-7">
-            <blockquote className="relative bg-gray-900 text-white rounded-2xl p-8 sm:p-10 shadow-xl overflow-hidden">
-              <span className="absolute top-4 left-5 text-7xl text-accent/30 leading-none font-black">&ldquo;</span>
-              <p className="relative text-lg sm:text-xl text-white leading-relaxed mb-5 pt-3">
-                Because you haven&apos;t hit a personal best in a while — and that&apos;s stopping you from producing <span className="text-accent font-bold">more force into the ground</span> in your speed, which in turn produces faster speeds — especially the <span className="text-accent font-bold">first 15-20 metres.</span>
+        {/* Input → Transfer → Output: the squat-to-sprint chain, no testimonial quote */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <FadeIn>
+            <div className="p-6 rounded-xl bg-gray-50 border-l-2 border-l-accent/60 h-full">
+              <p className="text-[10px] text-accent uppercase tracking-[0.25em] font-bold mb-2">01 · Input</p>
+              <p className="text-sm text-gray-700 leading-relaxed">
+                Heavier squat at the right speed → more force the leg can apply per ground contact.
               </p>
-              <footer className="text-xs text-gray-400 uppercase tracking-[0.2em] font-bold">
-                — Anthony, coaching a La Liga-bound athlete
-              </footer>
-            </blockquote>
+            </div>
           </FadeIn>
-
-          {/* The mechanism */}
-          <FadeIn delay={120} className="lg:col-span-5">
-            <div className="space-y-4">
-              <div className="p-5 rounded-xl bg-gray-50 border-l-2 border-l-accent/60">
-                <p className="text-[10px] text-accent uppercase tracking-[0.25em] font-bold mb-1">01 · Input</p>
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  Heavier squat at the right speed → more force the leg can apply per ground contact.
-                </p>
-              </div>
-              <div className="p-5 rounded-xl bg-gray-50 border-l-2 border-l-accent/60">
-                <p className="text-[10px] text-accent uppercase tracking-[0.25em] font-bold mb-1">02 · Transfer</p>
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  More force in the same ground contact time → bigger horizontal projection per stride.
-                </p>
-              </div>
-              <div className="p-5 rounded-xl bg-gray-50 border-l-2 border-l-accent/60">
-                <p className="text-[10px] text-accent uppercase tracking-[0.25em] font-bold mb-1">03 · Output</p>
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  Faster 0–15m. Quicker first 5 steps. The phase where games are won.
-                </p>
-              </div>
+          <FadeIn delay={100}>
+            <div className="p-6 rounded-xl bg-gray-50 border-l-2 border-l-accent/60 h-full">
+              <p className="text-[10px] text-accent uppercase tracking-[0.25em] font-bold mb-2">02 · Transfer</p>
+              <p className="text-sm text-gray-700 leading-relaxed">
+                More force in the same ground contact time → bigger horizontal projection per stride.
+              </p>
+            </div>
+          </FadeIn>
+          <FadeIn delay={200}>
+            <div className="p-6 rounded-xl bg-gray-50 border-l-2 border-l-accent/60 h-full">
+              <p className="text-[10px] text-accent uppercase tracking-[0.25em] font-bold mb-2">03 · Output</p>
+              <p className="text-sm text-gray-700 leading-relaxed">
+                Faster 0–15m. Quicker first 5 steps. The phase where games are won.
+              </p>
             </div>
           </FadeIn>
         </div>
