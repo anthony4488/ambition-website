@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Loader2, Sparkles } from "lucide-react";
+import { trackFormStart, trackFormComplete } from "@/lib/formTelemetry";
 
 // ─── Global benchmark tiers (no country-specific labels) ──────────────────
 // Anchored to Anthony's real athlete data: Adam (1.60s 0-10m, La Liga path),
@@ -155,6 +156,7 @@ export function SpeedAuditCalculator() {
 
   const handleDiagnose = () => {
     if (!enoughData) return;
+    trackFormStart("speed-audit", { age, gender, overall_score: scores.overall, biggest_gap: biggestGap });
     setSubmitted(true);
     setTimeout(() => {
       document.getElementById("result")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -191,6 +193,7 @@ export function SpeedAuditCalculator() {
       });
       const j = await res.json();
       if (!res.ok || !j?.ok) throw new Error(j?.error || "save failed");
+      trackFormComplete("speed-audit", { overall_score: scores.overall, biggest_gap: biggestGap });
       setSaved(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "save failed");

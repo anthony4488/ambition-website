@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { ArrowRight, CheckCircle, Clock, Shield, Zap } from "lucide-react";
+import { trackFormStart, trackFormComplete } from "@/lib/formTelemetry";
 
 type Program = "speed" | "football" | "online" | "waitlist";
 
@@ -274,6 +275,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
         }),
       }).catch(() => {});
 
+      trackFormComplete(`enquiry-${program}`, { source });
       router.push("/welcome?name=" + encodeURIComponent(form.name || "") + "&email=" + encodeURIComponent(form.email || "")); // nurture/booking page fires the Meta Pixel Lead
     } catch {
       setStatus("error");
@@ -303,7 +305,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
       <div className="py-2">
         <button
           type="button"
-          onClick={() => setOpened(true)}
+          onClick={() => { trackFormStart(`enquiry-${program}`, { source }); setOpened(true); }}
           className="group w-full flex items-center justify-center gap-3 py-5 bg-accent text-white font-extrabold rounded-full hover:bg-orange-500 hover:shadow-xl hover:shadow-accent/30 transition-all text-sm uppercase tracking-[0.15em]"
         >
           {isWaitlist ? "Join The Waitlist" : "Start Application"}

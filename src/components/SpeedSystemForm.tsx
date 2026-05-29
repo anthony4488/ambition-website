@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { ArrowRight, ArrowLeft, Check, Loader2 } from "lucide-react";
+import { trackFormStart, trackFormStep, trackFormComplete } from "@/lib/formTelemetry";
 
 // ── Single hard qualifier for BOTH tracks ──
 // First question is the track picker (Speed School Sydney vs Online worldwide).
@@ -199,6 +200,10 @@ export function SpeedSystemForm() {
 
   const pick = (v: string) => {
     setAnswers((a) => ({ ...a, [current.id]: v }));
+    // Telemetry: track when they pick a track (the funnel-split moment)
+    if (current?.id === "track") {
+      trackFormStep("apply", "track-picked", { track: v });
+    }
     // Note: when picking the track on step 0, activeSteps changes — recompute
     // happens next render so the timeout-based advance is safe (still index 1).
     setTimeout(() => (isLast ? submit() : setStep((s) => s + 1)), 220);
@@ -270,6 +275,7 @@ export function SpeedSystemForm() {
         }),
       }).catch(() => {});
 
+      trackFormComplete("apply", { source, qualified, track: a.track });
       router.push(
         "/welcome?name=" + encodeURIComponent(a.name || "") + "&email=" + encodeURIComponent(a.email || ""),
       );
@@ -310,7 +316,7 @@ export function SpeedSystemForm() {
           <p>A serious investment in getting genuinely faster. If you want a quick fix, this isn&apos;t for you.</p>
         </div>
         <button
-          onClick={() => setStarted(true)}
+          onClick={() => { trackFormStart("apply"); setStarted(true); }}
           className="group mt-9 inline-flex items-center gap-3 rounded-full bg-accent px-9 py-4 text-sm font-extrabold uppercase tracking-[0.15em] text-white transition hover:bg-orange-500 hover:shadow-xl hover:shadow-accent/30"
         >
           Apply now
