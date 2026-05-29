@@ -21,7 +21,6 @@ export const dynamic = "force-dynamic";
 const SITE = process.env.NEXT_PUBLIC_APP_URL || "https://ambitionsportsperformance.com";
 const IG = "https://instagram.com/ambitionsportsperformance";
 const SPEED_AUDIT = SITE + "/speed-audit";
-const STORIES = SITE + "/success-stories";
 
 const firstNameOf = (s?: string | null) => (s ? s.trim().split(/\s+/)[0] : "there");
 
