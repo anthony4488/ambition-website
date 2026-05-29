@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SpeedAuditCalculator } from "@/components/SpeedAuditCalculator";
+import { SpeedAuditVideoUpload } from "@/components/SpeedAuditVideoUpload";
 import { Section } from "@/components/Section";
 import { FadeIn } from "@/components/FadeIn";
-import { Check, ArrowRight, Video, Ruler, Activity } from "lucide-react";
+import { Check, ArrowRight, Video, Ruler, Activity, Sparkles } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Free Speed Audit — Diagnose your bottleneck | Ambition Sports Performance",
@@ -116,18 +117,38 @@ export default function SpeedAuditPage() {
         </div>
       </Section>
 
-      {/* Calculator */}
+      {/* Video Upload — instant AI breakdown */}
+      <Section className="bg-white">
+        <FadeIn>
+          <div className="mx-auto mb-10 max-w-3xl text-center">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-accent/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.15em] text-accent">
+              <Sparkles size={13} strokeWidth={2.5} /> Fastest path — instant AI breakdown
+            </div>
+            <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+              Drop your sprint video.{" "}
+              <span className="text-accent">Get an Anthony-voice breakdown in 30 seconds.</span>
+            </h2>
+            <p className="mt-3 text-base text-gray-500">
+              No tests at home, no waiting. Phone-shot sprint clip → our system finds your biggest
+              mechanical issue and tells you exactly what to fix. Free.
+            </p>
+          </div>
+        </FadeIn>
+        <SpeedAuditVideoUpload />
+      </Section>
+
+      {/* Calculator — for those who've actually done the 5 tests */}
       <Section className="bg-gray-50">
         <FadeIn>
           <div className="mx-auto mb-10 max-w-3xl text-center">
-            <p className="text-xs font-bold uppercase tracking-[0.3em] text-accent">The Calculator</p>
+            <p className="text-xs font-bold uppercase tracking-[0.3em] text-accent">Already done the tests?</p>
             <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-              Plug in your numbers.{" "}
+              Plug your numbers in here.{" "}
               <span className="text-accent">See where you sit vs elite.</span>
             </h2>
             <p className="mt-3 text-base text-gray-500">
-              You can fill in what you have - even 2 metrics give a usable diagnosis.
-              The more you fill in, the sharper the read.
+              If you&apos;ve done the 5-test filming protocol at home, drop the results in for a numerical
+              comparison. Even 2 metrics give a usable read.
             </p>
           </div>
         </FadeIn>
