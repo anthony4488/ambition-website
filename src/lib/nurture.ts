@@ -6,6 +6,8 @@ const SITE = process.env.NEXT_PUBLIC_APP_URL || "https://ambitionsportsperforman
 const BOOK = "https://calendly.com/ambitionsportsperformance-info/30min";
 const STORIES = SITE + "/success-stories";
 const APPLY = SITE + "/apply";
+const IG = "https://instagram.com/ambitionsportsperformance";
+const SPEED_SCHOOL = SITE + "/speed-school";
 
 export interface Touch {
   dayOffset: number; // days after enrollment
@@ -45,7 +47,8 @@ const TOUCHES_ONLINE: Touch[] = [
           u
         ),
     },
-    sms: (n) => `${firstName(n)} - thanks for applying for online speed coaching. Next step is a quick call - grab a time: ${BOOK} - Anthony`,
+    sms: (n) =>
+      `${firstName(n)} - thanks for applying for online speed coaching. Lock your call in: ${BOOK}  |  How we work: ${SPEED_SCHOOL}  |  Daily breakdowns: ${IG} - Anthony`,
   },
   {
     dayOffset: 1,
@@ -116,7 +119,8 @@ const TOUCHES_F2F: Touch[] = [
           u
         ),
     },
-    sms: (n) => `${firstName(n)} - thanks for applying for the Ambition Speed System. Next step is a quick call - grab a time: ${BOOK} - Anthony`,
+    sms: (n) =>
+      `${firstName(n)} - thanks for applying for the Ambition Speed System. Lock your call in: ${BOOK}  |  How we work: ${SPEED_SCHOOL}  |  Daily content: ${IG} - Anthony`,
   },
   {
     dayOffset: 1,
