@@ -116,14 +116,46 @@ export async function POST(req: NextRequest) {
   }
 
   if (eventType === "invitee.created") {
-    // 1) Confirmation SMS — leads with the pre-call lead-magnet (speed audit)
+    // 1) EXIT them from the active nurture so we don't pester someone who
+    //    just took the action we want. Two layers:
+    //    a) Update Supabase row → cron stops sending SMS
+    //    b) Tag in Kit → Kit Rule stops the email sequence
+    //       (Anthony sets the Rule once: "tag added 'booked-call' →
+    //        Unsubscribe from Online Nurture + F2F Nurture")
+    if (email) {
+      try {
+        const sb = getSupabaseAdmin();
+        await sb
+          .from("nurture_enrollments")
+          .update({
+            status: "booked",
+            booked_at: new Date().toISOString(),
+            calendly_event_uri: p.scheduled_event?.uri || null,
+          })
+          .eq("email", email)
+          .eq("status", "active");
+      } catch { /* non-fatal */ }
+      // Kit: tag as booked-call (id 19876449)
+      const kitKey = process.env.KIT_API_KEY;
+      if (kitKey) {
+        try {
+          await fetch(`https://api.convertkit.com/v3/tags/19876449/subscribe`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ api_key: kitKey, email, first_name: first }),
+          });
+        } catch { /* non-fatal */ }
+      }
+    }
+
+    // 2) Confirmation SMS — leads with the pre-call lead-magnet (speed audit)
     //    so they arrive at the call with real numbers + a real question.
     if (phone) {
       const sms = `${first} - call locked in for ${startFormatted}. DO THIS BEFORE: free 5-min speed audit → ${SPEED_AUDIT} (bring your numbers to the call). Daily breakdowns: ${IG} - Anthony`;
       await sendSms(phone, sms);
     }
 
-    // 2) Telegram alert
+    // 3) Telegram alert
     const bookedLines: string[] = [
       `🗓️ <b>NEW CALL BOOKED</b>`,
       ``,
@@ -133,6 +165,7 @@ export async function POST(req: NextRequest) {
     if (phone) bookedLines.push(`📞 ${escapeHtml(phone)}`);
     bookedLines.push(``, `⏰ ${escapeHtml(startFormatted)}`);
     if (p.scheduled_event?.name) bookedLines.push(`🎯 ${escapeHtml(p.scheduled_event.name)}`);
+    bookedLines.push(``, `<i>✓ Nurture paused (SMS + Kit) — they won't get further follow-ups.</i>`);
     await sendTelegramMessage(bookedLines.join("\n"));
   } else if (eventType === "invitee.canceled") {
     const cxlLines: string[] = [
