@@ -1,12 +1,13 @@
 import { NextRequest } from "next/server";
 import { sendTelegramMessage, escapeHtml } from "@/lib/telegram";
+import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// Form telemetry endpoint. Fires a Telegram alert when a user begins
-// interacting with a form (or hits a step). Used to spot drop-offs:
-// if 20 STARTED alerts but only 4 COMPLETED leads land, the form has friction.
+// Form telemetry endpoint. Persists to public.form_events AND fires a Telegram
+// alert. Used to query drop-off rates per form / per step + see new starts in
+// real time.
 
 type Body = {
   session_id?: string;
@@ -59,6 +60,27 @@ export async function POST(req: NextRequest) {
   if (metaLines.length) {
     lines.push("");
     lines.push(...metaLines);
+  }
+
+  // Persist for analytics (drop-off queries)
+  try {
+    const sb = getSupabaseAdmin();
+    const ipAddress =
+      req.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
+      req.headers.get("x-real-ip") ||
+      null;
+    await sb.from("form_events").insert({
+      session_id: b.session_id || null,
+      form_id: b.form_id || "unknown",
+      event,
+      page: b.page || null,
+      referrer: b.referrer || null,
+      meta: b.meta || null,
+      user_agent: ua,
+      ip_address: ipAddress,
+    });
+  } catch {
+    /* non-fatal — Telegram alert still fires */
   }
 
   await sendTelegramMessage(lines.join("\n"));
