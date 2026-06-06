@@ -6,8 +6,8 @@ import { FadeIn } from "@/components/FadeIn";
 import { ArrowLeft } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "From 23 km/h to 32 km/h at Age 12 — Ambition Sports Performance",
-  description: "How systematic programming produced a 9 km/h speed gain in 14 months for a junior athlete — making him faster than senior professional footballers.",
+  title: "From 23 km/h to 32 km/h at Age 12, Ambition Sports Performance",
+  description: "How systematic programming produced a 9 km/h speed gain in 14 months for a junior athlete, making him faster than senior professional footballers.",
 };
 
 export default function YouthSpeedPost() {
@@ -91,7 +91,7 @@ export default function YouthSpeedPost() {
                 </p>
 
                 <p>
-                  But the speed number is only part of the story. His 25% improvement across all athletic KPIs — acceleration, agility, reactive strength, speed endurance — means he&apos;s not just fast in a straight line. He&apos;s a more complete athlete.
+                  But the speed number is only part of the story. His 25% improvement across all athletic KPIs, acceleration, agility, reactive strength, speed endurance, means he&apos;s not just fast in a straight line. He&apos;s a more complete athlete.
                 </p>
 
                 <h2 className="text-2xl font-extrabold text-gray-900 mt-12 mb-4">What This Means for Youth Athletes</h2>
@@ -101,7 +101,7 @@ export default function YouthSpeedPost() {
                 </p>
 
                 <p>
-                  The window for developing speed in youth athletes is massive. The question is whether that window is being used with a system — or wasted on guesswork.
+                  The window for developing speed in youth athletes is massive. The question is whether that window is being used with a system, or wasted on guesswork.
                 </p>
 
                 <p className="text-xl font-bold text-gray-900">
@@ -113,7 +113,7 @@ export default function YouthSpeedPost() {
         </div>
       </Section>
 
-      <CTASection title="Start your child's speed journey." description="Apply for an assessment and find out exactly where they are — and what's possible." />
+      <CTASection title="Start your child's speed journey." description="Apply for an assessment and find out exactly where they are, and what's possible." />
     </>
   );
 }

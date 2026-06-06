@@ -3,11 +3,9 @@
 // until RESEND_API_KEY / CLICKSEND_* are configured.
 
 const SITE = process.env.NEXT_PUBLIC_APP_URL || "https://ambitionsportsperformance.com";
-const BOOK = "https://calendly.com/ambitionsportsperformance-info/30min";
 const STORIES = SITE + "/success-stories";
 const APPLY = SITE + "/apply";
 const IG = "https://instagram.com/ambitionsportsperformance";
-const SPEED_SCHOOL = SITE + "/speed-school";
 
 export interface Touch {
   dayOffset: number; // days after enrollment
@@ -36,19 +34,20 @@ const TOUCHES_ONLINE: Touch[] = [
   {
     dayOffset: 0,
     email: {
-      subject: "You're in - let's book your online assessment",
+      subject: "You're in, here's what happens next",
       html: (n, u) =>
         wrap(
           `<p>${firstName(n)},</p>
-           <p>Your application's in. The next step is your <strong>online assessment</strong> - I break down your sprint, measure what's actually limiting you, and map exactly what to fix. You don't have to wait for us to call - grab a time that suits:</p>
-           <p style="text-align:center">${btn(BOOK, "Book your online assessment")}</p>
+           <p>Your application's in. Here's how this works: I personally go through your answers, then I'll <strong>text you from a Sydney number</strong> to map out your online assessment. Nothing for you to chase, I come to you.</p>
+           <p>While you wait, this is how I break athletes down and build the fix:</p>
+           <p style="text-align:center">${btn(STORIES, "See the results")}</p>
            <p>No guessing. Numbers, not opinions.</p>
            <p>- Anthony</p>`,
           u
         ),
     },
     sms: (n) =>
-      `${firstName(n)} - thanks for applying for online speed coaching. Lock your call in: ${BOOK}  |  How we work: ${SPEED_SCHOOL}  |  Daily breakdowns: ${IG} - Anthony`,
+      `Hi ${firstName(n)}, thanks for applying for online speed coaching with Ambition. Anthony will call you to map out your assessment, so keep your phone close. While you wait, our daily breakdowns: ${IG}`,
   },
   {
     dayOffset: 1,
@@ -57,16 +56,15 @@ const TOUCHES_ONLINE: Touch[] = [
       html: (n, u) =>
         wrap(
           `<p>${firstName(n)},</p>
-           <p>Most coaches guess. I measure - then build the exact fix. And I do it <strong>online, wherever you are.</strong></p>
-           <p>One athlete I coach entirely remotely went from 28 to 34 km/h. Another, two weeks in: <em>"didn't expect that much gains."</em> Same system - to your phone.</p>
+           <p>Most coaches guess. I measure, then build the exact fix. And I do it <strong>online, wherever you are.</strong></p>
+           <p>One athlete I coach entirely remotely went from 28 to 34 km/h. Another, two weeks in: <em>"didn't expect that much gains."</em> Same system, to your phone.</p>
            <p style="text-align:center">${btn(STORIES, "See the results")}</p>
-           <p>Ready to find your limiter?</p>
-           <p style="text-align:center">${btn(BOOK, "Book your online assessment")}</p>
+           <p>I'll be in touch soon to find your limiter.</p>
            <p>- Anthony</p>`,
           u
         ),
     },
-    sms: (n) => `${firstName(n)} - I coach athletes to 34 km/h entirely online, wherever they are. Same system, your phone. See it: ${STORIES}  Book a call: ${BOOK}`,
+    sms: (n) => `${firstName(n)}, I coach athletes to 34 km/h entirely online, wherever they are. Same system, your phone. See it: ${STORIES}  I'll text you soon. - Anthony`,
   },
   {
     dayOffset: 3,
@@ -75,14 +73,14 @@ const TOUCHES_ONLINE: Touch[] = [
       html: (n, u) =>
         wrap(
           `<p>${firstName(n)},</p>
-           <p>Here's the honest truth: most athletes spend years - and a lot of money - training around a problem nobody's ever measured.</p>
-           <p>Your online assessment finds the actual limiter: I break your sprint down frame by frame - ground contact, stride, where your foot lands - and you walk away knowing exactly what to fix first. That's the difference between guessing and a plan.</p>
-           <p style="text-align:center">${btn(BOOK, "Book your online assessment")}</p>
+           <p>Here's the honest truth: most athletes spend years, and a lot of money, training around a problem nobody's ever measured.</p>
+           <p>Your online assessment finds the actual limiter: I break your sprint down frame by frame, ground contact, stride, where your foot lands, and you walk away knowing exactly what to fix first. That's the difference between guessing and a plan.</p>
+           <p>I'll reach out shortly to get yours sorted, so keep an eye on your phone.</p>
            <p>- Anthony</p>`,
           u
         ),
     },
-    sms: (n) => `${firstName(n)} - most athletes train for years around a problem nobody measured. The online assessment finds the real limiter - let's chat. Book a call: ${BOOK}`,
+    sms: (n) => `${firstName(n)}, most athletes train for years around a problem nobody measured. The online assessment finds the real limiter. I'll be in touch soon to sort yours. - Anthony`,
   },
   {
     dayOffset: 6,
@@ -91,15 +89,13 @@ const TOUCHES_ONLINE: Touch[] = [
       html: (n, u) =>
         wrap(
           `<p>${firstName(n)},</p>
-           <p>I cap how many athletes I coach online so it stays specific - your program, your bottlenecks, every rep measured. Spots for this round are nearly gone.</p>
-           <p>If you want yours assessed and a real plan built, now's the time:</p>
-           <p style="text-align:center">${btn(BOOK, "Book your online assessment")}</p>
-           <p>If now's not right, no stress - you can re-apply anytime at ${APPLY}.</p>
+           <p>I cap how many athletes I coach online so it stays specific, your program, your bottlenecks, every rep measured. Spots for this round are nearly gone.</p>
+           <p>I'll be reaching out to the last few personally, so keep your phone close. If now's not the right time, no stress, you can re-apply anytime at ${APPLY}.</p>
            <p>- Anthony</p>`,
           u
         ),
     },
-    sms: (n) => `${firstName(n)} - I only take a handful of online athletes at a time so the coaching stays specific. Spots nearly gone - book a call: ${BOOK} - Anthony`,
+    sms: (n) => `${firstName(n)}, I only take a handful of online athletes at a time so the coaching stays specific. Spots nearly gone, I'll text you soon. - Anthony`,
   },
 ];
 
@@ -108,19 +104,20 @@ const TOUCHES_F2F: Touch[] = [
   {
     dayOffset: 0,
     email: {
-      subject: "Your application's in - let's book your assessment",
+      subject: "Your application's in, here's what happens next",
       html: (n, u) =>
         wrap(
           `<p>${firstName(n)},</p>
-           <p>Your application's in. You don't have to wait for us to call - lock in your assessment and pick a time that suits:</p>
-           <p style="text-align:center">${btn(BOOK, "Book your assessment")}</p>
-           <p>We map exactly what's limiting your athlete's speed - no guessing, numbers not opinions.</p>
+           <p>Your application's in. Here's how this works: we go through your answers, then we'll <strong>text you from a Sydney number</strong> to lock in your athlete's assessment. Nothing for you to chase.</p>
+           <p>While you wait, here's how we work:</p>
+           <p style="text-align:center">${btn(STORIES, "See our athletes' results")}</p>
+           <p>No guessing, numbers not opinions.</p>
            <p>- Anthony</p>`,
           u
         ),
     },
     sms: (n) =>
-      `${firstName(n)} - thanks for applying for the Ambition Speed System. Lock your call in: ${BOOK}  |  How we work: ${SPEED_SCHOOL}  |  Daily content: ${IG} - Anthony`,
+      `Hi ${firstName(n)}, thanks for applying for the Ambition Speed System. Anthony will call you to lock in your athlete's assessment, so keep your phone close. While you wait, our daily content: ${IG}`,
   },
   {
     dayOffset: 1,
@@ -129,15 +126,14 @@ const TOUCHES_F2F: Touch[] = [
       html: (n, u) =>
         wrap(
           `<p>${firstName(n)},</p>
-           <p>Most coaches guess. We measure - then build the exact plan to fix what's holding an athlete back. Don't take my word for it:</p>
+           <p>Most coaches guess. We measure, then build the exact plan to fix what's holding an athlete back. Don't take my word for it:</p>
            <p style="text-align:center">${btn(STORIES, "See our athletes' results")}</p>
-           <p>Want your athlete assessed?</p>
-           <p style="text-align:center">${btn(BOOK, "Book the assessment")}</p>
+           <p>We'll be in touch soon to get your athlete assessed.</p>
            <p>- Anthony</p>`,
           u
         ),
     },
-    sms: (n) => `${firstName(n)} - see the athletes we've helped get faster: ${STORIES}  Book a call: ${BOOK}`,
+    sms: (n) => `${firstName(n)}, see the athletes we've helped get faster: ${STORIES}  We'll text you soon. - Anthony`,
   },
   {
     dayOffset: 3,
@@ -146,14 +142,14 @@ const TOUCHES_F2F: Touch[] = [
       html: (n, u) =>
         wrap(
           `<p>${firstName(n)},</p>
-           <p>Fair question. Most athletes spend years - and a lot of money - training around a problem nobody's measured.</p>
+           <p>Fair question. Most athletes spend years, and a lot of money, training around a problem nobody's measured.</p>
            <p>The assessment finds the actual limiter in one session: 240fps video, laser timing, 20+ indicators. You leave knowing exactly what to fix first.</p>
-           <p style="text-align:center">${btn(BOOK, "Book your assessment")}</p>
+           <p>We'll reach out shortly to get your athlete booked in, so keep an eye on your phone.</p>
            <p>- Anthony</p>`,
           u
         ),
     },
-    sms: (n) => `${firstName(n)} - the $199 assessment finds the exact thing capping your athlete's speed. Let's chat - book a call: ${BOOK}`,
+    sms: (n) => `${firstName(n)}, the $199 assessment finds the exact thing capping your athlete's speed. We'll be in touch soon to sort it. - Anthony`,
   },
   {
     dayOffset: 6,
@@ -163,13 +159,12 @@ const TOUCHES_F2F: Touch[] = [
         wrap(
           `<p>${firstName(n)},</p>
            <p>We cap how many athletes we take each intake so the coaching stays specific. Spots for this round are nearly gone.</p>
-           <p style="text-align:center">${btn(BOOK, "Book before it closes")}</p>
-           <p>If now's not right, no stress - you can re-apply anytime at ${APPLY}.</p>
+           <p>We're reaching out to the last few personally, so keep your phone close. If now's not right, no stress, you can re-apply anytime at ${APPLY}.</p>
            <p>- Anthony</p>`,
           u
         ),
     },
-    sms: (n) => `${firstName(n)} - last call for this intake, spots nearly gone. Book a call: ${BOOK} - Anthony`,
+    sms: (n) => `${firstName(n)}, last call for this intake, spots nearly gone. We'll text you shortly. - Anthony`,
   },
 ];
 

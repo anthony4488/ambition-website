@@ -7,7 +7,7 @@ import { FadeIn } from "@/components/FadeIn";
 import { Check, ArrowRight, Video, Ruler, Activity, Sparkles } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Free Speed Audit — Diagnose your bottleneck | Ambition Sports Performance",
+  title: "Free Speed Audit, Diagnose your bottleneck | Ambition Sports Performance",
   description:
     "Anthony's $299 speed assessment - the protocol and the diagnostic, free. Film the 5 tests at home, enter your numbers, get an instant biomechanical diagnosis benchmarked against elite for your cohort.",
 };
@@ -21,7 +21,7 @@ export default function SpeedAuditPage() {
         <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <p className="mb-5 text-xs font-bold uppercase tracking-[0.3em] text-accent">
-              The Speed Audit — Free
+              The Speed Audit, Free
             </p>
           </FadeIn>
           <FadeIn delay={100}>
@@ -72,7 +72,7 @@ export default function SpeedAuditPage() {
               icon: Video,
               n: "01",
               title: "Read the filming protocol",
-              body: "Open Anthony's filming guide — 5 tests, demo videos, exact setup. Watch the demos before you film.",
+              body: "Open Anthony's filming guide, 5 tests, demo videos, exact setup. Watch the demos before you film.",
               link: { href: "https://assessment.ambitionsportsperformance.com/online-assessment", label: "Open the protocol →" },
             },
             {
@@ -117,12 +117,12 @@ export default function SpeedAuditPage() {
         </div>
       </Section>
 
-      {/* Video Upload — instant AI breakdown */}
+      {/* Video Upload, instant AI breakdown */}
       <Section className="bg-white">
         <FadeIn>
           <div className="mx-auto mb-10 max-w-3xl text-center">
             <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-accent/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.15em] text-accent">
-              <Sparkles size={13} strokeWidth={2.5} /> Fastest path — instant AI breakdown
+              <Sparkles size={13} strokeWidth={2.5} /> Fastest path, instant AI breakdown
             </div>
             <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
               Drop your sprint video.{" "}
@@ -137,7 +137,7 @@ export default function SpeedAuditPage() {
         <SpeedAuditVideoUpload />
       </Section>
 
-      {/* Calculator — for those who've actually done the 5 tests */}
+      {/* Calculator, for those who've actually done the 5 tests */}
       <Section className="bg-gray-50">
         <FadeIn>
           <div className="mx-auto mb-10 max-w-3xl text-center">
@@ -155,7 +155,7 @@ export default function SpeedAuditPage() {
         <SpeedAuditCalculator />
       </Section>
 
-      {/* Footer CTA — apply for the full review */}
+      {/* Footer CTA, apply for the full review */}
       <section className="bg-gray-900 py-20 text-white sm:py-24">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
           <FadeIn>

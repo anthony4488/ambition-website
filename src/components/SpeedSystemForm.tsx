@@ -25,7 +25,7 @@ const isF2F = (a: Answers) => a.track === TRACK_F2F;
 const isOnline = (a: Answers) => a.track === TRACK_ONLINE;
 
 const STEPS: Step[] = [
-  // 1. Track — controls everything downstream
+  // 1. Track, controls everything downstream
   {
     id: "track",
     type: "radio",
@@ -204,7 +204,7 @@ export function SpeedSystemForm() {
     if (current?.id === "track") {
       trackFormStep("apply", "track-picked", { track: v });
     }
-    // Note: when picking the track on step 0, activeSteps changes — recompute
+    // Note: when picking the track on step 0, activeSteps changes, recompute
     // happens next render so the timeout-based advance is safe (still index 1).
     setTimeout(() => (isLast ? submit() : setStep((s) => s + 1)), 220);
   };
@@ -217,10 +217,11 @@ export function SpeedSystemForm() {
     const f2f = isF2F(a);
     const source = f2f ? "f2f-apply" : "online-apply";
 
-    // Qualified gate — different per track
-    const qualified = f2f
-      ? !(a.f2f_budget || "").toLowerCase().includes("not ready")
-      : !(a.online_invest || "").toLowerCase().includes("exploring");
+    // No disqualification: every applicant comes through as a real lead and
+    // gets the full Telegram alert so Anthony sees their details immediately.
+    // He qualifies and closes on the call. The budget + investment answers are
+    // still captured in the notes below so he has the context to close them.
+    const qualified = true;
 
     const notes = [
       `Program: ${f2f ? "SPEED SCHOOL (F2F SYDNEY)" : "ONLINE COACHING"}`,

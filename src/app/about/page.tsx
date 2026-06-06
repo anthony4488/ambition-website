@@ -6,7 +6,7 @@ import { FadeIn } from "@/components/FadeIn";
 import { ArrowRight, MapPin, Trophy, Users } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "About Anthony — Founder | Ambition Sports Performance",
+  title: "About Anthony, Founder | Ambition Sports Performance",
   description: "Ex-professional footballer across 6 first-division clubs in 5 countries. 22+ countries, 20+ years researching speed and biomechanics. Founder of Ambition Sports Performance.",
 };
 
@@ -71,18 +71,18 @@ export default function AboutPage() {
             <p className="text-accent text-xs uppercase tracking-[0.3em] mb-4 font-semibold">About Me</p>
             <h2 className="text-4xl sm:text-6xl font-extrabold text-gray-900 tracking-tight leading-tight mb-8">
               I don&apos;t train athletes. <br className="hidden sm:block" />
-              I <span className="text-accent">diagnose</span> why they&apos;re slow — <br className="hidden sm:block" />
+              I <span className="text-accent">diagnose</span> why they&apos;re slow, <br className="hidden sm:block" />
               then I <span className="text-accent">tear it down.</span>
             </h2>
             <div className="space-y-5 text-lg sm:text-xl text-gray-600 leading-relaxed text-left sm:text-center">
               <p>
-                I&apos;m Anthony. Six first-division clubs across five countries. 22+ nations played and trained in. 20+ years digging into what actually makes an athlete faster — not what coaches guess at.
+                I&apos;m Anthony. Six first-division clubs across five countries. 22+ nations played and trained in. 20+ years digging into what actually makes an athlete faster, not what coaches guess at.
               </p>
               <p>
                 Every method on this site was tested on me first. <strong className="text-gray-900">43 km/h on tape. 300 kg deadlift. 2.62 seconds over 20 metres.</strong> Built before it was ever coached.
               </p>
               <p>
-                200+ athletes have run through the same system since — junior prodigies, Paralympic gold medalists, Bundesliga signings, NPL debutants, state champions. <strong className="text-gray-900">Same diagnostic. Same prescription. Same arc.</strong>
+                200+ athletes have run through the same system since: junior prodigies, Paralympic gold medalists, Bundesliga signings, NPL debutants, state champions. <strong className="text-gray-900">Same diagnostic. Same prescription. Same arc.</strong>
               </p>
               <p className="text-accent font-bold italic pt-2">
                 Numbers, not opinions. Cutting through the nonsense along the way.
@@ -92,7 +92,7 @@ export default function AboutPage() {
         </FadeIn>
       </Section>
 
-      {/* Professional Career — Club logo grid */}
+      {/* Professional Career, Club logo grid */}
       <section className="py-24 sm:py-32 bg-gray-900 overflow-hidden relative">
         <div className="absolute left-0 top-0 w-[600px] h-[400px] bg-accent/8 rounded-full blur-[180px] pointer-events-none" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -141,7 +141,7 @@ export default function AboutPage() {
               <div>
                 <p className="text-[10px] text-accent uppercase tracking-[0.25em] font-bold mb-4">Training Programs In</p>
                 <p className="text-sm text-gray-300 leading-relaxed">
-                  {trainingCountries.join(" · ")}. Saw firsthand how the most highly regarded programs and institutions deliver — both at youth and senior level — in the footballing world.
+                  {trainingCountries.join(" · ")}. Saw firsthand how the most highly regarded programs and institutions deliver, both at youth and senior level, in the footballing world.
                 </p>
               </div>
             </div>
@@ -185,7 +185,7 @@ export default function AboutPage() {
                 Not a number on a slide. <span className="text-accent">A number on the clock.</span>
               </h3>
               <p className="text-sm sm:text-base text-gray-500 leading-relaxed">
-                Recorded run at <strong className="text-gray-900">43 km/h</strong> — top-speed sprint, filmed, timed, and verified. Every claim on this site is backed by footage like this.
+                Recorded run at <strong className="text-gray-900">43 km/h</strong>, top-speed sprint, filmed, timed, and verified. Every claim on this site is backed by footage like this.
               </p>
             </div>
             <div className="lg:col-span-3">
@@ -203,7 +203,7 @@ export default function AboutPage() {
         </FadeIn>
       </Section>
 
-      {/* Philosophy — quote-led */}
+      {/* Philosophy, quote-led */}
       <section className="py-24 sm:py-32 bg-gray-900 overflow-hidden relative">
         <div className="absolute right-0 top-0 w-[500px] h-[500px] bg-accent/8 rounded-full blur-[180px] pointer-events-none" />
         <div className="absolute left-1/4 bottom-0 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[150px] pointer-events-none" />
@@ -222,12 +222,12 @@ export default function AboutPage() {
           <div className="space-y-6 max-w-3xl mx-auto">
             <FadeIn delay={100}>
               <p className="text-lg sm:text-xl text-gray-200 leading-relaxed">
-                From an athletic standpoint I&apos;ve accomplished world-class feats and been to the very highest heights as a professional footballing athlete — crossing <strong className="text-white">over 22 countries</strong> during my playing period. From that experience, learning how different top-level institutions across multiple continents run their programs, I&apos;ve built the ability to guide athletes through the same path.
+                From an athletic standpoint I&apos;ve accomplished world-class feats and been to the very highest heights as a professional footballing athlete, crossing <strong className="text-white">over 22 countries</strong> during my playing period. From that experience, learning how different top-level institutions across multiple continents run their programs, I&apos;ve built the ability to guide athletes through the same path.
               </p>
             </FadeIn>
             <FadeIn delay={200}>
               <p className="text-lg sm:text-xl text-gray-200 leading-relaxed">
-                <strong className="text-white">20 years of in-depth research</strong>. Trial and error. Tested numerous methods over my career and present. I&apos;m here to give you the <strong className="text-accent">CORRECT &amp; OPTIMAL methods</strong> of Athletic Development and Footballing Skill / Technical Acquisition — from real-world experience as a professional, from varied places around the globe.
+                <strong className="text-white">20 years of in-depth research</strong>. Trial and error. Tested numerous methods over my career and present. I&apos;m here to give you the <strong className="text-accent">CORRECT &amp; OPTIMAL methods</strong> of Athletic Development and Footballing Skill / Technical Acquisition, from real-world experience as a professional, from varied places around the globe.
               </p>
             </FadeIn>
             <FadeIn delay={300}>
@@ -240,12 +240,12 @@ export default function AboutPage() {
                 <p className="text-2xl sm:text-4xl font-black text-accent tracking-tight italic">
                   Cutting through the nonsense along the way.
                 </p>
-                <p className="text-gray-400 mt-4 text-sm">— Anthony</p>
+                <p className="text-gray-400 mt-4 text-sm">,  Anthony</p>
               </div>
             </FadeIn>
           </div>
 
-          {/* Two world-record breakdowns — Bolt (precedent) and Gout Gout (path forward) */}
+          {/* Two world-record breakdowns, Bolt (precedent) and Gout Gout (path forward) */}
           <FadeIn delay={500}>
             <div className="mt-16">
               <div className="text-center mb-10">
@@ -261,7 +261,7 @@ export default function AboutPage() {
                   <div className="relative rounded-xl overflow-hidden bg-black aspect-[9/16] shadow-xl ring-1 ring-white/10 max-w-[280px] mx-auto mb-5 w-full">
                     <iframe
                       src="https://iframe.mediadelivery.net/embed/659523/bec6b21d-d79a-40c3-a4d1-c4db180aa87e?autoplay=false&preload=true&responsive=true"
-                      title="Anthony — The Evolution of Bolt"
+                      title="Anthony, The Evolution of Bolt"
                       allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
                       allowFullScreen
                       loading="lazy"
@@ -273,16 +273,16 @@ export default function AboutPage() {
                     Usain Bolt <span className="text-accent">shouldn&apos;t have been fast.</span>
                   </h4>
                   <p className="text-sm text-gray-300 leading-relaxed">
-                    By the textbook, his anatomy was wrong, his mechanics were wrong, his height was wrong. He broke every rule and every record — because his coaches refused conventions and built around the athlete in front of them. That&apos;s the way we coach.
+                    By the textbook, his anatomy was wrong, his mechanics were wrong, his height was wrong. He broke every rule and every record, because his coaches refused conventions and built around the athlete in front of them. That&apos;s the way we coach.
                   </p>
                 </div>
 
-                {/* Gout Gout — uploaded via Bunny API */}
+                {/* Gout Gout, uploaded via Bunny API */}
                 <div className="rounded-2xl bg-gray-800/40 border border-gray-800 p-6 sm:p-7 flex flex-col">
                   <div className="relative rounded-xl overflow-hidden bg-black aspect-[9/16] shadow-xl ring-1 ring-white/10 max-w-[280px] mx-auto mb-5 w-full">
                     <iframe
                       src="https://iframe.mediadelivery.net/embed/659523/6f79d9f7-7e28-4b14-a3da-758f5516f81e?autoplay=false&preload=true&responsive=true"
-                      title="Anthony — Gout Gout: the biomechanical challenge of 19.1"
+                      title="Anthony, Gout Gout: the biomechanical challenge of 19.1"
                       allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
                       allowFullScreen
                       loading="lazy"
@@ -291,10 +291,10 @@ export default function AboutPage() {
                   </div>
                   <p className="text-[10px] text-accent uppercase tracking-[0.25em] font-bold mb-2">The Path Forward</p>
                   <h4 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight mb-3 leading-snug">
-                    Gout Gout — the path to <span className="text-accent">19.1 seconds.</span>
+                    Gout Gout, the path to <span className="text-accent">19.1 seconds.</span>
                   </h4>
                   <p className="text-sm text-gray-300 leading-relaxed">
-                    Low distal mass. Lightning-fast recovery cycle. But to break the world record requires adding muscle without ballooning rotational inertia — managing the physics of structural growth. The level of analysis behind every athlete I work with.
+                    Low distal mass. Lightning-fast recovery cycle. But to break the world record requires adding muscle without ballooning rotational inertia, managing the physics of structural growth. The level of analysis behind every athlete I work with.
                   </p>
                 </div>
               </div>
@@ -313,7 +313,7 @@ export default function AboutPage() {
               The coaches behind your <span className="text-accent">transformation.</span>
             </h2>
             <p className="text-gray-500 max-w-xl">
-              Every athlete who trains with us is guided directly by the people who built the system — no outsourced trainers, no generic templates.
+              Every athlete who trains with us is guided directly by the people who built the system, no outsourced trainers, no generic templates.
             </p>
           </div>
         </FadeIn>
@@ -323,7 +323,7 @@ export default function AboutPage() {
               <div className="relative aspect-[4/5] overflow-hidden">
                 <Image
                   src="/founder/anthony-main.jpeg"
-                  alt="Anthony Atanasov — Founder"
+                  alt="Anthony Atanasov, Founder"
                   fill
                   className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
                 />
@@ -345,7 +345,7 @@ export default function AboutPage() {
               <div className="relative aspect-[4/5] overflow-hidden">
                 <Image
                   src="/hais-running.jpg"
-                  alt="Hais — Head Coach"
+                  alt="Hais, Head Coach"
                   fill
                   className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
                 />
@@ -357,7 +357,7 @@ export default function AboutPage() {
                   Hais
                 </h3>
                 <p className="text-gray-300 text-sm leading-relaxed">
-                  Leads day-to-day coaching across the Ambition roster. Carries the system into every session — same standards, same methods, same results.
+                  Leads day-to-day coaching across the Ambition roster. Carries the system into every session, same standards, same methods, same results.
                 </p>
               </div>
             </div>

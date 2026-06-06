@@ -7,7 +7,7 @@ import { EnquiryForm } from "@/components/EnquiryForm";
 import { Check, ArrowRight, X, PlayCircle, ShieldCheck } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Online Coaching — The Speed Diagnostic System | Ambition Sports Performance",
+  title: "Online Coaching, The Speed Diagnostic System | Ambition Sports Performance",
   description: "Elite biomechanical speed assessment + 30-week custom program delivered remotely. $200 assessment. Same system trusted by Bundesliga, Paralympic, and NPL athletes.",
 };
 
@@ -20,56 +20,56 @@ const tests = [
 ];
 
 const reportItems = [
-  "Acceleration · Speed Buildup · Maximum Velocity · Reactive Speed · Elastic Power — every trait plotted vs. elite",
+  "Acceleration · Speed Buildup · Maximum Velocity · Reactive Speed · Elastic Power, every trait plotted vs. elite",
   "Top speed in km/h, ranked against U14 / U16 / U18 / senior elite",
   "Ground contact efficiency and stride length under load",
   "Hip extension, triple extension at toe-off, frontside mechanics",
-  "Reactive stiffness & stretch-shortening cycle — the elastic power bottleneck",
+  "Reactive stiffness & stretch-shortening cycle, the elastic power bottleneck",
   "Movement asymmetries, knee deformation, posture under load",
   "12-month targets and a 3-year development arc",
 ];
 
 const blocks = [
-  { n: "01", weeks: "Weeks 1–6", name: "Foundation", items: ["General physical preparedness", "Movement quality and mobility", "Aerobic and tendon conditioning"] },
-  { n: "02", weeks: "Weeks 7–12", name: "Acceleration Development", items: ["Drive-phase sprint mechanics", "Horizontal force production", "Resisted acceleration work"] },
-  { n: "03", weeks: "Weeks 13–18", name: "Max Velocity", items: ["Top-end speed mechanics", "Reactive strength & plyometrics", "Stride frequency & ground contact"] },
-  { n: "04", weeks: "Weeks 19–24", name: "Power + Transfer", items: ["Force expression at speed", "Elastic strength", "Sport-specific application"] },
-  { n: "05", weeks: "Weeks 25–30", name: "Peaking + Expression", items: ["Speed expression at full output", "Match readiness", "Testing and performance lock"] },
+  { n: "01", weeks: "Weeks 1 to 6", name: "Foundation", items: ["General physical preparedness", "Movement quality and mobility", "Aerobic and tendon conditioning"] },
+  { n: "02", weeks: "Weeks 7 to 12", name: "Acceleration Development", items: ["Drive-phase sprint mechanics", "Horizontal force production", "Resisted acceleration work"] },
+  { n: "03", weeks: "Weeks 13 to 18", name: "Max Velocity", items: ["Top-end speed mechanics", "Reactive strength & plyometrics", "Stride frequency & ground contact"] },
+  { n: "04", weeks: "Weeks 19 to 24", name: "Power + Transfer", items: ["Force expression at speed", "Elastic strength", "Sport-specific application"] },
+  { n: "05", weeks: "Weeks 25 to 30", name: "Peaking + Expression", items: ["Speed expression at full output", "Match readiness", "Testing and performance lock"] },
 ];
 
 const weekFlow = [
-  { day: "Monday", title: "Block Drop", body: "Anthony sends the week's programming via WhatsApp — every session, drill, and load. Demo videos and form cues included." },
-  { day: "Tue–Fri", title: "Train + Film", body: "The athlete runs the sessions, films key exercises on their phone — typically technical work and prescribed sprints. 30 seconds per drill." },
-  { day: "End of Week", title: "Review + Check-In", body: "Anthony reviews uploaded footage, sends specific form feedback, and delivers a voice-note check-in — what got hit, what got missed, what to adjust." },
+  { day: "Monday", title: "Block Drop", body: "Anthony sends the week's programming via WhatsApp, every session, drill, and load. Demo videos and form cues included." },
+  { day: "Tue to Fri", title: "Train + Film", body: "The athlete runs the sessions, films key exercises on their phone, typically technical work and prescribed sprints. 30 seconds per drill." },
+  { day: "End of Week", title: "Review + Check-In", body: "Anthony reviews uploaded footage, sends specific form feedback, and delivers a voice-note check-in, what got hit, what got missed, what to adjust." },
   { day: "Sunday", title: "Next Week's Plan", body: "Repeat. Every week. For 30 weeks." },
 ];
 
 const builtFor = [
   "Already compete at academy, NPL, state, or pathway level",
-  "Want hard data and a custom plan — not motivational posts",
+  "Want hard data and a custom plan, not motivational posts",
   "Will film, upload, and own the weekly work",
   "Treat development as an investment, not a cost",
   "Are done guessing and ready for structure",
 ];
 
 const notBuiltFor = [
-  "Under 13 — the body isn't ready for structured speed work",
+  "Under 13, the body isn't ready for structured speed work",
   "Need someone watching every rep",
   "Train only when motivation hits",
   "Shopping for the cheapest option",
-  "Want face-to-face only — we coach online globally",
+  "Want face-to-face only, we coach online globally",
 ];
 
 const tiers = [
   {
-    name: "Speed Assessment", price: "$200", period: "one-time", commitment: "5–7 business days",
-    description: "Step 1 of the system. 5 tests filmed on your phone, an 8–10 page biomechanical report, and a 15-minute voiceover walkthrough from Anthony.",
-    features: ["5-test biomechanical breakdown", "8–10 page custom report", "15-minute voiceover from Anthony", "#1 speed limiter named explicitly", "Elite benchmark comparisons", "Done remotely — anywhere in the world"],
+    name: "Speed Assessment", price: "$200", period: "one-time", commitment: "5 to 7 business days",
+    description: "Step 1 of the system. 5 tests filmed on your phone, an 8 to 10 page biomechanical report, and a 15-minute voiceover walkthrough from Anthony.",
+    features: ["5-test biomechanical breakdown", "8 to 10 page custom report", "15-minute voiceover from Anthony", "#1 speed limiter named explicitly", "Elite benchmark comparisons", "Done remotely, anywhere in the world"],
     cta: "Apply For Assessment", highlight: true, tag: "Most Popular",
   },
   {
     name: "30-Week Program", price: "Premium", period: "paid in 2 blocks", commitment: "30 weeks · custom coaching",
-    description: "Step 2 of the system. The full custom 30-week build — programmed around the athlete's specific limiters from the assessment.",
+    description: "Step 2 of the system. The full custom 30-week build, programmed around the athlete's specific limiters from the assessment.",
     features: ["Custom 30-week program (5 blocks)", "Weekly WhatsApp coaching", "Form review on every upload", "Weekly voice-note check-ins", "Direct access to Anthony", "Pricing confirmed on qualification call"],
     cta: "Apply Now", highlight: false,
   },
@@ -82,16 +82,16 @@ const tiers = [
 ];
 
 const faqs = [
-  { q: "Is this only for face-to-face athletes?", a: "No. The Speed Diagnostic System is built for online delivery. Every assessment is filmed on the athlete's own phone at home. Every program is delivered via WhatsApp. We coach athletes from Sydney to Spain to the UK to the US — without ever meeting them in person." },
+  { q: "Is this only for face-to-face athletes?", a: "No. The Speed Diagnostic System is built for online delivery. Every assessment is filmed on the athlete's own phone at home. Every program is delivered via WhatsApp. We coach athletes from Sydney to Spain to the UK to the US, without ever meeting them in person." },
   { q: "How does the WhatsApp coaching actually work?", a: "Weekly programming is sent every Monday. The athlete trains, films key exercises, uploads to the shared coaching thread. Anthony reviews footage, sends form corrections and load adjustments, and a weekly check-in by Friday. More contact than most athletes get from a face-to-face coach." },
-  { q: "What if my athlete is in another country?", a: "The methodology travels. Football, rugby, AFL, basketball, sprint athletics, track — the biomechanics of speed work the same everywhere. Time zone doesn't matter to programming." },
-  { q: "What if my athlete isn't elite level yet?", a: "The program is built for serious athletes who compete at representative, academy, state league, or pathway level — and want to get to elite. If the athlete is committed to that pathway, the system works." },
+  { q: "What if my athlete is in another country?", a: "The methodology travels. Football, rugby, AFL, basketball, sprint athletics, track, the biomechanics of speed work the same everywhere. Time zone doesn't matter to programming." },
+  { q: "What if my athlete isn't elite level yet?", a: "The program is built for serious athletes who compete at representative, academy, state league, or pathway level, and want to get to elite. If the athlete is committed to that pathway, the system works." },
   { q: "Can my athlete keep doing their club training?", a: "Yes. Programming fits around match schedules and team training. Periodisation works around the athlete's existing load, not against it. Many of our athletes peak during their competitive season." },
   { q: "What if my athlete gets injured during the program?", a: "We adjust. Short periods out get modified programming. Long-term injuries get refunded against unused weeks. Honest conversations always." },
-  { q: "Do you accept payment plans?", a: "The program is paid in 2 blocks — one to start, one at the halfway point (week 15). Exact pricing is discussed on the qualification call once we've confirmed the athlete is the right fit." },
-  { q: "How long until we see results?", a: "Most athletes see measurable speed gains within the first 6-week block. The full 30-week program is structured to peak performance by month 7. Durable, periodised improvement — not quick spikes." },
-  { q: "What's the difference between the $200 assessment and the full program?", a: "The assessment is a one-off deliverable — biomechanical report plus voiceover. It tells you exactly where the athlete sits and what's limiting them. The full program is the 30-week build that addresses those limiters with custom coaching. Many buyers use the assessment for clarity; some continue into the program after." },
-  { q: "Why do I have to apply instead of just paying?", a: "We only work with athletes who are the right fit. Applications get reviewed within 24 hours. If you're right for the system, we'll be in touch. If not, we'll tell you honestly — no chasing, no false promises." },
+  { q: "Do you accept payment plans?", a: "The program is paid in 2 blocks, one to start, one at the halfway point (week 15). Exact pricing is discussed on the qualification call once we've confirmed the athlete is the right fit." },
+  { q: "How long until we see results?", a: "Most athletes see measurable speed gains within the first 6-week block. The full 30-week program is structured to peak performance by month 7. Durable, periodised improvement, not quick spikes." },
+  { q: "What's the difference between the $200 assessment and the full program?", a: "The assessment is a one-off deliverable, biomechanical report plus voiceover. It tells you exactly where the athlete sits and what's limiting them. The full program is the 30-week build that addresses those limiters with custom coaching. Many buyers use the assessment for clarity; some continue into the program after." },
+  { q: "Why do I have to apply instead of just paying?", a: "We only work with athletes who are the right fit. Applications get reviewed within 24 hours. If you're right for the system, we'll be in touch. If not, we'll tell you honestly, no chasing, no false promises." },
 ];
 
 export default function OnlineCoachingPage() {
@@ -101,7 +101,7 @@ export default function OnlineCoachingPage() {
       <section className="relative pt-36 pb-24 sm:pt-44 sm:pb-32 bg-gray-900 overflow-hidden">
         <Image
           src="/online-coaching-filming.jpg"
-          alt="Athlete sprinting through timing gates while being filmed by phone on tripod — remote assessment in action"
+          alt="Athlete sprinting through timing gates while being filmed by phone on tripod, remote assessment in action"
           fill
           className="object-cover object-[40%_45%] opacity-35"
           priority
@@ -118,7 +118,7 @@ export default function OnlineCoachingPage() {
           </FadeIn>
           <FadeIn delay={200}>
             <p className="text-lg sm:text-xl text-gray-300 max-w-2xl leading-relaxed mb-10">
-              Elite biomechanical assessment delivered remotely. $200. 5 tests filmed on your phone. Full report and 15-minute voiceover analysis within 5–7 days. Same system trusted by Bundesliga, Paralympic, and NPL athletes.
+              Elite biomechanical assessment delivered remotely. $200. 5 tests filmed on your phone. Full report and 15-minute voiceover analysis within 5 to 7 days. Same system trusted by Bundesliga, Paralympic, and NPL athletes.
             </p>
           </FadeIn>
           <FadeIn delay={300}>
@@ -134,7 +134,7 @@ export default function OnlineCoachingPage() {
         </div>
       </section>
 
-      {/* VSL — Anthony walks through the system */}
+      {/* VSL, Anthony walks through the system */}
       <section className="relative py-20 sm:py-28 bg-black overflow-hidden border-t border-gray-800">
         <div className="absolute top-1/3 left-1/4 w-[600px] h-[600px] bg-accent/10 rounded-full blur-[180px] pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-accent/8 rounded-full blur-[150px] pointer-events-none" />
@@ -157,7 +157,7 @@ export default function OnlineCoachingPage() {
               <div className="relative aspect-video">
                 <iframe
                   src="https://iframe.mediadelivery.net/embed/659523/a635d376-0695-4eab-9dac-d7b6cbd59bec?autoplay=false&loop=false&muted=false&preload=true&responsive=true"
-                  title="Speed Diagnostic System — How It Works"
+                  title="Speed Diagnostic System, How It Works"
                   allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
                   allowFullScreen
                   loading="lazy"
@@ -174,16 +174,16 @@ export default function OnlineCoachingPage() {
         </div>
       </section>
 
-      {/* Step 1 — The Assessment */}
+      {/* Step 1, The Assessment */}
       <Section>
         <FadeIn>
           <div className="mb-12">
             <div className="accent-line mb-6" />
-            <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">Step 1 — The Assessment ($200)</p>
+            <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">Step 1, The Assessment ($200)</p>
             <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
               5 tests. Filmed on your phone. <span className="text-accent">Full biomechanical breakdown.</span>
             </h2>
-            <p className="text-gray-500 max-w-2xl">Done at home, anywhere in the world. Full report and 15-minute voiceover back within 5–7 business days.</p>
+            <p className="text-gray-500 max-w-2xl">Done at home, anywhere in the world. Full report and 15-minute voiceover back within 5 to 7 business days.</p>
           </div>
         </FadeIn>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -198,7 +198,7 @@ export default function OnlineCoachingPage() {
           ))}
         </div>
         <FadeIn delay={400}>
-          <p className="text-center text-gray-400 text-sm italic mt-10">Total filming time: 60–90 minutes. Full protocol with demo videos delivered the moment your application is approved.</p>
+          <p className="text-center text-gray-400 text-sm italic mt-10">Total filming time: 60 to 90 minutes. Full protocol with demo videos delivered the moment your application is approved.</p>
         </FadeIn>
       </Section>
 
@@ -210,7 +210,7 @@ export default function OnlineCoachingPage() {
               <div className="accent-line mb-6" />
               <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">The Deliverable</p>
               <h2 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
-                An 8–10 page biomechanical report — plus a <span className="text-accent">15-minute voiceover</span> from Anthony.
+                An 8 to 10 page biomechanical report, plus a <span className="text-accent">15-minute voiceover</span> from Anthony.
               </h2>
               <p className="text-gray-400 max-w-2xl">Every metric measured. Every result benchmarked against U14, U16, U18, and elite-level data.</p>
             </div>
@@ -226,7 +226,7 @@ export default function OnlineCoachingPage() {
                     </li>
                   ))}
                   <li className="flex items-start gap-3 text-sm text-white font-bold border-t border-gray-700 pt-4 mt-4">
-                    <Check size={14} className="text-accent mt-0.5 shrink-0" /> The #1 speed bottleneck — named explicitly.
+                    <Check size={14} className="text-accent mt-0.5 shrink-0" /> The #1 speed bottleneck, named explicitly.
                   </li>
                 </ul>
               </div>
@@ -235,32 +235,32 @@ export default function OnlineCoachingPage() {
               <div className="rounded-xl p-8 bg-accent/5 border border-accent/30 h-full flex flex-col">
                 <h3 className="text-xs uppercase tracking-[0.2em] text-accent font-bold mb-5">The Voiceover</h3>
                 <p className="text-gray-300 leading-relaxed mb-6">
-                  After the report is delivered, Anthony records a <strong className="text-white">15-minute walkthrough</strong> — talking through what every number means for the athlete specifically. Where they sit nationally and globally. What&apos;s limiting their speed. What to fix first. What to ignore.
+                  After the report is delivered, Anthony records a <strong className="text-white">15-minute walkthrough</strong>, talking through what every number means for the athlete specifically. Where they sit nationally and globally. What&apos;s limiting their speed. What to fix first. What to ignore.
                 </p>
                 <p className="text-gray-300 leading-relaxed font-semibold">Real coaching language. Not a templated review.</p>
               </div>
             </FadeIn>
           </div>
 
-          {/* Report structure walkthrough — 12 sections */}
+          {/* Report structure walkthrough, 12 sections */}
           <FadeIn delay={250}>
             <div className="mt-14">
               <div className="mb-8">
-                <p className="text-[10px] text-accent uppercase tracking-[0.25em] font-bold mb-2">The Report — Section By Section</p>
+                <p className="text-[10px] text-accent uppercase tracking-[0.25em] font-bold mb-2">The Report, Section By Section</p>
                 <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">What the athlete actually opens.</h3>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {[
                   { n: "01", title: "Header Summary", body: "Athlete profile + overall % vs. elite, visualised in three rings." },
-                  { n: "02", title: "Three-Ring Comparison", body: "Top Speed · Acceleration · Reactive Speed — at a glance." },
-                  { n: "03", title: "Raw Data Dashboard", body: "Every metric on its own card — times, splits, peak velocity." },
+                  { n: "02", title: "Three-Ring Comparison", body: "Top Speed · Acceleration · Reactive Speed, at a glance." },
+                  { n: "03", title: "Raw Data Dashboard", body: "Every metric on its own card, times, splits, peak velocity." },
                   { n: "04", title: "Elite Comparison Table", body: "Athlete vs. Above-Average vs. Elite, with % gap scoring (green / yellow / red)." },
-                  { n: "05", title: "Trait-By-Trait Breakdown", body: "Acceleration, speed buildup, reactive speed, elastic power — each diagnosed individually." },
-                  { n: "06", title: "Coach Assessment Summary", body: "Anthony's written synthesis — what the data is telling us." },
-                  { n: "07", title: "Video Analysis", body: "Top speed · acceleration · sport-specific mechanics — frame-by-frame key findings + fixes." },
-                  { n: "08", title: "Performance Metrics", body: "Four headline metrics interpreted — what each one unlocks." },
+                  { n: "05", title: "Trait-By-Trait Breakdown", body: "Acceleration, speed buildup, reactive speed, elastic power, each diagnosed individually." },
+                  { n: "06", title: "Coach Assessment Summary", body: "Anthony's written synthesis, what the data is telling us." },
+                  { n: "07", title: "Video Analysis", body: "Top speed · acceleration · sport-specific mechanics, frame-by-frame key findings + fixes." },
+                  { n: "08", title: "Performance Metrics", body: "Four headline metrics interpreted, what each one unlocks." },
                   { n: "09", title: "Development Priority Plan", body: "Three tiers ranked: Max Velocity · Horizontal Power · Reactive Speed." },
-                  { n: "10", title: "Sport Context", body: "How each gap shows up in-game — what changes when it's fixed." },
+                  { n: "10", title: "Sport Context", body: "How each gap shows up in-game, what changes when it's fixed." },
                   { n: "11", title: "12-Month Targets", body: "Current → Target table for every test, with the # athlete needs to hit." },
                   { n: "12", title: "3-Year Athlete Vision", body: "Year 1 Foundation → Year 2 Integration → Year 3 Dominance." },
                 ].map((s, i) => (
@@ -278,14 +278,14 @@ export default function OnlineCoachingPage() {
         </div>
       </section>
 
-      {/* Step 2 — The 30-Week Program */}
+      {/* Step 2, The 30-Week Program */}
       <Section>
         <FadeIn>
           <div className="mb-12">
             <div className="accent-line mb-6" />
-            <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">Step 2 — The Program</p>
+            <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">Step 2, The Program</p>
             <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
-              The 30-week build — <span className="text-accent">custom programming</span> around the athlete&apos;s limiters.
+              The 30-week build, <span className="text-accent">custom programming</span> around the athlete&apos;s limiters.
             </h2>
             <p className="text-gray-500 max-w-2xl">If the assessment shows the right fit, we move into the full program. 5 training blocks. New block every 6 weeks. Built specifically around what&apos;s holding the athlete back.</p>
           </div>
@@ -310,7 +310,7 @@ export default function OnlineCoachingPage() {
         </div>
       </Section>
 
-      {/* Process — 4 Step Journey */}
+      {/* Process, 4 Step Journey */}
       {/* A Week Inside The Program */}
       <Section>
         <FadeIn>
@@ -318,7 +318,7 @@ export default function OnlineCoachingPage() {
             <div className="accent-line mb-6" />
             <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">Inside The Program</p>
             <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
-              What a week looks like — <span className="text-accent">through your phone.</span>
+              What a week looks like, <span className="text-accent">through your phone.</span>
             </h2>
             <p className="text-gray-500 max-w-2xl">Online doesn&apos;t mean disconnected. It means more contact, not less.</p>
           </div>
@@ -348,7 +348,7 @@ export default function OnlineCoachingPage() {
                   Most athletes are <span className="text-accent">overtraining</span> their speed.
                 </h3>
                 <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-3">
-                  The CNS fatigues differently from muscles. If you stack speed days back-to-back the nervous system loads, the legs get heavy, and the gains stall — without you realising it&apos;s the cause. The 30-week program builds CNS recovery into the rhythm: stress, then recover, then peak.
+                  The CNS fatigues differently from muscles. If you stack speed days back-to-back the nervous system loads, the legs get heavy, and the gains stall, without you realising it&apos;s the cause. The 30-week program builds CNS recovery into the rhythm: stress, then recover, then peak.
                 </p>
                 <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                   This is why the WhatsApp coaching matters. Weekly load is adjusted athlete-by-athlete based on the footage you send.
@@ -358,7 +358,7 @@ export default function OnlineCoachingPage() {
                 <div className="relative rounded-xl overflow-hidden bg-black aspect-[9/16] shadow-xl ring-1 ring-black/10 max-w-[320px] mx-auto lg:max-w-none">
                   <iframe
                     src="https://iframe.mediadelivery.net/embed/659523/c597219f-096a-41cb-88e4-b8da973ca111?autoplay=false&preload=true&responsive=true"
-                    title="Anthony — CNS Recovery, the game changer of athletic development"
+                    title="Anthony, CNS Recovery, the game changer of athletic development"
                     allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
                     allowFullScreen
                     loading="lazy"
@@ -380,12 +380,12 @@ export default function OnlineCoachingPage() {
           </FadeIn>
           <FadeIn delay={100}>
             <blockquote className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-snug tracking-tight">
-              &ldquo;Acceleration at its peak is <span className="text-accent">fast, controlled falling.</span> Most athletes don&apos;t fall — they push themselves vertically and hope for forward movement. The fix is mechanical: bend the knees, sternum forward, project horizontally. Once they understand the position, the speed follows.&rdquo;
+              &ldquo;Acceleration at its peak is <span className="text-accent">fast, controlled falling.</span> Most athletes don&apos;t fall, they push themselves vertically and hope for forward movement. The fix is mechanical: bend the knees, sternum forward, project horizontally. Once they understand the position, the speed follows.&rdquo;
             </blockquote>
           </FadeIn>
           <FadeIn delay={200}>
             <footer className="mt-7 text-sm text-gray-400">
-              — <strong className="text-white">Anthony Atanasov</strong>, Program Director
+             , <strong className="text-white">Anthony Atanasov</strong>, Program Director
             </footer>
           </FadeIn>
         </div>
@@ -430,7 +430,7 @@ export default function OnlineCoachingPage() {
         </div>
       </Section>
 
-      {/* Choose Your Path — 3 Tiers */}
+      {/* Choose Your Path, 3 Tiers */}
       <section className="py-24 sm:py-32 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
@@ -475,12 +475,12 @@ export default function OnlineCoachingPage() {
             ))}
           </div>
           <FadeIn delay={400}>
-            <p className="text-center text-xs text-gray-400 italic mt-8 max-w-xl mx-auto">Exact program pricing is reviewed and confirmed on the qualification call — not on a sales page. Apply, and if it&apos;s the right fit, we&apos;ll explain everything.</p>
+            <p className="text-center text-xs text-gray-400 italic mt-8 max-w-xl mx-auto">Exact program pricing is reviewed and confirmed on the qualification call, not on a sales page. Apply, and if it&apos;s the right fit, we&apos;ll explain everything.</p>
           </FadeIn>
         </div>
       </section>
 
-      {/* Proof callout — link to success-stories */}
+      {/* Proof callout, link to success-stories */}
       <section className="py-20 sm:py-24 bg-gray-900 border-t border-gray-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <FadeIn>
@@ -532,7 +532,7 @@ export default function OnlineCoachingPage() {
         </div>
       </Section>
 
-      {/* Guarantee — risk reversal */}
+      {/* Guarantee, risk reversal */}
       <section className="py-20 sm:py-24 bg-gray-50 border-y border-gray-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
@@ -550,7 +550,7 @@ export default function OnlineCoachingPage() {
                     Report quality guarantee. <span className="text-accent">Or your $200 back.</span>
                   </h3>
                   <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                    If your assessment report doesn&apos;t deliver three things — specific numbers benchmarked vs. elite, your #1 limiter named explicitly, and a clear training prescription — we&apos;ll refund the $200 in full within 14 days of delivery. No quibbles.
+                    If your assessment report doesn&apos;t deliver three things, specific numbers benchmarked vs. elite, your #1 limiter named explicitly, and a clear training prescription, we&apos;ll refund the $200 in full within 14 days of delivery. No quibbles.
                   </p>
                 </div>
               </div>
@@ -559,7 +559,7 @@ export default function OnlineCoachingPage() {
         </div>
       </section>
 
-      {/* Final CTA — inline application form */}
+      {/* Final CTA, inline application form */}
       <section id="apply" className="relative py-28 sm:py-36 bg-black overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-accent/12 rounded-full blur-[180px]" />
@@ -567,7 +567,7 @@ export default function OnlineCoachingPage() {
         </div>
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-            {/* Left — pitch */}
+            {/* Left, pitch */}
             <div className="lg:col-span-5 lg:sticky lg:top-28">
               <FadeIn>
                 <p className="text-accent text-xs uppercase tracking-[0.3em] mb-5 font-semibold">Ready To Apply?</p>
@@ -595,16 +595,16 @@ export default function OnlineCoachingPage() {
                   </li>
                   <li className="flex items-start gap-3 text-sm text-gray-300">
                     <Check size={16} className="text-accent mt-0.5 shrink-0" strokeWidth={2.5} />
-                    No sales calls, no chasing — honest fit-check only
+                    No sales calls, no chasing, honest fit-check only
                   </li>
                 </ul>
               </FadeIn>
               <FadeIn delay={400}>
-                <p className="text-sm text-gray-500 italic">— Anthony, Founder, Ambition Sports Performance</p>
+                <p className="text-sm text-gray-500 italic">,  Anthony, Founder, Ambition Sports Performance</p>
               </FadeIn>
             </div>
 
-            {/* Right — form */}
+            {/* Right, form */}
             <div className="lg:col-span-7">
               <FadeIn delay={150}>
                 <div className="bg-white rounded-2xl p-6 sm:p-10 shadow-2xl">

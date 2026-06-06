@@ -6,7 +6,7 @@ import { FadeIn } from "@/components/FadeIn";
 import { ArrowLeft } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "It's Not a Genetic Deficit. It's a Knowledge Deficit. — Ambition Sports Performance",
+  title: "It's Not a Genetic Deficit. It's a Knowledge Deficit., Ambition Sports Performance",
   description: "Everyone wants to blame genetics for slow speed. We've taken athletes from 17 km/h to 38 km/h by identifying and solving limiting factors.",
 };
 
@@ -63,7 +63,7 @@ export default function GeneticsMythPost() {
                     </div>
                     <div>
                       <p className="font-bold text-gray-900 mb-1">Nervous System Efficiency</p>
-                      <p className="text-sm text-gray-500">How fast your brain fires signals to your muscles. This is trainable — and most coaches ignore it entirely.</p>
+                      <p className="text-sm text-gray-500">How fast your brain fires signals to your muscles. This is trainable, and most coaches ignore it entirely.</p>
                     </div>
                   </div>
                 </div>
@@ -75,7 +75,7 @@ export default function GeneticsMythPost() {
                 <h2 className="text-2xl font-extrabold text-gray-900 mt-12 mb-4">The Real Problem</h2>
 
                 <p>
-                  If no one around your athlete knows what to measure, what to fix, and how to build a system around it — that&apos;s the real reason they&apos;re not getting faster.
+                  If no one around your athlete knows what to measure, what to fix, and how to build a system around it, that&apos;s the real reason they&apos;re not getting faster.
                 </p>
 
                 <p>
@@ -83,7 +83,7 @@ export default function GeneticsMythPost() {
                 </p>
 
                 <p>
-                  Speed is a skill. Like any skill, it has specific components that can be isolated, measured, and trained. But you need to know which component is the bottleneck — and that requires a proper assessment, not guesswork.
+                  Speed is a skill. Like any skill, it has specific components that can be isolated, measured, and trained. But you need to know which component is the bottleneck, and that requires a proper assessment, not guesswork.
                 </p>
 
                 <h2 className="text-2xl font-extrabold text-gray-900 mt-12 mb-4">What We Do Differently</h2>
@@ -114,7 +114,7 @@ export default function GeneticsMythPost() {
         </div>
       </Section>
 
-      <CTASection title="Find out what's actually holding you back." description="Apply for a biomechanical assessment — laser timing, 240fps video, 20+ performance indicators." />
+      <CTASection title="Find out what's actually holding you back." description="Apply for a biomechanical assessment, laser timing, 240fps video, 20+ performance indicators." />
     </>
   );
 }

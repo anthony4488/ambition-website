@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { SpeedSystemForm } from "@/components/SpeedSystemForm";
 
 export const metadata: Metadata = {
-  title: "Apply — Ambition Sports Performance",
+  title: "Apply, Ambition Sports Performance",
   description:
     "Application only. Speed School (Sydney in-person) or Online Coaching (anywhere worldwide). A measured biomechanical assessment, then a program built on your numbers. Serious athletes only.",
-  robots: { index: false }, // ad landing page — keep out of search
+  robots: { index: false }, // ad landing page, keep out of search
 };
 
 export default function ApplyPage() {

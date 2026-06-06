@@ -5,7 +5,7 @@ import { FadeIn } from "@/components/FadeIn";
 import { ArrowRight, Mail, Instagram, Youtube, Check, Zap, Trophy, Globe } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Apply — Ambition Sports Performance",
+  title: "Apply, Ambition Sports Performance",
   description: "Three ways in: Speed School (Sydney), Football School (Sydney), or Online Coaching (worldwide). Apply through the program that fits.",
 };
 
@@ -13,10 +13,10 @@ const programs = [
   {
     eyebrow: "Sydney · In-person",
     name: "Speed School",
-    pitch: "The flagship in-person program. Laser-timed biomechanical assessment, limiting factors named, bottlenecks tackled — one by one.",
+    pitch: "The flagship in-person program. Laser-timed biomechanical assessment, limiting factors named, bottlenecks tackled, one by one.",
     bullets: [
       "240fps video + electronic timing",
-      "0–10m · 0–20m · 10m fly · ball reactive · 10-bound",
+      "0 to 10m · 0 to 20m · 10m fly · ball reactive · 10-bound",
       "Capped groups · retested every block",
     ],
     href: "/speed-school#apply",
@@ -31,7 +31,7 @@ const programs = [
     pitch: "The Speed Diagnostic System™ delivered remotely. $200 assessment, optional 30-week program.",
     bullets: [
       "5 tests filmed on your phone",
-      "8–10 page report + 15-min voiceover",
+      "8 to 10 page report + 15-min voiceover",
       "Custom 30-week program if you continue",
     ],
     href: "/online-coaching#apply",
@@ -40,9 +40,9 @@ const programs = [
     status: "open" as const,
   },
   {
-    eyebrow: "Sydney · In-person · U11–U15",
+    eyebrow: "Sydney · In-person · U11 to U15",
     name: "Football School",
-    pitch: "The Total Footballer program — world-class benchmarked. Waitlist open ahead of the next intake.",
+    pitch: "The Total Footballer program, world-class benchmarked. Waitlist open ahead of the next intake.",
     bullets: [
       "6× 80-min sessions/week (planned)",
       "Capped at 12 players per group",
@@ -64,7 +64,7 @@ export default function ContactPage() {
         <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-accent/8 rounded-full blur-[140px] pointer-events-none" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <FadeIn>
-            <p className="text-accent text-xs uppercase tracking-[0.3em] mb-5 font-semibold">Apply — Pick Your Program</p>
+            <p className="text-accent text-xs uppercase tracking-[0.3em] mb-5 font-semibold">Apply, Pick Your Program</p>
           </FadeIn>
           <FadeIn delay={100}>
             <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black text-white tracking-tight leading-[0.95] mb-6 max-w-4xl mx-auto">
@@ -73,7 +73,7 @@ export default function ContactPage() {
           </FadeIn>
           <FadeIn delay={200}>
             <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-              We only work with athletes through an application. Limited intake across all three programs — we don&apos;t take who we can&apos;t move.
+              We only work with athletes through an application. Limited intake across all three programs, we don&apos;t take who we can&apos;t move.
             </p>
           </FadeIn>
         </div>
@@ -144,7 +144,7 @@ export default function ContactPage() {
           })}
         </div>
 
-        {/* Not sure? — soft fallback */}
+        {/* Not sure?, soft fallback */}
         <FadeIn delay={400}>
           <div className="mt-16 max-w-3xl mx-auto text-center">
             <p className="text-xs text-accent uppercase tracking-[0.3em] font-bold mb-3">Not Sure Which One?</p>
@@ -153,7 +153,7 @@ export default function ContactPage() {
               Anywhere else? <span className="text-accent">Online Coaching.</span>
             </h3>
             <p className="text-gray-500 text-sm leading-relaxed">
-              The system is the same — the delivery is the difference. Football School opens for full intake soon; join the waitlist to hear first.
+              The system is the same, the delivery is the difference. Football School opens for full intake soon; join the waitlist to hear first.
             </p>
           </div>
         </FadeIn>
@@ -172,7 +172,7 @@ export default function ContactPage() {
           </FadeIn>
           <FadeIn delay={200}>
             <p className="text-sm text-gray-500 max-w-xl mx-auto mb-6 leading-relaxed">
-              Reach out directly. New athletes go through the application above — it&apos;s the only path in.
+              Reach out directly. New athletes go through the application above, it&apos;s the only path in.
             </p>
           </FadeIn>
           <FadeIn delay={300}>

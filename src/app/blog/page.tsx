@@ -6,7 +6,7 @@ import { FadeIn } from "@/components/FadeIn";
 import { ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Blog — Ambition Sports Performance",
+  title: "Blog, Ambition Sports Performance",
   description: "Speed science, biomechanics insights, and training philosophy from the Ambition coaching team.",
 };
 
@@ -21,7 +21,7 @@ const posts = [
   {
     slug: "biomechanical-assessment",
     title: "Why Most Athletes Train Hard But Never Get Faster",
-    excerpt: "No assessment. No baseline. No limiting factor profile. Just guessing — and wondering why they plateau.",
+    excerpt: "No assessment. No baseline. No limiting factor profile. Just guessing, and wondering why they plateau.",
     category: "Assessment",
     date: "March 2026",
   },

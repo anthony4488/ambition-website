@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Funnel — Admin",
+  title: "Funnel, Admin",
   robots: { index: false, follow: false },
 };
 
@@ -52,7 +52,7 @@ export default async function FunnelPage({
   if (adminKey && supplied !== adminKey) {
     return (
       <main className="mx-auto max-w-md p-8 pt-24 font-sans">
-        <h1 className="text-2xl font-bold">Funnel — Admin</h1>
+        <h1 className="text-2xl font-bold">Funnel, Admin</h1>
         <p className="mt-4 text-sm text-gray-600">
           Append <code>?key=YOUR_ADMIN_KEY</code> to the URL.
         </p>
@@ -66,7 +66,7 @@ export default async function FunnelPage({
   if (!data) {
     return (
       <main className="mx-auto max-w-2xl p-8 pt-24 font-sans">
-        <h1 className="text-2xl font-bold">Funnel — Admin</h1>
+        <h1 className="text-2xl font-bold">Funnel, Admin</h1>
         <p className="mt-4 text-sm text-red-600">Failed to load funnel data.</p>
       </main>
     );
@@ -117,7 +117,7 @@ export default async function FunnelPage({
               {data.funnel.length === 0 && (
                 <tr>
                   <td colSpan={5} className="px-4 py-8 text-center text-gray-400">
-                    No form events in this window. Persistence just shipped — give it 24h of real
+                    No form events in this window. Persistence just shipped, give it 24h of real
                     traffic.
                   </td>
                 </tr>
@@ -130,7 +130,7 @@ export default async function FunnelPage({
                   <tr key={f.form_id} className="border-t border-gray-100">
                     <td className="px-4 py-3 font-mono text-xs">{f.form_id}</td>
                     <td className="px-4 py-3 text-right font-semibold">{f.started}</td>
-                    <td className="px-4 py-3 text-right text-gray-600">{f.step || "—"}</td>
+                    <td className="px-4 py-3 text-right text-gray-600">{f.step || ", "}</td>
                     <td className="px-4 py-3 text-right font-semibold">{f.completed}</td>
                     <td className={`px-4 py-3 text-right font-bold ${color}`}>{f.drop_off_rate}</td>
                   </tr>

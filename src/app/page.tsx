@@ -11,7 +11,7 @@ import { ArrowRight, Play, ChevronDown } from "lucide-react";
 const services = [
   {
     title: "Speed School",
-    description: "Six speed traits, every athlete, measured against elite. Sydney in-person — capped groups, retested every block.",
+    description: "Six speed traits, every athlete, measured against elite. Sydney in-person. Capped groups, retested every block.",
     href: "/speed-school#apply",
     image: "/speed-school-hero.jpg",
     imagePosition: "object-[50%_35%]",
@@ -29,7 +29,7 @@ const services = [
   },
   {
     title: "Football School",
-    description: "The Total Footballer program — world-class benchmarked. U11–U15 mornings. Waitlist open ahead of intake.",
+    description: "The Total Footballer program, world-class benchmarked. U11 to U15 mornings. Waitlist open ahead of intake.",
     href: "/football-school#waitlist",
     image: "/deanna-dribble.png",
     imagePosition: "object-[50%_30%]",
@@ -49,21 +49,21 @@ const proAthletes = [
   {
     name: "Jonathan Wong",
     role: "Paralympic Gold Medalist",
-    achievement: "Paralympic Gold — Malaysia",
+    achievement: "Paralympic Gold, Malaysia",
     tags: ["PARALYMPIC GOLD", "MALAYSIA"],
     youtubeId: "kWksIynHYs0",
   },
   {
     name: "Sean Dulic",
     role: "Pro Footballer",
-    achievement: "Bundesliga — Germany U23",
+    achievement: "Bundesliga, Germany U23",
     tags: ["BUNDESLIGA", "GERMANY U23"],
     image: "/sean-dulic.jpg",
   },
   {
     name: "Gleofilo Hasselbaink",
     role: "International Footballer",
-    achievement: "Suriname National Team — 1.5M euro transfer",
+    achievement: "Suriname National Team, 1.5M euro transfer",
     tags: ["SURINAME NT", "1.5M TRANSFER"],
     image: "/gleofilo-suriname.png",
   },
@@ -77,7 +77,7 @@ export default function HomePage() {
         <div className="absolute inset-0">
           <Image
             src="/home-hero.jpg"
-            alt="Athlete sprinting through timing gates — the Speed Diagnostic System in action"
+            alt="Athlete sprinting through timing gates, the Speed Diagnostic System in action"
             fill
             className="object-cover object-[60%_50%] opacity-35"
             priority
@@ -103,7 +103,7 @@ export default function HomePage() {
           </FadeIn>
           <FadeIn delay={200}>
             <p className="text-lg sm:text-xl text-gray-300/90 max-w-lg mb-12 leading-relaxed">
-              Most athletes train hard but never get faster — because no one finds the actual problem. We do. Based in Sydney. Training athletes globally.
+              Most athletes train hard but never get faster, because no one finds the actual problem. We do. Based in Sydney. Training athletes globally.
             </p>
           </FadeIn>
           <FadeIn delay={300}>
@@ -125,7 +125,7 @@ export default function HomePage() {
             </div>
           </FadeIn>
 
-          {/* Stats bar — larger numbers */}
+          {/* Stats bar, larger numbers */}
           <FadeIn delay={500}>
             <div className="mt-20 pt-10 border-t border-white/10">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 sm:gap-8">
@@ -164,7 +164,7 @@ export default function HomePage() {
               Everyone wants to blame genetics. &ldquo;He&apos;s just not built for speed.&rdquo; We&apos;ve taken athletes from 17 km/h to 38 km/h. Not hope. Not luck. By identifying limiting factors and solving them one by one.
             </p>
             <p className="text-gray-600 leading-relaxed mb-5">
-              Ground contact time. Reactive strength. Force production. Nervous system efficiency. We measure what others guess at — and fix what actually matters.
+              Ground contact time. Reactive strength. Force production. Nervous system efficiency. We measure what others guess at, then fix what actually matters.
             </p>
             <p className="text-accent text-xl font-bold leading-relaxed">
               It&apos;s not a genetic deficit. It&apos;s a knowledge deficit.
@@ -183,11 +183,11 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* === CONSOLIDATED CREDIBILITY BAND — founder clubs + athlete leagues === */}
+      {/* === CONSOLIDATED CREDIBILITY BAND, founder clubs + athlete leagues === */}
       <section className="py-16 sm:py-20 bg-gray-50 border-y border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 sm:space-y-14">
 
-          {/* Row 1 — Anthony's playing clubs */}
+          {/* Row 1, Anthony's playing clubs */}
           <div>
             <FadeIn>
               <div className="text-center mb-7">
@@ -225,7 +225,7 @@ export default function HomePage() {
             <span className="flex-1 h-px bg-gray-200" />
           </div>
 
-          {/* Row 2 — Where the athletes compete now */}
+          {/* Row 2, Where the athletes compete now */}
           <div>
             <FadeIn>
               <div className="text-center mb-7">
@@ -319,7 +319,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* === INSIDE THE SYSTEM — what the work actually looks like === */}
+      {/* === INSIDE THE SYSTEM, what the work actually looks like === */}
       <Section>
         <FadeIn>
           <div className="max-w-3xl mb-12">
@@ -330,7 +330,7 @@ export default function HomePage() {
               <span className="text-accent">Then we fix it.</span>
             </h2>
             <p className="text-gray-600 leading-relaxed text-base sm:text-lg">
-              Every athlete in the system runs through the same two-step loop. Biomechanics get filmed and angle-tagged on the line — joint by joint, stride by stride. The limiters that show up on the screen then get trained on the field, in real positions, with real load.
+              Every athlete in the system runs through the same two-step loop. Biomechanics get filmed and angle-tagged on the line, joint by joint, stride by stride. The limiters that show up on the screen then get trained on the field, in real positions, with real load.
             </p>
           </div>
         </FadeIn>
@@ -339,7 +339,7 @@ export default function HomePage() {
             <div className="group relative rounded-2xl overflow-hidden bg-gray-100 aspect-[4/5] shadow-lg ring-1 ring-black/5">
               <Image
                 src="/billy-angle-analysis.jpg"
-                alt="Athlete sprinting toward a tripod-mounted camera on the white line — knee-angle annotation at 149° overlaid on the leading leg"
+                alt="Athlete sprinting toward a tripod-mounted camera on the white line, knee-angle annotation at 149° overlaid on the leading leg"
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                 sizes="(max-width:1024px) 100vw, 50vw"
@@ -360,7 +360,7 @@ export default function HomePage() {
             <div className="group relative rounded-2xl overflow-hidden bg-gray-100 aspect-[4/5] shadow-lg ring-1 ring-black/5">
               <Image
                 src="/adam-band-drive.jpg"
-                alt="Adam in resistance-band-loaded drive-phase position — forward lean, full triple extension, driving horizontally into the ground"
+                alt="Adam in resistance-band-loaded drive-phase position, forward lean, full triple extension, driving horizontally into the ground"
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                 sizes="(max-width:1024px) 100vw, 50vw"
@@ -372,7 +372,7 @@ export default function HomePage() {
               <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
                 <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-2 tracking-tight">Force into the ground. <span className="text-accent">Built on the field.</span></h3>
                 <p className="text-sm text-gray-200 leading-relaxed max-w-md">
-                  Once the assessment names the limiter, the prescription is specific — band-resisted acceleration, horizontal force, the exact position the athlete must own. Adam: La Liga academy signing. 1.60s over 10 metres.
+                  Once the assessment names the limiter, the prescription is specific: band-resisted acceleration, horizontal force, the exact position the athlete must own. Adam: La Liga academy signing. 1.60s over 10 metres.
                 </p>
               </div>
             </div>
@@ -396,7 +396,7 @@ export default function HomePage() {
                 Results speak.
               </h2>
               <p className="text-gray-500 max-w-lg mx-auto">
-                Measured improvements across every athlete. No guesswork — just data.
+                Measured improvements across every athlete. No guesswork, just data.
               </p>
             </div>
           </FadeIn>
@@ -405,7 +405,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <FadeIn>
               <Link href="/success-stories" className="group block relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl">
-                <Image src="/sean-dulic.jpg" alt="Sean Dulic — Bundesliga" fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                <Image src="/sean-dulic.jpg" alt="Sean Dulic, Bundesliga" fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
                 <div className="absolute top-5 left-5">
                   <span className="px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-white font-bold bg-accent/90 backdrop-blur rounded-full">Pro · Bundesliga</span>
@@ -419,7 +419,7 @@ export default function HomePage() {
             </FadeIn>
             <FadeIn delay={120}>
               <Link href="/success-stories" className="group block relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl">
-                <Image src="/gleofilo-suriname.png" alt="Gleofilo Hasselbaink — Suriname NT" fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                <Image src="/gleofilo-suriname.png" alt="Gleofilo Hasselbaink, Suriname NT" fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
                 <div className="absolute top-5 left-5">
                   <span className="px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-white font-bold bg-accent/90 backdrop-blur rounded-full">Pro · €1.5M Transfer</span>
@@ -433,7 +433,7 @@ export default function HomePage() {
             </FadeIn>
           </div>
 
-          {/* Wall — 4 athletes from the roster */}
+          {/* Wall, 4 athletes from the roster */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
               { name: "George Francis", result: "18 → 34 km/h", context: "Average to elite · stride, hip, contact rebuilt", bunnyId: "3e0332a8-49cb-4ac7-9422-4dd81a207078" },
@@ -485,7 +485,7 @@ export default function HomePage() {
                 Led by specialists who <span className="text-accent">live and breathe</span> speed.
               </h2>
               <p className="text-gray-400 leading-relaxed">
-                Every session is coached — never just supervised. The same system that built our coaches builds our athletes.
+                Every session is coached, never just supervised. The same system that built our coaches builds our athletes.
               </p>
             </div>
           </FadeIn>
@@ -542,7 +542,7 @@ export default function HomePage() {
                       <span className="px-2.5 py-1 text-[10px] uppercase tracking-[0.15em] text-white/80 bg-white/10 backdrop-blur border border-white/15 rounded-full font-semibold">+19 km/h Transformation</span>
                     </div>
                     <p className="text-sm text-gray-300 leading-relaxed max-w-md">
-                      6+ years inside the diagnostic system. Personal transformation from sub-average to 37 km/h elite — now coaching with the same system that built him.
+                      6+ years inside the diagnostic system. Personal transformation from sub-average to 37 km/h elite, now coaching with the same system that built him.
                     </p>
                   </div>
                 </div>

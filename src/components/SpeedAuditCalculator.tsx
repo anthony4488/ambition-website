@@ -50,27 +50,27 @@ const DIAGNOSES: Record<GapKey, { title: string; text: string }> = {
   acceleration: {
     title: "Acceleration is the limiter",
     text:
-      "Your 0-10m gap shows force production + start position are leaving meters on the table. The fix is horizontal force in the gym + technical first-three-steps drilling — not more max-velocity work.",
+      "Your 0-10m gap shows force production + start position are leaving meters on the table. The fix is horizontal force in the gym + technical first-three-steps drilling, not more max-velocity work.",
   },
   full_acceleration: {
     title: "Sustained acceleration is the limiter",
     text:
-      "Your 0-10m is okay but you're losing speed in the 10-20m transition. That's a posture + horizontal-force-application issue between strides 5 and 10. The fix is sustained-accel drilling + hip extension strength — not more max-V work.",
+      "Your 0-10m is okay but you're losing speed in the 10-20m transition. That's a posture + horizontal-force-application issue between strides 5 and 10. The fix is sustained-accel drilling + hip extension strength, not more max-V work.",
   },
   top_speed: {
     title: "Top-end speed is the limiter",
     text:
-      "Your 10m fly score shows your max velocity is capped. Stride mechanics + ground contact time are the bottleneck. Once you're up to speed, you're not maintaining it. The fix is targeted max-velocity work + reactive stiffness — not more acceleration drilling.",
+      "Your 10m fly score shows your max velocity is capped. Stride mechanics + ground contact time are the bottleneck. Once you're up to speed, you're not maintaining it. The fix is targeted max-velocity work + reactive stiffness, not more acceleration drilling.",
   },
   elastic_power: {
     title: "Elastic power is the limiter",
     text:
-      "Your bound distance shows weak reactive stiffness. That's the actual cap on your top-end speed. Most athletes here have insufficient ankle stiffness + horizontal force production. The fix is measured plyometric progression — not more sprinting volume.",
+      "Your bound distance shows weak reactive stiffness. That's the actual cap on your top-end speed. Most athletes here have insufficient ankle stiffness + horizontal force production. The fix is measured plyometric progression, not more sprinting volume.",
   },
   reactive_strength: {
     title: "Reactive strength is the limiter",
     text:
-      "Your RSI shows you're spending too long on the ground. The nervous system isn't firing fast enough to bounce out. The fix is targeted stiffness work + low-amplitude plyometrics — depth jumps come later, not now.",
+      "Your RSI shows you're spending too long on the ground. The nervous system isn't firing fast enough to bounce out. The fix is targeted stiffness work + low-amplitude plyometrics, depth jumps come later, not now.",
   },
 };
 
@@ -202,14 +202,14 @@ export function SpeedAuditCalculator() {
     }
   }
 
-  const topSpeedKmh = u.fly10 ? flyToKmh(u.fly10).toFixed(1) : "—";
+  const topSpeedKmh = u.fly10 ? flyToKmh(u.fly10).toFixed(1) : ", ";
   const eliteTopSpeed = flyToKmh(elite.fly10).toFixed(1);
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6">
       {/* ── Profile + Inputs ──────────────────────────────────────────── */}
       <div className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-sm">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-accent">Step 1 — Your profile</p>
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-accent">Step 1, Your profile</p>
         <h3 className="mt-2 text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">
           Who are you benchmarking against?
         </h3>
@@ -251,7 +251,7 @@ export function SpeedAuditCalculator() {
 
         {/* Test inputs */}
         <div className="mt-8 border-t border-gray-100 pt-8">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-accent">Step 2 — Your numbers</p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-accent">Step 2, Your numbers</p>
           <h3 className="mt-2 text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">
             Enter what you&apos;ve measured.
           </h3>
@@ -303,7 +303,7 @@ export function SpeedAuditCalculator() {
             />
             <NumberRow
               label="Drop jump RSI (optional)"
-              hint="Reactive Strength Index — jump height (m) ÷ contact time (s)"
+              hint="Reactive Strength Index, jump height (m) ÷ contact time (s)"
               unit=""
               value={rsi}
               onChange={setRsi}
@@ -326,7 +326,7 @@ export function SpeedAuditCalculator() {
       {/* ── Result ────────────────────────────────────────────────────── */}
       {submitted && enoughData && (
         <div id="result" className="mt-10 rounded-2xl bg-gray-900 p-6 text-white sm:p-10">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-accent">Step 3 — Your diagnosis</p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-accent">Step 3, Your diagnosis</p>
           <h3 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl">Your speed profile</h3>
           <p className="mt-1 text-sm text-gray-400">
             Benchmarked against: <span className="font-semibold text-white">{COHORT_LABEL[cohortKey]}</span>
@@ -347,31 +347,31 @@ export function SpeedAuditCalculator() {
           <div className="mt-6 space-y-3">
             <Row
               label="Acceleration (0-10m)"
-              yours={u.sprint10 ? `${u.sprint10.toFixed(2)}s` : "—"}
+              yours={u.sprint10 ? `${u.sprint10.toFixed(2)}s` : ", "}
               elite={`${elite.sprint10.toFixed(2)}s`}
               pct={scores.sprint10}
             />
             <Row
               label="Full accel (0-20m)"
-              yours={u.sprint20 ? `${u.sprint20.toFixed(2)}s` : "—"}
+              yours={u.sprint20 ? `${u.sprint20.toFixed(2)}s` : ", "}
               elite={`${elite.sprint20.toFixed(2)}s`}
               pct={scores.sprint20}
             />
             <Row
               label={`Top speed (10m fly · ${topSpeedKmh} km/h)`}
-              yours={u.fly10 ? `${u.fly10.toFixed(2)}s` : "—"}
+              yours={u.fly10 ? `${u.fly10.toFixed(2)}s` : ", "}
               elite={`${elite.fly10.toFixed(2)}s · ${eliteTopSpeed} km/h`}
               pct={scores.fly10}
             />
             <Row
               label="Elastic power (10-bound)"
-              yours={u.bound ? `${u.bound.toFixed(1)}m` : "—"}
+              yours={u.bound ? `${u.bound.toFixed(1)}m` : ", "}
               elite={`${elite.bound.toFixed(1)}m`}
               pct={scores.bound}
             />
             <Row
               label="Reactive strength (RSI)"
-              yours={u.rsi ? u.rsi.toFixed(1) : "—"}
+              yours={u.rsi ? u.rsi.toFixed(1) : ", "}
               elite={elite.rsi.toFixed(1)}
               pct={scores.rsi}
             />
@@ -519,7 +519,7 @@ function NumberRow({
           type="number"
           inputMode="decimal"
           step="0.01"
-          placeholder="—"
+          placeholder=", "
           value={value}
           onChange={(e) => onChange(e.target.value)}
           className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none focus:border-accent focus:ring-2 focus:ring-accent/10"
