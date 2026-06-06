@@ -1,6 +1,7 @@
 {
   "framework": "nextjs",
   "crons": [
-    { "path": "/api/nurture/run", "schedule": "0 9 * * *" }
+    { "path": "/api/nurture/run", "schedule": "0 9 * * *" },
+    { "path": "/api/leads/daily-recap", "schedule": "0 21 * * *" }
   ]
 }
