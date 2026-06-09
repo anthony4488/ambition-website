@@ -27,26 +27,41 @@ export async function POST(req: NextRequest) {
     /* non-fatal */
   }
 
-  // 2) Telegram alert
+  // 2) Forward the full submission to a configurable automation webhook
+  // (Zapier / Make / Meta Conversions API relay). Set APPLY_WEBHOOK_URL in env.
+  // Fires regardless of Telegram config so conversion data always passes through.
+  const hook = process.env.APPLY_WEBHOOK_URL;
+  if (hook) {
+    try {
+      await fetch(hook, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(b) });
+    } catch {
+      /* non-fatal */
+    }
+  }
+
+  // 3) Telegram alert
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
   if (!token || !chatId) return Response.json({ ok: true, telegram: "not configured" });
 
   const qualified = b.qualified === true;
+  const utm = b.utm && typeof b.utm === "object" ? (b.utm as Record<string, string>) : {};
   const lines = [
     qualified ? "🟢 <b>NEW QUALIFIED APPLICATION</b>" : "🟠 <b>NEW APPLICATION — review fit</b>",
     "",
     `👤 <b>${esc(b.name)}</b>`,
     `📞 ${esc(b.phone)}`,
     `✉️ ${esc(b.email)}`,
+    `📍 ${esc(b.suburb)}`,
     "",
-    `🏅 Sport: ${esc(b.sport)}`,
-    `🎂 Age: ${esc(b.age)}`,
+    `🏅 ${esc(b.sport)} · 🎂 ${esc(b.age)} · 📈 ${esc(b.level)}`,
     `🎯 Goal: ${esc(b.goal)}`,
-    `📈 ${esc(b.level || b.suburb)}`,
-    `💰 ${esc(b.invest || b.budget)}`,
-    `⏳ Commit: ${esc(b.commit)}`,
+    `🙋 Commitment: ${esc(b.commitment)}`,
+    `💰 Invest: ${esc(b.invest)} · 💵 ${esc(b.budget)} · ⏳ ${esc(b.commit)}`,
   ];
+  if (b.why_now) lines.push("", `🔥 <b>Why now:</b> ${esc(b.why_now)}`);
+  if (utm.utm_source || utm.utm_campaign || utm.fbclid)
+    lines.push("", `📣 ${esc(utm.utm_source ?? "ad")}${utm.utm_campaign ? " / " + esc(utm.utm_campaign) : ""}${utm.fbclid ? " · fbclid" : ""}`);
 
   try {
     const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
