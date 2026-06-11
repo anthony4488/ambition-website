@@ -65,6 +65,7 @@ const sections = [
     title: "Refund Policy",
     body: [
       "$200 Online Assessment: full refund available within 14 days of purchase if no assessment data or report has been delivered. Once the report is delivered, the assessment is non-refundable.",
+      "In-person assessments and sessions: bookings are non-refundable for change of mind or scheduling conflicts. Bookings can be rescheduled with a minimum of 24 hours notice. Missed sessions without notice forfeit the booking fee. Nothing in this policy limits your rights under Australian Consumer Law.",
       "In-person programmes (Speed School, Football School): all package sales are final. In the case of long-term injury or genuine relocation, unused weeks may be refunded at our discretion, less an administration fee.",
       "Refund requests should be sent to info@ambitionsportsperformance.com with the relevant documentation.",
     ],
