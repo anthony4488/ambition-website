@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Section } from "@/components/Section";
 import { FadeIn } from "@/components/FadeIn";
 import { EnquiryForm } from "@/components/EnquiryForm";
-import { Check, ArrowRight, X, PlayCircle, ShieldCheck } from "lucide-react";
+import { Check, ArrowRight, PlayCircle, ShieldCheck } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Online Coaching, The Speed Diagnostic System | Ambition Sports Performance",
@@ -52,12 +52,12 @@ const builtFor = [
   "Are done guessing and ready for structure",
 ];
 
-const notBuiltFor = [
-  "Under 13, the body isn't ready for structured speed work",
-  "Need someone watching every rep",
-  "Train only when motivation hits",
-  "Shopping for the cheapest option",
-  "Want face-to-face only, we coach online globally",
+const bestResults = [
+  "Are 13 or older and ready for structured speed work",
+  "Can work independently between weekly check-ins",
+  "Show up consistently, not only when motivation hits",
+  "See coaching as an investment in real results",
+  "Are open to remote coaching, we work with athletes globally",
 ];
 
 const tiers = [
@@ -416,12 +416,12 @@ export default function OnlineCoachingPage() {
             </div>
           </FadeIn>
           <FadeIn delay={120}>
-            <div className="rounded-xl p-7 bg-red-50 border-l-4 border-red-400 h-full">
-              <h3 className="text-xs uppercase tracking-[0.2em] text-red-700 font-bold mb-5">Not Built For</h3>
+            <div className="rounded-xl p-7 bg-blue-50 border-l-4 border-blue-400 h-full">
+              <h3 className="text-xs uppercase tracking-[0.2em] text-blue-700 font-bold mb-5">Best Results If You</h3>
               <ul className="space-y-3">
-                {notBuiltFor.map((item) => (
+                {bestResults.map((item) => (
                   <li key={item} className="flex items-start gap-3 text-sm text-gray-700 leading-relaxed">
-                    <X size={16} className="text-red-500 mt-0.5 shrink-0" /> {item}
+                    <ShieldCheck size={16} className="text-blue-600 mt-0.5 shrink-0" /> {item}
                   </li>
                 ))}
               </ul>
