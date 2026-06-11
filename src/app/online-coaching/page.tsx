@@ -53,7 +53,7 @@ const builtFor = [
 ];
 
 const bestResults = [
-  "Are 13 or older and ready for structured speed work",
+  "Are ready for structured speed work",
   "Can work independently between weekly check-ins",
   "Show up consistently, not only when motivation hits",
   "See coaching as an investment in real results",
