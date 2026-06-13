@@ -1,5 +1,5 @@
 import { getSupabaseAdmin } from "./supabaseAdmin";
-import { touchesFor, sendSms, nurtureSendingEnabled, normaliseAu } from "./nurture";
+import { touchesFor, sendSms, nurtureDay0Enabled, normaliseAu } from "./nurture";
 
 // Pull a lead out of the automated nurture the moment they engage (any SMS reply)
 // or opt out (STOP). Matches on normalised phone so it works regardless of how the
@@ -59,8 +59,8 @@ export async function enrollNurture(lead: {
   source?: string;
 }) {
   if (!lead.email && !lead.phone) return;
-  // Master kill-switch: do not enroll or send any automated touch when disabled.
-  if (!nurtureSendingEnabled()) return;
+  // Form-fill day-0 gate: no enroll / no day-0 SMS unless explicitly enabled.
+  if (!nurtureDay0Enabled()) return;
   const sb = getSupabaseAdmin();
 
   if (lead.email) {

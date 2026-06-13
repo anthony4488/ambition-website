@@ -15,11 +15,19 @@ export interface Touch {
 
 const firstName = (n?: string) => (n || "there").trim().split(/\s+/)[0];
 
-// MASTER KILL-SWITCH for all automated nurture sending (day-0 inline + cron touches).
-// Disabled unless NURTURE_ENABLED === "true" in the environment. This is a hard
-// safety gate: with it unset, no lead receives any automated SMS. The manual
-// Telegram→SMS reply bridge does NOT go through here, so replies still work.
-export const nurtureSendingEnabled = () => process.env.NURTURE_ENABLED === "true";
+// Two independent kill-switches so the safe path (form-fill day-0) can run without
+// the risky path (the daily cron that touches the whole active queue).
+//
+//  • NURTURE_DAY0_ENABLED  → the SMS sent the instant a lead fills the form.
+//    Safe to enable: it only ever texts the person who just submitted, so it can
+//    never re-text old / already-booked leads.
+//  • NURTURE_CRON_ENABLED  → the day-1/3/6 follow-up touches sent by the daily cron.
+//    This is what previously blasted booked leads — keep OFF until the legacy
+//    active queue has been cleared in Supabase.
+//
+// Both default OFF (unset). The manual Telegram→SMS reply bridge is not gated here.
+export const nurtureDay0Enabled = () => process.env.NURTURE_DAY0_ENABLED === "true";
+export const nurtureCronEnabled = () => process.env.NURTURE_CRON_ENABLED === "true";
 
 // Approved day-0 follow-up SMS (fires the moment a lead fills the form).
 // Same copy for both tracks so every form-filler gets the personal call-me-back touch.
