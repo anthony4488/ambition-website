@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
-import { touchesFor, sendSms } from "@/lib/nurture";
+import { touchesFor, sendSms, nurtureSendingEnabled } from "@/lib/nurture";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -15,6 +15,9 @@ export async function GET(req: NextRequest) {
     const auth = req.headers.get("authorization");
     if (auth !== `Bearer ${secret}`) return Response.json({ error: "unauthorized" }, { status: 401 });
   }
+
+  // Master kill-switch: no automated touches go out unless explicitly enabled.
+  if (!nurtureSendingEnabled()) return Response.json({ ok: true, skipped: "nurture disabled" });
 
   let sb;
   try {

@@ -15,6 +15,23 @@ export interface Touch {
 
 const firstName = (n?: string) => (n || "there").trim().split(/\s+/)[0];
 
+// MASTER KILL-SWITCH for all automated nurture sending (day-0 inline + cron touches).
+// Disabled unless NURTURE_ENABLED === "true" in the environment. This is a hard
+// safety gate: with it unset, no lead receives any automated SMS. The manual
+// Telegram→SMS reply bridge does NOT go through here, so replies still work.
+export const nurtureSendingEnabled = () => process.env.NURTURE_ENABLED === "true";
+
+// Approved day-0 follow-up SMS (fires the moment a lead fills the form).
+// Same copy for both tracks so every form-filler gets the personal call-me-back touch.
+const followUpSms = (n: string) =>
+  `Hey ${firstName(n)}, Anthony here from Ambition Sports Performance. ` +
+  `Tried to get hold of you after you filled out your application with us. ` +
+  `Still keen to have a quick chat about your athlete and see if we can help ` +
+  `with their speed training and coaching. In the meantime have a look at what ` +
+  `we've been doing and the results we get: ${IG} ${STORIES} ` +
+  `Give me a call back on 0450 205 033 or reply here and I'll call you. ` +
+  `Reply STOP to opt out. Anthony`;
+
 const wrap = (body: string, unsub: string) => `
   <div style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:560px;margin:0 auto;color:#1a1a1a;line-height:1.6">
     <div style="padding:24px 0;text-align:center;border-bottom:1px solid #eee">
@@ -46,8 +63,7 @@ const TOUCHES_ONLINE: Touch[] = [
           u
         ),
     },
-    sms: (n) =>
-      `Hi ${firstName(n)}, thanks for applying for online speed coaching with Ambition. Anthony will call you to map out your assessment, so keep your phone close. While you wait, our daily breakdowns: ${IG}`,
+    sms: followUpSms,
   },
   {
     dayOffset: 1,
@@ -116,8 +132,7 @@ const TOUCHES_F2F: Touch[] = [
           u
         ),
     },
-    sms: (n) =>
-      `Hi ${firstName(n)}, thanks for applying for the Ambition Speed System. Anthony will call you to lock in your athlete's assessment, so keep your phone close. While you wait, our daily content: ${IG}`,
+    sms: followUpSms,
   },
   {
     dayOffset: 1,

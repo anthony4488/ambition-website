@@ -1,5 +1,5 @@
 import { getSupabaseAdmin } from "./supabaseAdmin";
-import { touchesFor, sendSms } from "./nurture";
+import { touchesFor, sendSms, nurtureSendingEnabled } from "./nurture";
 
 // Email nurture is handled by Kit (ConvertKit): we tag the lead by track and Kit's
 // matching sequence sends the email touches. SMS stays code-driven (ClickSend).
@@ -30,6 +30,8 @@ export async function enrollNurture(lead: {
   source?: string;
 }) {
   if (!lead.email && !lead.phone) return;
+  // Master kill-switch: do not enroll or send any automated touch when disabled.
+  if (!nurtureSendingEnabled()) return;
   const sb = getSupabaseAdmin();
 
   if (lead.email) {
