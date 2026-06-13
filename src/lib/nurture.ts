@@ -210,7 +210,7 @@ export async function sendEmail(to: string, subject: string, html: string) {
 }
 
 // AU phone → E.164 (+61). ClickSend delivers most reliably with E.164.
-const normaliseAu = (raw: string) => {
+export const normaliseAu = (raw: string) => {
   const s = raw.replace(/[\s()-]/g, "");
   if (s.startsWith("+")) return s;
   if (s.startsWith("0")) return "+61" + s.slice(1);

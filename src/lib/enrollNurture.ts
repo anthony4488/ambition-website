@@ -1,5 +1,34 @@
 import { getSupabaseAdmin } from "./supabaseAdmin";
-import { touchesFor, sendSms, nurtureSendingEnabled } from "./nurture";
+import { touchesFor, sendSms, nurtureSendingEnabled, normaliseAu } from "./nurture";
+
+// Pull a lead out of the automated nurture the moment they engage (any SMS reply)
+// or opt out (STOP). Matches on normalised phone so it works regardless of how the
+// number was stored (04…, +61…, with spaces). Fully non-fatal: never throws.
+// Returns how many active enrollments were stopped.
+export async function stopNurtureByPhone(
+  phone: string,
+  status: "stopped" | "opted_out" = "stopped",
+): Promise<number> {
+  if (!phone) return 0;
+  let sb;
+  try {
+    sb = getSupabaseAdmin();
+  } catch {
+    return 0;
+  }
+  const target = normaliseAu(phone);
+  const { data } = await sb
+    .from("nurture_enrollments")
+    .select("id, phone")
+    .eq("status", "active")
+    .limit(500);
+  const ids = (data ?? [])
+    .filter((r) => normaliseAu(String(r.phone ?? "")) === target)
+    .map((r) => r.id);
+  if (!ids.length) return 0;
+  await sb.from("nurture_enrollments").update({ status }).in("id", ids);
+  return ids.length;
+}
 
 // Email nurture is handled by Kit (ConvertKit): we tag the lead by track and Kit's
 // matching sequence sends the email touches. SMS stays code-driven (ClickSend).

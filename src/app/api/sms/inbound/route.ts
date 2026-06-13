@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { sendTelegramMessage, escapeHtml } from "@/lib/telegram";
+import { stopNurtureByPhone } from "@/lib/enrollNurture";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -42,6 +43,25 @@ export async function POST(req: NextRequest) {
   if (!from || !body) return Response.json({ ok: true, skipped: "no from/body" });
 
   const num = toE164(from);
+
+  // A reply means the lead has engaged — pull them out of the automated nurture so
+  // they never get another scheduled touch (Anthony handles them personally now).
+  // An explicit STOP/UNSUBSCRIBE is a hard opt-out. Non-fatal: never blocks the
+  // Telegram forward below.
+  const optedOut = /\b(stop|unsubscribe|opt\s?out|cancel|remove)\b/i.test(body);
+  let stoppedCount = 0;
+  try {
+    stoppedCount = await stopNurtureByPhone(num, optedOut ? "opted_out" : "stopped");
+  } catch {
+    /* non-fatal */
+  }
+
+  const statusLine = optedOut
+    ? "🛑 <i>Opted out — removed from all automation.</i>"
+    : stoppedCount > 0
+      ? "✅ <i>Auto-removed from nurture (replied). Handle them personally.</i>"
+      : "↩️ <i>Reply to this message to text them back.</i>";
+
   await sendTelegramMessage(
     [
       "💬 <b>SMS reply from a lead</b>",
@@ -49,8 +69,8 @@ export async function POST(req: NextRequest) {
       "",
       escapeHtml(body),
       "",
-      "↩️ <i>Reply to this message to text them back.</i>",
+      statusLine,
     ].join("\n"),
   );
-  return Response.json({ ok: true });
+  return Response.json({ ok: true, stopped: stoppedCount, optedOut });
 }
