@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { sendTelegramMessage, escapeHtml } from "@/lib/telegram";
 import { stopNurtureByPhone } from "@/lib/enrollNurture";
+import { sendSms } from "@/lib/nurture";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -72,5 +73,22 @@ export async function POST(req: NextRequest) {
       statusLine,
     ].join("\n"),
   );
+
+  // Safety net: forward the reply to Anthony's phone so he can text/call the
+  // lead directly from his own Messages app (no Telegram needed). The lead's
+  // number is in the body — tap it to start a native thread. Non-fatal.
+  const myMobile = process.env.ANTHONY_MOBILE || "+61450205033";
+  try {
+    await sendSms(
+      myMobile,
+      `Lead reply from ${num}: "${body}". ` +
+        (optedOut
+          ? "They opted OUT - do not text."
+          : "Text or call them on that number."),
+    );
+  } catch {
+    /* non-fatal */
+  }
+
   return Response.json({ ok: true, stopped: stoppedCount, optedOut });
 }

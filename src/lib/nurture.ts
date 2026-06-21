@@ -33,11 +33,9 @@ export const nurtureCronEnabled = () => process.env.NURTURE_CRON_ENABLED === "tr
 // Same copy for both tracks so every form-filler gets the personal call-me-back touch.
 const followUpSms = (n: string) =>
   `Hey ${firstName(n)}, Anthony here from Ambition Sports Performance. ` +
-  `Tried to get hold of you after you filled out your application with us. ` +
-  `Still keen to have a quick chat about your athlete and see if we can help ` +
-  `with their speed training and coaching. In the meantime have a look at what ` +
-  `we've been doing and the results we get: ${IG} ${STORIES} ` +
-  `Give me a call back on 0450 205 033 or reply here and I'll call you. ` +
+  `Thanks for applying! Keen to have a quick chat about your athlete and how ` +
+  `we can help with their speed. Quickest way to reach me - just text or call ` +
+  `me straight on 0450 205 033. Meantime here's what we do: ${IG} ${STORIES} ` +
   `Reply STOP to opt out. Anthony`;
 
 const wrap = (body: string, unsub: string) => `
