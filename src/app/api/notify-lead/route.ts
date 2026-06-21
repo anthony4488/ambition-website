@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
 
   // 1) Auto-nurture enrollment (fires touch 0 email + SMS)
   try {
-    await enrollNurture({ name: str(b.name), email: str(b.email), phone: str(b.phone), source: str(b.source) });
+    await enrollNurture({ name: str(b.name), email: str(b.email), phone: str(b.phone), source: str(b.source), sport: str(b.sport) });
   } catch {
     /* non-fatal */
   }

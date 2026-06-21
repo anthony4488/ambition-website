@@ -55,7 +55,7 @@ function pickFields(fd: FieldDatum[]) {
   const first = get("first_name");
   const last = get("last_name");
   const full = get("full_name") || [first, last].filter(Boolean).join(" ") || undefined;
-  return { name: full, email: get("email"), phone: get("phone_number", "phone") };
+  return { name: full, email: get("email"), phone: get("phone_number", "phone"), sport: get("sport") };
 }
 
 async function fetchLead(leadgenId: string) {
@@ -112,6 +112,7 @@ export async function POST(req: NextRequest) {
             email: lead.email,
             phone: lead.phone,
             source: "fb-lead",
+            sport: lead.sport,
           });
         } catch {
           /* ignore */

@@ -57,6 +57,7 @@ export async function enrollNurture(lead: {
   email?: string;
   phone?: string;
   source?: string;
+  sport?: string;
 }) {
   if (!lead.email && !lead.phone) return;
   // Form-fill day-0 gate: no enroll / no day-0 SMS unless explicitly enabled.
@@ -87,6 +88,6 @@ export async function enrollNurture(lead: {
   });
 
   const t0 = T[0];
-  if (lead.phone) await sendSms(lead.phone, t0.sms(lead.name ?? ""));
+  if (lead.phone) await sendSms(lead.phone, t0.sms(lead.name ?? "", lead.sport));
   if (lead.email) await addToKit(lead.email, lead.name, lead.source);
 }

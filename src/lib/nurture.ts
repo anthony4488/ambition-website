@@ -10,10 +10,12 @@ const IG = "https://instagram.com/ambitionsportsperformance";
 export interface Touch {
   dayOffset: number; // days after enrollment
   email: { subject: string; html: (name: string, unsub: string) => string };
-  sms: (name: string) => string;
+  sms: (name: string, sport?: string) => string;
 }
 
 const firstName = (n?: string) => (n || "there").trim().split(/\s+/)[0];
+// Capitalise each word but preserve acronyms (AFL stays AFL, "rugby union" → "Rugby Union").
+const titleCase = (s?: string) => (s || "").trim().replace(/\b\w/g, (c) => c.toUpperCase());
 
 // Two independent kill-switches so the safe path (form-fill day-0) can run without
 // the risky path (the daily cron that touches the whole active queue).
@@ -31,12 +33,24 @@ export const nurtureCronEnabled = () => process.env.NURTURE_CRON_ENABLED === "tr
 
 // Approved day-0 follow-up SMS (fires the moment a lead fills the form).
 // Same copy for both tracks so every form-filler gets the personal call-me-back touch.
-const followUpSms = (n: string) =>
-  `Hey ${firstName(n)}, Anthony here from Ambition Sports Performance. ` +
-  `Thanks for applying! Keen to have a quick chat about your athlete and how ` +
-  `we can help with their speed. Quickest way to reach me - just text or call ` +
-  `me straight on 0450 205 033. Meantime here's what we do: ${IG} ${STORIES} ` +
-  `Reply STOP to opt out. Anthony`;
+const followUpSms = (n: string, sport?: string) => {
+  const who = sport ? `your ${titleCase(sport)} player` : "your athlete";
+  return [
+    `Hey ${firstName(n)}, it's Anthony from Ambition Sports Performance.`,
+    ``,
+    `Thanks for applying about ${who}.`,
+    ``,
+    `Keen for a quick chat about how we get athletes faster and what we'd do for them.`,
+    ``,
+    `Easiest is to text or call me straight on 0450 205 033.`,
+    ``,
+    `Our work in the meantime:`,
+    `Instagram: ${IG}`,
+    `Website: ${STORIES}`,
+    ``,
+    `Reply STOP to opt out. Anthony`,
+  ].join("\n");
+};
 
 const wrap = (body: string, unsub: string) => `
   <div style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:560px;margin:0 auto;color:#1a1a1a;line-height:1.6">
