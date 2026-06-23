@@ -48,7 +48,7 @@ const followUpSms = (n: string, sport?: string) => {
     `Instagram: ${IG}`,
     `Website: ${STORIES}`,
     ``,
-    `Reply STOP to opt out. Anthony`,
+    `Anthony`,
   ].join("\n");
 };
 
