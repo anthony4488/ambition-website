@@ -86,6 +86,17 @@ const whatsappWall = [
   { src: "/screenshots/testimonial-5.jpeg", name: "Issac’s mum", caption: "“I’m fast because of Anthony”, Issac’s own words" },
   { src: "/screenshots/testimonial-6.jpeg", name: "Ayman’s parent", caption: "stronger 1-on-1, more advantage passing & dribbling" },
   { src: "/screenshots/testimonial-7.jpeg", name: "Match feedback", caption: "“extra quad strength from front squats helped my acceleration massively”, best game, would have had 2 assists ❤️" },
+  { src: "/screenshots/testimonial-8.jpeg", name: "Progress check-in", caption: "“I feel so much more explosive in the air”" },
+  { src: "/screenshots/testimonial-9.jpeg", name: "Parent of a sprinter", caption: "“impressed with the program, check-ins and her progression and style in sprinting, keep up the good work both of you”" },
+  { src: "/screenshots/testimonial-10.jpeg", name: "Phase 3 athlete", caption: "“speed difference is huge, especially top speed. Hyped up for next phase.”" },
+  { src: "/screenshots/testimonial-11.jpeg", name: "4 weeks in", caption: "“I'm so happy bro. 4 weeks in. Imagine 12 to 24 months.”" },
+  { src: "/screenshots/testimonial-12.jpeg", name: "Hassan's coach", caption: "trialled for the Futsal NPL1 team and got in, “performance improving week after week”" },
+  { src: "/screenshots/testimonial-13.jpeg", name: "Match-day PBs", caption: "25.2 km/h top-speed PB · scored + 1 assist · brought the game back from 2-0 to 2-2" },
+  { src: "/screenshots/testimonial-14.jpeg", name: "Parent feedback", caption: "“can't believe how rapid she's improving... like his body was asleep & we've flicked a switch”" },
+  { src: "/screenshots/testimonial-15.jpeg", name: "Match feedback", caption: "“you were right, shooting power has definitely increased”" },
+  { src: "/screenshots/testimonial-16.jpeg", name: "Parent feedback", caption: "ran side by side with a top-8-in-the-state sprinter, “there wasn't much between them”" },
+  { src: "/screenshots/testimonial-17.jpeg", name: "Parent of a sprinter", caption: "“can't believe the difference in her speed and style already!!! The adjusting and checking in is OUTSTANDING”" },
+  { src: "/screenshots/testimonial-18.jpeg", name: "Contest weekend", caption: "“felt really powerful, breaking away and creating space from my opponent, won all three of my games”" },
 ];
 
 const talkingHeads = [
