@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { ArrowRight, CheckCircle, Clock, Shield, Zap } from "lucide-react";
 import { trackFormStart, trackFormComplete } from "@/lib/formTelemetry";
+import { qualifyLead } from "@/lib/qualify";
 
 type Program = "speed" | "football" | "online" | "waitlist";
 
@@ -246,13 +247,31 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
     setError("");
     setStatus("submitting");
 
+    // This form previously reported qualified:true for EVERY submission, so an
+    // interstate applicant looked identical to a local one. Score it from the
+    // answers already collected (state/country + sport + commitment level).
+    const sportAnswer =
+      program === "football"
+        ? `Football · ${form.fbPosition}`
+        : program === "speed"
+        ? form.sportPosition
+        : form.athleteLevel;
+    const result = qualifyLead({
+      suburb: form.state,
+      sport: sportAnswer,
+      commitmentLevel: form.commitmentLevel || undefined,
+      // The online program is delivered remotely, so interstate/international
+      // applicants stay reviewable rather than being written off.
+      remote: program === "online",
+    });
+
     try {
       if (supabase) {
         const { error: dbErr } = await supabase.from("assessment_leads").insert({
           name: form.name,
           phone: form.phone,
           source,
-          notes: buildNotes(),
+          notes: `${buildNotes()} | Qualified: ${result.tier.toUpperCase()} (${result.reasons.join("; ")})`,
         });
         if (dbErr) throw dbErr;
       }
@@ -265,18 +284,33 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
           phone: form.phone,
           email: form.email,
           suburb: form.state || "",
-          sport: program === "football" ? `Football · ${form.fbPosition}` : program === "speed" ? form.sportPosition : form.athleteLevel,
+          sport: sportAnswer,
           age: form.ageRange,
           goal: program === "online" ? form.onlineGoal : program === "speed" ? form.speedGoal : form.fbGoal,
           budget: form.commitmentLevel || "",
           commit: form.commitLength || form.sessionsPerWeek || "",
           source,
-          qualified: true,
+          qualified: result.tier === "qualified",
+          tier: result.tier,
+          qualify_reasons: result.reasons,
         }),
       }).catch(() => {});
 
-      trackFormComplete(`enquiry-${program}`, { source });
-      router.push("/welcome?name=" + encodeURIComponent(form.name || "") + "&email=" + encodeURIComponent(form.email || "")); // nurture/booking page fires the Meta Pixel Lead
+      trackFormComplete(`enquiry-${program}`, { source, tier: result.tier });
+      // /welcome fires the Meta Pixel Lead — pass the tier through so it can
+      // also fire QualifiedLead for the custom conversion.
+      router.push(
+        "/welcome?name=" +
+          encodeURIComponent(form.name || "") +
+          "&email=" +
+          encodeURIComponent(form.email || "") +
+          "&tier=" +
+          encodeURIComponent(result.tier) +
+          "&area=" +
+          encodeURIComponent(result.area) +
+          "&sportfit=" +
+          encodeURIComponent(result.sportFit),
+      );
     } catch {
       setStatus("error");
     }

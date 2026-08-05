@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, type RefObject } from "react";
 import { supabase } from "@/lib/supabase";
 import { ArrowRight, ArrowLeft, Check, Loader2, Instagram, Globe } from "lucide-react";
 import { trackFormStart, trackFormComplete } from "@/lib/formTelemetry";
+import { qualifyLead, fireLeadPixel, type QualifyResult } from "@/lib/qualify";
 
 // Application-only form for Ambition Sports Performance. One question per step,
 // premium dark theme. Filters for serious, committed, financially-ready leads:
@@ -103,6 +104,7 @@ export function SpeedSystemForm() {
   const [shake, setShake] = useState(false);
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
   const tracking = useRef<Record<string, string>>({});
+  const qualification = useRef<QualifyResult | null>(null);
 
   // Capture UTM params + referring ad source once, on mount.
   useEffect(() => {
@@ -126,11 +128,13 @@ export function SpeedSystemForm() {
     }
   }, [step, started, current]);
 
-  // Fire Meta Pixel Lead conversion on success.
+  // Fire Meta Pixel on success. Sends the standard Lead event plus, for
+  // qualified leads only, a QualifiedLead custom event — this page never
+  // changes URL on success, so a URL-rule custom conversion is impossible and
+  // the qualification has to travel on the event itself.
   useEffect(() => {
-    if (status !== "success") return;
-    const w = window as unknown as { fbq?: (...a: unknown[]) => void };
-    if (typeof w.fbq === "function") w.fbq("track", "Lead", { content_name: "Application Complete" });
+    if (status !== "success" || !qualification.current) return;
+    fireLeadPixel(qualification.current, { content_category: "apply" });
   }, [status]);
 
   const set = (v: string) => setAnswers((a) => ({ ...a, [current.id]: v }));
@@ -159,7 +163,12 @@ export function SpeedSystemForm() {
     setStatus("submitting");
     const a = answers;
     const source = "apply";
-    const qualified = a.invest === "Yes, ready to invest";
+    // Reads the suburb + sport answers this form already collected. Previously
+    // only `invest` was consulted, so out-of-area and off-sport applicants were
+    // still marked qualified.
+    const result = qualifyLead({ suburb: a.suburb, sport: a.sport, invest: a.invest });
+    qualification.current = result;
+    const qualified = result.tier === "qualified";
     const utm = tracking.current;
 
     const notes = [
@@ -178,7 +187,7 @@ export function SpeedSystemForm() {
       "Consent: YES",
       utm.utm_source ? `UTM: ${utm.utm_source} / ${utm.utm_medium ?? ""} / ${utm.utm_campaign ?? ""}` : "",
       utm.fbclid ? `fbclid: ${utm.fbclid}` : "",
-      `Qualified: ${qualified ? "YES" : "REVIEW"}`,
+      `Qualified: ${result.tier.toUpperCase()} (${result.reasons.join("; ")})`,
     ]
       .filter(Boolean)
       .join(" | ");
@@ -209,6 +218,8 @@ export function SpeedSystemForm() {
           utm,
           source,
           qualified,
+          tier: result.tier,
+          qualify_reasons: result.reasons,
         }),
       }).catch(() => {});
 

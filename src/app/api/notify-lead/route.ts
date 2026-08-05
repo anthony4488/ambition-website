@@ -44,10 +44,19 @@ export async function POST(req: NextRequest) {
   const chatId = process.env.TELEGRAM_CHAT_ID;
   if (!token || !chatId) return Response.json({ ok: true, telegram: "not configured" });
 
+  const tier = str(b.tier);
   const qualified = b.qualified === true;
+  const reasons = Array.isArray(b.qualify_reasons) ? (b.qualify_reasons as unknown[]).map(String) : [];
+  const heading =
+    tier === "unqualified"
+      ? "🔴 <b>NEW APPLICATION — likely not a fit</b>"
+      : tier === "qualified" || (!tier && qualified)
+      ? "🟢 <b>NEW QUALIFIED APPLICATION</b>"
+      : "🟠 <b>NEW APPLICATION — review fit</b>";
   const utm = b.utm && typeof b.utm === "object" ? (b.utm as Record<string, string>) : {};
   const lines = [
-    qualified ? "🟢 <b>NEW QUALIFIED APPLICATION</b>" : "🟠 <b>NEW APPLICATION — review fit</b>",
+    heading,
+    reasons.length ? `<i>${esc(reasons.join(" · "))}</i>` : "",
     "",
     `👤 <b>${esc(b.name)}</b>`,
     `📞 ${esc(b.phone)}`,

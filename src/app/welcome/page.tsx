@@ -3,16 +3,29 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { Check, ClipboardCheck, Phone, Target, Instagram, ArrowRight } from "lucide-react";
+import { fireLeadPixel, type AreaFit, type LeadTier, type SportFit } from "@/lib/qualify";
 
 // Post-application confirmation page. No self-serve booking, we capture the
 // applicant's details on the form and follow up directly by SMS. Fires the
-// Meta Pixel Lead conversion on load.
+// Meta Pixel Lead conversion on load, plus QualifiedLead when EnquiryForm
+// passed through a qualified tier.
 
 export default function WelcomePage() {
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const w = window as any;
-    if (typeof w.fbq === "function") w.fbq("track", "Lead", { content_name: "Application Complete" });
+    const sp = new URLSearchParams(window.location.search);
+    // Absent tier (direct visit, or a bookmarked /welcome) degrades to
+    // "review" so we never over-report a qualified conversion.
+    const tier = (sp.get("tier") as LeadTier | null) ?? "review";
+    fireLeadPixel(
+      {
+        tier,
+        area: (sp.get("area") as AreaFit | null) ?? "unknown",
+        sportFit: (sp.get("sportfit") as SportFit | null) ?? "unknown",
+        investReady: null,
+        reasons: [],
+      },
+      { content_category: "enquiry" },
+    );
   }, []);
 
   return (
