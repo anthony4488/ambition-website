@@ -9,7 +9,11 @@ import { sendSms, normaliseAu } from "./nurture";
 import { sendTelegramMessage, escapeHtml } from "./telegram";
 import { getSupabaseAdmin } from "./supabaseAdmin";
 
-export const ASSESSMENT_PRICE = 199;
+// Single source of truth for the advertised price. The CAPI Purchase value is
+// NOT taken from here — it reads Stripe's amount_total, so reporting stays
+// correct even if this drifts. This only controls what the SMS says.
+// Set ASSESSMENT_PRICE in Vercel when the price changes; never hardcode it in copy.
+export const ASSESSMENT_PRICE = Number(process.env.ASSESSMENT_PRICE) || 199;
 export const ASSESSMENT_CURRENCY = "AUD";
 
 /**
@@ -74,9 +78,11 @@ export async function sendAssessmentLink(lead: {
     /* table may not exist yet — don't block the send */
   }
 
+  // Deliberately no price in the message. If the SMS and the Stripe page ever
+  // disagree the booking dies at the last click, and the page is always right.
   const body =
     `${firstName(lead.name)} — Anthony from Ambition. ` +
-    `Here's the link to lock in your $${ASSESSMENT_PRICE} speed assessment: ${link} ` +
+    `Here's the link to lock in your speed assessment: ${link} ` +
     `Once it's paid I'll text you to book the time. Georges Hall or Strathfield.`;
 
   const res = await sendSms(lead.phone, body);

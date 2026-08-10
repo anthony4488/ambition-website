@@ -22,8 +22,14 @@ export const dynamic = "force-dynamic";
 // don't pull in the Stripe SDK for one route — same approach as the Meta webhook.
 
 function verifyStripe(raw: string, header: string | null): boolean {
-  const secret = process.env.STRIPE_WEBHOOK_SECRET;
-  if (!secret) return false; // fail closed — this endpoint moves money
+  // Live and test mode have DIFFERENT signing secrets. Accepting both lets the
+  // whole chain be exercised with a 4242 test card instead of a real $199.
+  // Remove STRIPE_WEBHOOK_SECRET_TEST once testing is done.
+  const secrets = [
+    process.env.STRIPE_WEBHOOK_SECRET,
+    process.env.STRIPE_WEBHOOK_SECRET_TEST,
+  ].filter((s): s is string => Boolean(s));
+  if (!secrets.length) return false; // fail closed — this endpoint moves money
   if (!header) return false;
 
   const parts = Object.fromEntries(
@@ -32,21 +38,21 @@ function verifyStripe(raw: string, header: string | null): boolean {
       return [k.trim(), v];
     }),
   ) as { t?: string; v1?: string };
-  if (!parts.t || !parts.v1) return false;
+  const { t, v1 } = parts;
+  if (!t || !v1) return false;
 
   // Reject anything older than 5 minutes (replay protection).
-  const age = Math.abs(Date.now() / 1000 - Number(parts.t));
+  const age = Math.abs(Date.now() / 1000 - Number(t));
   if (!Number.isFinite(age) || age > 300) return false;
 
-  const expected = crypto
-    .createHmac("sha256", secret)
-    .update(`${parts.t}.${raw}`)
-    .digest("hex");
-  try {
-    return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(parts.v1));
-  } catch {
-    return false;
-  }
+  return secrets.some((secret) => {
+    const expected = crypto.createHmac("sha256", secret).update(`${t}.${raw}`).digest("hex");
+    try {
+      return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(v1));
+    } catch {
+      return false;
+    }
+  });
 }
 
 // Field names differ by Stripe API version. `customer_details` only exists on
