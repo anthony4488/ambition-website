@@ -31,8 +31,8 @@ const proAthletes: WallCard[] = [
   },
   {
     name: "Sean Dulic",
-    result: "Bundesliga · Germany U23",
-    context: "Pro footballer · top-flight European football",
+    result: "3rd division → Bundesliga",
+    context: "1860 Munich to TSG Hoffenheim in 15 months · Europa League · joined the system before the transfer, not after",
     image: "/sean-dulic.jpg",
   },
   {

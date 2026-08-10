@@ -39,7 +39,7 @@ const services = [
 ];
 
 const stats = [
-  { value: "200+", label: "Athletes Trained" },
+  { value: "1,000+", label: "Athletes Trained" },
   { value: "15+", label: "Pro Athletes" },
   { value: "38+", label: "km/h Top Speeds" },
   { value: "+5", label: "km/h Avg Improvement" },
@@ -56,8 +56,8 @@ const proAthletes = [
   {
     name: "Sean Dulic",
     role: "Pro Footballer",
-    achievement: "Bundesliga, Germany U23",
-    tags: ["BUNDESLIGA", "GERMANY U23"],
+    achievement: "3rd division to Bundesliga in 15 months",
+    tags: ["BUNDESLIGA", "EUROPA LEAGUE"],
     image: "/sean-dulic.jpg",
   },
   {
@@ -231,7 +231,7 @@ export default function HomePage() {
               <div className="text-center mb-7">
                 <p className="text-[10px] text-accent uppercase tracking-[0.3em] mb-2 font-bold">Athletes In The System Compete At</p>
                 <p className="text-gray-700 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-                  Paralympic gold. Bundesliga. La Liga academy. <strong className="text-gray-900">200+ athletes through the same system.</strong>
+                  Paralympic gold. Bundesliga. La Liga academy. <strong className="text-gray-900">1,000+ athletes through the same system.</strong>
                 </p>
               </div>
             </FadeIn>
@@ -405,15 +405,15 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <FadeIn>
               <Link href="/success-stories" className="group block relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl">
-                <Image src="/sean-dulic.jpg" alt="Sean Dulic, Bundesliga" fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                <Image src="/sean-dulic.jpg" alt="Sean Dulic, TSG Hoffenheim, Bundesliga" fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
                 <div className="absolute top-5 left-5">
                   <span className="px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-white font-bold bg-accent/90 backdrop-blur rounded-full">Pro · Bundesliga</span>
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-7">
                   <h3 className="text-3xl font-extrabold text-white mb-1 tracking-tight">Sean Dulic</h3>
-                  <p className="text-accent text-xs uppercase tracking-[0.2em] font-bold mb-3">Bundesliga · Germany U23</p>
-                  <p className="text-sm text-gray-200 leading-relaxed max-w-sm">Pro footballer competing in top-flight European football.</p>
+                  <p className="text-accent text-xs uppercase tracking-[0.2em] font-bold mb-3">1860 Munich → TSG Hoffenheim · Europa League</p>
+                  <p className="text-sm text-gray-200 leading-relaxed max-w-sm">German third division to the Bundesliga in 15 months. He started with us before the transfer, not after.</p>
                 </div>
               </Link>
             </FadeIn>

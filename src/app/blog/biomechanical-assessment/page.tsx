@@ -86,7 +86,7 @@ export default function AssessmentPost() {
                 </p>
 
                 <p>
-                  200+ athletes have gone through this system. Every professional contract, Paralympic gold medal, and state championship started with this assessment.
+                  1,000+ athletes have gone through this system. Every professional contract, Paralympic gold medal, and state championship started with this assessment.
                 </p>
 
                 <p className="text-xl font-bold text-gray-900">

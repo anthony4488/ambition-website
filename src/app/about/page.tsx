@@ -82,7 +82,7 @@ export default function AboutPage() {
                 Every method on this site was tested on me first. <strong className="text-gray-900">43 km/h on tape. 300 kg deadlift. 2.62 seconds over 20 metres.</strong> Built before it was ever coached.
               </p>
               <p>
-                200+ athletes have run through the same system since: junior prodigies, Paralympic gold medalists, Bundesliga signings, NPL debutants, state champions. <strong className="text-gray-900">Same diagnostic. Same prescription. Same arc.</strong>
+                1,000+ athletes have run through the same system since: junior prodigies, Paralympic gold medalists, Bundesliga signings, NPL debutants, state champions. <strong className="text-gray-900">Same diagnostic. Same prescription. Same arc.</strong>
               </p>
               <p className="text-accent font-bold italic pt-2">
                 Numbers, not opinions. Cutting through the nonsense along the way.

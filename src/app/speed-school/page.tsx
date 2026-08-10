@@ -73,8 +73,8 @@ export default function SpeedSchoolPage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
                 <div className="absolute bottom-4 left-5 right-5">
-                  <p className="text-[10px] text-accent uppercase tracking-[0.25em] font-bold">Pro Footballer · In The System</p>
-                  <p className="text-white font-extrabold text-xl tracking-tight mt-1">Sean Dulic, Bundesliga · Germany U23</p>
+                  <p className="text-[10px] text-accent uppercase tracking-[0.25em] font-bold">Pro Footballer · Still In The System</p>
+                  <p className="text-white font-extrabold text-xl tracking-tight mt-1">Sean Dulic — 3rd division to Bundesliga in 15 months</p>
                 </div>
               </div>
               <div className="p-8 sm:p-10">
