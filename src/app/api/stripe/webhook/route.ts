@@ -82,7 +82,12 @@ function contactFrom(s: StripeSession) {
     phone: cd?.phone ?? cust?.phone ?? null,
   };
 }
-type StripeEvent = { id?: string; type?: string; data?: { object?: StripeSession } };
+type StripeEvent = {
+  id?: string;
+  type?: string;
+  livemode?: boolean;
+  data?: { object?: StripeSession };
+};
 
 const firstName = (n?: string | null) => (n ?? "").trim().split(/\s+/)[0] || "there";
 
@@ -133,19 +138,33 @@ export async function POST(req: NextRequest) {
   const eventId = ev.id || s.id || `stripe_${Date.now()}`;
 
   // 1. META CAPI PURCHASE — the whole point of this route.
-  const capi = await sendCapiEvent({
-    eventName: "Purchase",
-    eventId,
-    email,
-    phone,
-    leadId: leadgenId,
-    value,
-    currency,
-    actionSource: "website",
-    eventSourceUrl: process.env.NEXT_PUBLIC_SITE_URL
-      ? `${process.env.NEXT_PUBLIC_SITE_URL}/apply`
-      : undefined,
-  });
+  //
+  // A Stripe TEST payment must never reach live optimisation data. Meta would
+  // learn from a $199 that nobody paid, which is the exact pollution this whole
+  // build exists to prevent. Test payments only go to Meta if a test bucket is
+  // configured; otherwise CAPI is skipped and everything else still runs, so the
+  // rest of the chain is still fully exercised.
+  const isTest = ev.livemode === false;
+  const hasTestBucket = Boolean(process.env.META_CAPI_TEST_CODE);
+  let capi: { ok: boolean; detail?: string };
+
+  if (isTest && !hasTestBucket) {
+    capi = { ok: false, detail: "skipped — Stripe test payment, no META_CAPI_TEST_CODE set" };
+  } else {
+    capi = await sendCapiEvent({
+      eventName: "Purchase",
+      eventId,
+      email,
+      phone,
+      leadId: leadgenId,
+      value,
+      currency,
+      actionSource: "website",
+      eventSourceUrl: process.env.NEXT_PUBLIC_SITE_URL
+        ? `${process.env.NEXT_PUBLIC_SITE_URL}/apply`
+        : undefined,
+    });
+  }
 
   // 2. CONFIRMATION SMS
   let smsOk = false;
@@ -192,7 +211,7 @@ export async function POST(req: NextRequest) {
   // 4. TELEGRAM
   await sendTelegramMessage(
     [
-      "💰 <b>ASSESSMENT PAID</b>",
+      isTest ? "🧪 <b>TEST PAYMENT (Stripe test mode)</b>" : "💰 <b>ASSESSMENT PAID</b>",
       "",
       `👤 <b>${escapeHtml(name)}</b>`,
       `📞 ${escapeHtml(phone)}`,
