@@ -5,7 +5,7 @@ import { FadeIn } from "@/components/FadeIn";
 import { AlertCircle } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Terms & Session Policy — Ambition Sports Performance",
+  title: "Terms & Session Policy, Ambition Sports Performance",
   description: "The session, cancellation, and payment policies that apply to every athlete in the Ambition Sports Performance program.",
 };
 
@@ -14,8 +14,8 @@ const sections = [
     n: "01",
     title: "Application & Acceptance",
     body: [
-      "All new athletes must apply through one of our published application forms — Speed School, Football School waitlist, or Online Coaching. We review every application within 24 hours.",
-      "Acceptance into a programme is at our discretion. Where the fit isn't right, we'll say so honestly and decline the application — no chasing, no waitlists invented to make a sale.",
+      "All new athletes must apply through one of our published application forms, Speed School, Football School waitlist, or Online Coaching. We review every application within 24 hours.",
+      "Acceptance into a programme is at our discretion. Where the fit isn't right, we'll say so honestly and decline the application, no chasing, no waitlists invented to make a sale.",
     ],
   },
   {
@@ -56,7 +56,7 @@ const sections = [
     title: "Payment Terms",
     body: [
       "Programme pricing is reviewed and confirmed on a qualification call once we've confirmed the athlete is the right fit. We do not publish full programme pricing publicly.",
-      "Multi-block programmes (such as the 30-week online programme) are paid in two blocks — one to begin, one at the halfway point.",
+      "Multi-block programmes (such as the 30-week online programme) are paid in two blocks, one to begin, one at the halfway point.",
       "Payment is processed via secure third-party payment processors. We do not store full card details on our servers.",
     ],
   },
@@ -65,6 +65,7 @@ const sections = [
     title: "Refund Policy",
     body: [
       "$200 Online Assessment: full refund available within 14 days of purchase if no assessment data or report has been delivered. Once the report is delivered, the assessment is non-refundable.",
+      "In-person assessments and sessions: bookings are non-refundable for change of mind or scheduling conflicts. Bookings can be rescheduled with a minimum of 24 hours notice. Missed sessions without notice forfeit the booking fee. Nothing in this policy limits your rights under Australian Consumer Law.",
       "In-person programmes (Speed School, Football School): all package sales are final. In the case of long-term injury or genuine relocation, unused weeks may be refunded at our discretion, less an administration fee.",
       "Refund requests should be sent to info@ambitionsportsperformance.com with the relevant documentation.",
     ],
@@ -74,7 +75,7 @@ const sections = [
     title: "Media & Content Use",
     body: [
       "We routinely film and photograph training sessions for athlete review, coaching analysis, and marketing. By participating, you consent to the use of footage and stills for these purposes.",
-      "If you do not consent to your image being used in marketing material, you must notify us in writing before your first session — we will respect the request and only use the footage internally for coaching.",
+      "If you do not consent to your image being used in marketing material, you must notify us in writing before your first session, we will respect the request and only use the footage internally for coaching.",
     ],
   },
   {
@@ -97,7 +98,7 @@ const sections = [
     n: "11",
     title: "Acknowledgement",
     body: [
-      "By booking and attending sessions with Ambition Sports Performance — or by purchasing any service offered by us — you acknowledge that you have read, understood, and agree to these terms.",
+      "By booking and attending sessions with Ambition Sports Performance, or by purchasing any service offered by us, you acknowledge that you have read, understood, and agree to these terms.",
     ],
   },
 ];
@@ -135,7 +136,7 @@ export default function TermsPage() {
           <FadeIn delay={100}>
             <div className="mb-12 p-5 sm:p-6 bg-gray-50 border border-gray-200 rounded-xl">
               <p className="text-sm text-gray-600 leading-relaxed">
-                These terms exist to ensure consistency, fairness, and accountability across the programme — so every athlete gets the most out of their development. By applying, paying for, or attending any session with Ambition Sports Performance, you accept these terms.
+                These terms exist to ensure consistency, fairness, and accountability across the programme, so every athlete gets the most out of their development. By applying, paying for, or attending any session with Ambition Sports Performance, you accept these terms.
               </p>
             </div>
           </FadeIn>

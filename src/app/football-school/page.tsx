@@ -7,7 +7,7 @@ import { EnquiryForm } from "@/components/EnquiryForm";
 import { Zap, Target, Footprints, Dumbbell, Brain, BarChart3, ArrowRight, Clock, Users, Trophy, Check } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Football School — Ambition Sports Performance",
+  title: "Football School, Ambition Sports Performance",
   description: "The only program in Australia with measurements and assessments behind every footballing attribute, benchmarked against world-class performance data.",
 };
 
@@ -15,7 +15,7 @@ const benchmarks = [
   "Quickest acceleration and shortest time to top speed with and without the ball in world football",
   "Average pass speed from 250 passes researched in the English Premier League",
   "Stride lengths, ground contact times, and top velocities of the 5 fastest footballers in the world",
-  "Execution time of the 5 most encountered attacking scenarios — from goalkeeper to striker (100 EPL games)",
+  "Execution time of the 5 most encountered attacking scenarios, from goalkeeper to striker (100 EPL games)",
   "The 5 most encountered defensive scenarios in the EPL (100 games analysed)",
   "Long pass velocity by the top 5 most successful long passers in world football",
   "Shot velocity by the top 5 fastest shooters in world football",
@@ -27,7 +27,7 @@ const benchmarks = [
 ];
 
 const components = [
-  { title: "World-Class Scenarios", description: "Every session is built from the 5 most encountered attacking and defensive scenarios in the EPL — not random drills.", icon: Target },
+  { title: "World-Class Scenarios", description: "Every session is built from the 5 most encountered attacking and defensive scenarios in the EPL, not random drills.", icon: Target },
   { title: "Biomechanical Precision", description: "We dissect the exact mechanics, cues, and joint positions that make world-class traits world-class.", icon: Footprints },
   { title: "Speed & Power", description: "Results-based sessions focused on strength development, limb speed, stride elasticity, and explosive power.", icon: Dumbbell },
   { title: "Technical Execution", description: "Unpressed scenario → feedback gameplay → free gameplay → position-specific skillsets. Every session structured.", icon: Brain },
@@ -38,7 +38,7 @@ const components = [
 const programDetails = [
   { icon: Clock, label: "6x 80-min sessions/week", detail: "Data and biomechanical-driven. Every session has a specific target and reasoning." },
   { icon: Users, label: "Max 12 players per group", detail: "Specific, consistent feedback from Anthony (Head of Program) every session." },
-  { icon: BarChart3, label: "Individual spreadsheet", detail: "All progression and assessment results tracked — your indicator of how close to world-class." },
+  { icon: BarChart3, label: "Individual spreadsheet", detail: "All progression and assessment results tracked, your indicator of how close to world-class." },
   { icon: Trophy, label: "40-week periodised plan", detail: "Concurrent with NSW school terms. Each 10-week phase is specifically phased with recovery and fixtures." },
 ];
 
@@ -65,7 +65,7 @@ export default function FootballSchoolPage() {
           <FadeIn delay={100}><h1 className="text-5xl sm:text-7xl font-extrabold text-white tracking-tight mb-4">Football School</h1></FadeIn>
           <FadeIn delay={200}>
             <p className="text-lg text-gray-300 max-w-xl leading-relaxed">
-              The only program in Australia — if not the world — with measurements, assessments, and indicators behind <span className="text-accent font-semibold">every attribute</span> for football.
+              The only program in Australia, if not the world, with measurements, assessments, and indicators behind <span className="text-accent font-semibold">every attribute</span> for football.
             </p>
           </FadeIn>
         </div>
@@ -80,7 +80,7 @@ export default function FootballSchoolPage() {
               We don&apos;t just train footballers. We <span className="text-accent">measure</span> world-class.
             </h2>
             <div className="space-y-4 text-gray-600 leading-relaxed">
-              <p>Not only can we see where their current level is at — we can give an indicator of <strong>how far away they are from the top of the food chain</strong>. World-class performance, quantified to the second decimal point.</p>
+              <p>Not only can we see where their current level is at, we can give an indicator of <strong>how far away they are from the top of the food chain</strong>. World-class performance, quantified to the second decimal point.</p>
               <p>This data comes from aggressive, obsessive research into what actually separates elite footballers from everyone else. Not opinions. Not eye tests. Numbers.</p>
               <p className="text-accent font-semibold">There is not one footballing program that is this specific.</p>
             </div>
@@ -103,7 +103,7 @@ export default function FootballSchoolPage() {
           </FadeIn>
           <FadeIn delay={200}>
             <p className="text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
-              Programming designed to bring out the best in every footballing athlete. Dissecting every trait that makes a footballer world-class — going into the biomechanics, specific cues, and indicators that make those traits world-class in the first place.
+              Programming designed to bring out the best in every footballing athlete. Dissecting every trait that makes a footballer world-class, going into the biomechanics, specific cues, and indicators that make those traits world-class in the first place.
             </p>
           </FadeIn>
         </div>
@@ -152,7 +152,7 @@ export default function FootballSchoolPage() {
         </FadeIn>
       </Section>
 
-      {/* Featured — The Secret to Elite Dribbling */}
+      {/* Featured, The Secret to Elite Dribbling */}
       <section className="py-20 sm:py-24 bg-gray-50 border-y border-gray-200 overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
@@ -162,7 +162,7 @@ export default function FootballSchoolPage() {
                 The secret to <span className="text-accent">elite dribbling.</span>
               </h2>
               <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-3">
-                Continuous acceleration. Knee-bent stance from zero. Toe contact, not pad. The mechanics behind every world-class dribbler — broken down.
+                Continuous acceleration. Knee-bent stance from zero. Toe contact, not pad. The mechanics behind every world-class dribbler, broken down.
               </p>
               <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                 It&apos;s not faster effort. It&apos;s a re-built movement.
@@ -184,7 +184,7 @@ export default function FootballSchoolPage() {
         </div>
       </section>
 
-      {/* 2 supporting videos — 1 athlete, 1 pro */}
+      {/* 2 supporting videos, 1 athlete, 1 pro */}
       <section className="py-20 sm:py-24 bg-gray-900 overflow-hidden relative">
         <div className="absolute right-0 top-0 w-[500px] h-[400px] bg-accent/8 rounded-full blur-[170px] pointer-events-none" />
         <div className="absolute left-0 bottom-0 w-[500px] h-[400px] bg-accent/5 rounded-full blur-[160px] pointer-events-none" />
@@ -196,7 +196,7 @@ export default function FootballSchoolPage() {
                 <div className="relative rounded-2xl overflow-hidden bg-black aspect-[9/16] shadow-2xl ring-1 ring-white/10 max-w-[360px] mx-auto w-full">
                   <iframe
                     src="https://iframe.mediadelivery.net/embed/659523/04bb1095-355f-4219-a076-368b3b5b0821?autoplay=false&preload=true&responsive=true"
-                    title="Dribbling — before & after with one of our athletes"
+                    title="Dribbling, before & after with one of our athletes"
                     allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
                     allowFullScreen
                     loading="lazy"
@@ -209,7 +209,7 @@ export default function FootballSchoolPage() {
                     Dribbling with the right intent and mechanics
                   </h3>
                   <p className="text-sm text-gray-400 leading-relaxed">
-                    Same player. Two states. Watch what changes when the mechanics get dialled in — posture, weight transfer, ball contact, continuous acceleration.
+                    Same player. Two states. Watch what changes when the mechanics get dialled in, posture, weight transfer, ball contact, continuous acceleration.
                   </p>
                 </div>
               </div>
@@ -221,7 +221,7 @@ export default function FootballSchoolPage() {
                 <div className="relative rounded-2xl overflow-hidden bg-black aspect-[9/16] shadow-2xl ring-1 ring-white/10 max-w-[360px] mx-auto w-full">
                   <iframe
                     src="https://iframe.mediadelivery.net/embed/659523/054baa3b-e985-485e-9ab6-8f48cf8ba08d?autoplay=false&preload=true&responsive=true"
-                    title="Why elite dribblers are 40% faster — Messi breakdown"
+                    title="Why elite dribblers are 40% faster, Messi breakdown"
                     allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
                     allowFullScreen
                     loading="lazy"
@@ -234,7 +234,7 @@ export default function FootballSchoolPage() {
                     Why elite dribblers are 40% faster
                   </h3>
                   <p className="text-sm text-gray-400 leading-relaxed">
-                    Messi maintains top-end speed through every touch. Most players collapse at the ball. The difference is mechanical — and trainable.
+                    Messi maintains top-end speed through every touch. Most players collapse at the ball. The difference is mechanical, and trainable.
                   </p>
                 </div>
               </div>
@@ -243,7 +243,7 @@ export default function FootballSchoolPage() {
         </div>
       </section>
 
-      {/* Inside The Analysis — coach voice, frame-by-frame dribble breakdown */}
+      {/* Inside The Analysis, coach voice, frame-by-frame dribble breakdown */}
       <section className="py-24 sm:py-32 bg-gray-900 overflow-hidden relative">
         <div className="absolute left-0 top-0 w-[600px] h-[400px] bg-accent/8 rounded-full blur-[180px] pointer-events-none" />
         <div className="absolute right-0 bottom-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[160px] pointer-events-none" />
@@ -253,7 +253,7 @@ export default function FootballSchoolPage() {
               <div className="accent-line mb-6" />
               <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">Inside The Analysis</p>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-4 leading-tight">
-                A 0–5m dribble, <span className="text-accent">dissected to the millisecond.</span>
+                A 0 to 5m dribble, <span className="text-accent">dissected to the millisecond.</span>
               </h2>
               <p className="text-gray-400 leading-relaxed text-sm sm:text-base">
                 Acceleration with the ball and without the ball is the same. Same mechanics. Same posture. Same physics. The only difference is the first step. Here&apos;s what we look at, frame by frame.
@@ -263,7 +263,7 @@ export default function FootballSchoolPage() {
               <div className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-2xl ring-1 ring-black/40">
                 <Image
                   src="/dribble-analysis-setup.jpg"
-                  alt="Dribble analysis filming setup — ball-level 240fps camera capturing contact mechanics"
+                  alt="Dribble analysis filming setup, ball-level 240fps camera capturing contact mechanics"
                   fill
                   className="object-cover"
                   sizes="(min-width: 1024px) 40vw, 100vw"
@@ -283,32 +283,32 @@ export default function FootballSchoolPage() {
               {
                 n: "01",
                 title: "Knee-bent from zero",
-                body: "Most players use their back leg to maneuver before they drive — that's a 140ms delay before force is even applied. The stance has to be habitual: knees bent at both limbs from zero, loaded, ready to go. Before the first step.",
+                body: "Most players use their back leg to maneuver before they drive, that's a 140ms delay before force is even applied. The stance has to be habitual: knees bent at both limbs from zero, loaded, ready to go. Before the first step.",
               },
               {
                 n: "02",
                 title: "Land under centre of mass",
-                body: "Land in front of your centre of mass and you create a braking force on every touch. All your weight stacks on top of that lead foot — you're crashing, not driving. The fix: foot back, sternum forward, weight ahead of the contact.",
+                body: "Land in front of your centre of mass and you create a braking force on every touch. All your weight stacks on top of that lead foot, you're crashing, not driving. The fix: foot back, sternum forward, weight ahead of the contact.",
               },
               {
                 n: "03",
                 title: "Project horizontally, not vertically",
-                body: "Watch the shin angle. If it's pointing up, you're projecting upwards instead of forwards — losing horizontal speed every step. The knee-bent position has to be the most utilised position the player owns — with or without the ball.",
+                body: "Watch the shin angle. If it's pointing up, you're projecting upwards instead of forwards, losing horizontal speed every step. The knee-bent position has to be the most utilised position the player owns, with or without the ball.",
               },
               {
                 n: "04",
-                title: "Toe contact — 20ms not 50",
-                body: "How you touch the ball matters in milliseconds. Toe contact = ~20ms on the ball. The pad of the boot = 50–60ms. That extra 30ms compounds — it slows the whole athlete down. We coach the toe.",
+                title: "Toe contact, 20ms not 50",
+                body: "How you touch the ball matters in milliseconds. Toe contact = ~20ms on the ball. The pad of the boot = 50 to 60ms. That extra 30ms compounds, it slows the whole athlete down. We coach the toe.",
               },
               {
                 n: "05",
-                title: "Run into the ball — don't tap it",
+                title: "Run into the ball, don't tap it",
                 body: "Most footballers tap then chase. The elite run into the ball at full speed and engage. We rep the 'running against the ball' motion until the athlete is as fast with the ball as they are without it.",
               },
               {
                 n: "06",
                 title: "Kill the snowball effect",
-                body: "When the knee can't handle the forces, the ankle gives too — you see deformation through the chain on every contact. The fix isn't more squats. It's posture: bend the knees, sternum forward, fall into the next step instead of stacking on top of it.",
+                body: "When the knee can't handle the forces, the ankle gives too, you see deformation through the chain on every contact. The fix isn't more squats. It's posture: bend the knees, sternum forward, fall into the next step instead of stacking on top of it.",
               },
             ].map((p, i) => (
               <FadeIn key={p.n} delay={(i % 3) * 80}>
@@ -323,34 +323,34 @@ export default function FootballSchoolPage() {
 
           <FadeIn delay={400}>
             <p className="text-center text-gray-500 text-sm italic mt-10 max-w-3xl mx-auto">
-              Every player in the program gets this kind of frame-by-frame breakdown. Acceleration is measured in milliseconds — and that&apos;s the language we coach in.
+              Every player in the program gets this kind of frame-by-frame breakdown. Acceleration is measured in milliseconds, and that&apos;s the language we coach in.
             </p>
           </FadeIn>
         </div>
       </section>
 
-      {/* Coach pull quote — from a real dribble analysis */}
+      {/* Coach pull quote, from a real dribble analysis */}
       <section className="py-20 sm:py-28 bg-black border-y border-gray-800 overflow-hidden relative">
         <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-accent/8 rounded-full blur-[170px] pointer-events-none" />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <FadeIn>
-            <p className="text-accent text-[11px] uppercase tracking-[0.3em] font-bold mb-7">From A Real 0–5m Breakdown</p>
+            <p className="text-accent text-[11px] uppercase tracking-[0.3em] font-bold mb-7">From A Real 0 to 5m Breakdown</p>
           </FadeIn>
           <FadeIn delay={100}>
             <blockquote className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-[1.05] tracking-tight">
-              &ldquo;Acceleration at its peak is <span className="text-accent">fast, controlled falling.</span> Bend the knees, sternum forward — and fall into it.&rdquo;
+              &ldquo;Acceleration at its peak is <span className="text-accent">fast, controlled falling.</span> Bend the knees, sternum forward, and fall into it.&rdquo;
             </blockquote>
           </FadeIn>
           <FadeIn delay={200}>
             <footer className="mt-8 text-sm text-gray-400">
-              — <strong className="text-white">Anthony Atanasov</strong>, Head of Program
+             , <strong className="text-white">Anthony Atanasov</strong>, Head of Program
             </footer>
           </FadeIn>
         </div>
       </section>
 
 
-      {/* Mid-page CTA — route to contact / apply area */}
+      {/* Mid-page CTA, route to contact / apply area */}
       <section className="relative py-24 sm:py-32 bg-gray-50 overflow-hidden border-y border-gray-200">
         <div className="absolute top-1/3 left-1/4 w-[500px] h-[400px] bg-accent/5 rounded-full blur-[150px] pointer-events-none" />
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -374,7 +374,7 @@ export default function FootballSchoolPage() {
                 href="/contact"
                 className="inline-flex items-center gap-2 px-8 py-5 bg-accent text-white font-bold text-sm uppercase tracking-wider rounded-full hover:bg-orange-500 transition-colors shadow-lg shadow-accent/30"
               >
-                Apply Now — Pick Your Program <ArrowRight size={16} />
+                Apply Now, Pick Your Program <ArrowRight size={16} />
               </Link>
               <a
                 href="#waitlist"
@@ -430,12 +430,12 @@ export default function FootballSchoolPage() {
           <div className="bg-gray-50 rounded-xl p-8 border border-gray-200">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
               <div>
-                <p className="text-2xl font-extrabold text-gray-900">U11 — U15</p>
+                <p className="text-2xl font-extrabold text-gray-900">U11, U15</p>
                 <p className="text-sm text-gray-500 mt-1">Ages 11-15 currently</p>
               </div>
               <div>
-                <p className="text-2xl font-extrabold text-gray-900">6:10 — 7:30 AM</p>
-                <p className="text-sm text-gray-500 mt-1">Mon — Thu</p>
+                <p className="text-2xl font-extrabold text-gray-900">6:10, 7:30 AM</p>
+                <p className="text-sm text-gray-500 mt-1">Mon, Thu</p>
               </div>
               <div>
                 <p className="text-2xl font-extrabold text-gray-900">Min 2x / week</p>
@@ -458,8 +458,8 @@ export default function FootballSchoolPage() {
               </h2>
               <div className="space-y-4 text-gray-300 leading-relaxed">
                 <p>The European footballers your son or daughter is competing against for a pro contract have the luxury of 15-20 hours of structured training per week from age 12.</p>
-                <p>So how do you compete? Not by training more hours. Many aspiring footballers have done that and never made it — volume isn&apos;t the answer.</p>
-                <p className="text-white font-semibold text-lg">It begins with dissecting what makes a specific movement successful — and making it biomechanically perfect. That&apos;s how you get ahead.</p>
+                <p>So how do you compete? Not by training more hours. Many aspiring footballers have done that and never made it, volume isn&apos;t the answer.</p>
+                <p className="text-white font-semibold text-lg">It begins with dissecting what makes a specific movement successful, and making it biomechanically perfect. That&apos;s how you get ahead.</p>
                 <p>Then add speed, power, range of motion and other traits to amplify and fine-tune the correct mechanics that have been ingrained in the brain&apos;s neural pathways.</p>
               </div>
             </div>
@@ -468,7 +468,7 @@ export default function FootballSchoolPage() {
       </section>
 
 
-      {/* Waitlist — Football School not yet open */}
+      {/* Waitlist, Football School not yet open */}
       <section id="waitlist" className="relative py-28 sm:py-36 bg-black overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-accent/12 rounded-full blur-[180px]" />
@@ -490,7 +490,7 @@ export default function FootballSchoolPage() {
               </FadeIn>
               <FadeIn delay={200}>
                 <p className="text-base sm:text-lg text-gray-300 max-w-md leading-relaxed mb-8">
-                  We&apos;re finalising the program before we open intake. Drop your details and you&apos;ll hear directly the moment we&apos;re live — ahead of any public release.
+                  We&apos;re finalising the program before we open intake. Drop your details and you&apos;ll hear directly the moment we&apos;re live, ahead of any public release.
                 </p>
               </FadeIn>
               <FadeIn delay={300}>
@@ -524,7 +524,7 @@ export default function FootballSchoolPage() {
               <FadeIn delay={150}>
                 <div className="bg-white rounded-2xl p-6 sm:p-10 shadow-2xl">
                   <div className="mb-6 pb-6 border-b border-gray-100">
-                    <p className="text-[10px] text-accent uppercase tracking-[0.25em] font-bold mb-2">Football School — Waitlist</p>
+                    <p className="text-[10px] text-accent uppercase tracking-[0.25em] font-bold mb-2">Football School, Waitlist</p>
                     <h3 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight leading-tight">Be first to hear.</h3>
                     <p className="text-sm text-gray-500 mt-2 leading-relaxed">60 seconds. No applications taken until intake opens.</p>
                   </div>

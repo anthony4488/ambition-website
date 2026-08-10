@@ -13,7 +13,6 @@ const links = [
   { href: "/football-school", label: "Football School" },
   { href: "/online-coaching", label: "Online Coaching" },
   { href: "/success-stories", label: "Results" },
-  { href: "/blog", label: "Blog" },
   { href: "/contact", label: "Contact" },
 ];
 

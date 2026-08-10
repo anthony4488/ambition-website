@@ -4,7 +4,7 @@ import { Section } from "@/components/Section";
 import { FadeIn } from "@/components/FadeIn";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — Ambition Sports Performance",
+  title: "Privacy Policy, Ambition Sports Performance",
   description: "How Ambition Sports Performance collects, uses, and protects your personal information.",
 };
 
@@ -22,7 +22,7 @@ const sections = [
     title: "Information We Collect",
     body: [
       "When you submit an application form, we collect: your full name, email address, phone number, age range, current playing level or sport, current club or team, training goals, and any additional notes you provide.",
-      "We also automatically collect non-identifying technical data through analytics tools — browser type, device type, pages viewed, time on page, and approximate location based on IP address.",
+      "We also automatically collect non-identifying technical data through analytics tools, browser type, device type, pages viewed, time on page, and approximate location based on IP address.",
     ],
   },
   {
@@ -38,10 +38,10 @@ const sections = [
     title: "Service Providers We Use",
     body: [
       "We use trusted third-party services to operate this site and the programmes:",
-      "• Supabase (database) — stores your application data securely on AWS infrastructure.",
-      "• Resend (email) — sends transactional and marketing emails on our behalf.",
-      "• Meta Pixel and Google Analytics — measure how the site performs and how ads reach the right people. These tools may set cookies on your device.",
-      "• Bunny.net and YouTube — host the videos you watch on the site.",
+      "• Supabase (database), stores your application data securely on AWS infrastructure.",
+      "• Resend (email), sends transactional and marketing emails on our behalf.",
+      "• Meta Pixel and Google Analytics, measure how the site performs and how ads reach the right people. These tools may set cookies on your device.",
+      "• Bunny.net and YouTube, host the videos you watch on the site.",
       "Each provider has its own privacy policy and data-handling practices.",
     ],
   },
@@ -49,7 +49,7 @@ const sections = [
     n: "05",
     title: "Cookies & Tracking",
     body: [
-      "The site uses cookies and similar tracking technologies for analytics and advertising performance. You can disable cookies in your browser settings — though some features may stop working correctly.",
+      "The site uses cookies and similar tracking technologies for analytics and advertising performance. You can disable cookies in your browser settings, though some features may stop working correctly.",
       "If you arrive via a paid advertisement (Meta, Google, TikTok), we may track that visit to measure ad performance.",
     ],
   },
@@ -58,7 +58,7 @@ const sections = [
     title: "Data Storage & Security",
     body: [
       "Your data is stored on secure servers operated by Supabase (AWS, US/EU regions). We use industry-standard encryption in transit (HTTPS) and at rest.",
-      "We restrict access to your data to authorised personnel only — Anthony and any directly retained coaches or admin staff.",
+      "We restrict access to your data to authorised personnel only, Anthony and any directly retained coaches or admin staff.",
     ],
   },
   {

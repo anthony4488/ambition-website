@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { ArrowRight, CheckCircle, Clock, Shield, Zap } from "lucide-react";
+import { trackFormStart, trackFormComplete } from "@/lib/formTelemetry";
+import { qualifyLead } from "@/lib/qualify";
 
 type Program = "speed" | "football" | "online" | "waitlist";
 
@@ -82,16 +84,16 @@ const programCopy: Record<
     successHeading: "Application Received.",
     successBody:
       "We'll review your application within 24 hours. If you're the right fit, Anthony will be in touch to lock in your assessment date.",
-    nextLine: "Keep your phone close — calls come from a Sydney number.",
+    nextLine: "Keep your phone close, calls come from a Sydney number.",
   },
   football: {
     eyebrow: "Apply For Football School",
     title: "Capped at 12 per group. Apply now.",
-    sub: "World-class benchmarked footballing program. Mornings, Mon–Thu, U11–U15 currently.",
+    sub: "World-class benchmarked footballing program. Mornings, Mon to Thu, U11 to U15 currently.",
     successHeading: "Application Received.",
     successBody:
       "We'll review your application within 24 hours. If your child is the right fit, Anthony will be in touch to lock in a trial session.",
-    nextLine: "Keep your phone close — calls come from a Sydney number.",
+    nextLine: "Keep your phone close, calls come from a Sydney number.",
   },
   online: {
     eyebrow: "Apply For Your Online Assessment",
@@ -100,15 +102,15 @@ const programCopy: Record<
     successHeading: "Application Received.",
     successBody:
       "We'll review your application within 24 hours. If you're the right fit, Anthony will be in touch to set up a quick call and lock in your $200 assessment.",
-    nextLine: "Keep your phone close — calls come from a Sydney number.",
+    nextLine: "Keep your phone close, calls come from a Sydney number.",
   },
   waitlist: {
-    eyebrow: "Football School — Waitlist",
+    eyebrow: "Football School, Waitlist",
     title: "Join the waitlist.",
     sub: "Football School isn't open for full intake yet. Drop your details and you'll be first to hear when it opens.",
     successHeading: "You're On The List.",
     successBody:
-      "We'll be in touch the moment Football School opens for its next intake. Until then — Speed School and Online Coaching are both open if you don't want to wait.",
+      "We'll be in touch the moment Football School opens for its next intake. Until then, Speed School and Online Coaching are both open if you don't want to wait.",
     nextLine: "Watch your inbox.",
   },
 };
@@ -184,7 +186,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
       if (!form.athleteLevel.trim()) return "Please enter the athlete's current level.";
     }
     if (program === "waitlist") {
-      // Waitlist only requires the basics — name/email/phone/age (already validated above)
+      // Waitlist only requires the basics, name/email/phone/age (already validated above)
     }
     return "";
   };
@@ -198,7 +200,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
     if (program === "speed") {
       lines.push(
         `Sport & position: ${form.sportPosition}`,
-        `Current top speed: ${form.currentSpeed || "—"}`,
+        `Current top speed: ${form.currentSpeed || ", "}`,
         `Goal: ${form.speedGoal}`,
         `Sessions per week: ${form.sessionsPerWeek}`,
         `State/Country: ${form.state}`,
@@ -220,15 +222,15 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
         `Commitment level: ${form.commitmentLevel}`,
         `Commit length: ${form.commitLength}`,
         `State/Country: ${form.state}`,
-        `Current speed: ${form.currentSpeed || "—"}`,
+        `Current speed: ${form.currentSpeed || ", "}`,
         `Athlete level: ${form.athleteLevel}`,
-        `12-month outcome: ${form.twelveMonthOutcome || "—"}`,
+        `12-month outcome: ${form.twelveMonthOutcome || ", "}`,
       );
     }
     if (program === "waitlist") {
       lines.push(
-        `Current club: ${form.currentClub || "—"}`,
-        `Position: ${form.fbPosition || "—"}`,
+        `Current club: ${form.currentClub || ", "}`,
+        `Position: ${form.fbPosition || ", "}`,
       );
     }
     if (form.notes.trim()) lines.push(`Additional notes: ${form.notes}`);
@@ -245,13 +247,31 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
     setError("");
     setStatus("submitting");
 
+    // This form previously reported qualified:true for EVERY submission, so an
+    // interstate applicant looked identical to a local one. Score it from the
+    // answers already collected (state/country + sport + commitment level).
+    const sportAnswer =
+      program === "football"
+        ? `Football · ${form.fbPosition}`
+        : program === "speed"
+        ? form.sportPosition
+        : form.athleteLevel;
+    const result = qualifyLead({
+      suburb: form.state,
+      sport: sportAnswer,
+      commitmentLevel: form.commitmentLevel || undefined,
+      // The online program is delivered remotely, so interstate/international
+      // applicants stay reviewable rather than being written off.
+      remote: program === "online",
+    });
+
     try {
       if (supabase) {
         const { error: dbErr } = await supabase.from("assessment_leads").insert({
           name: form.name,
           phone: form.phone,
           source,
-          notes: buildNotes(),
+          notes: `${buildNotes()} | Qualified: ${result.tier.toUpperCase()} (${result.reasons.join("; ")})`,
         });
         if (dbErr) throw dbErr;
       }
@@ -264,17 +284,33 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
           phone: form.phone,
           email: form.email,
           suburb: form.state || "",
-          sport: program === "football" ? `Football · ${form.fbPosition}` : program === "speed" ? form.sportPosition : form.athleteLevel,
+          sport: sportAnswer,
           age: form.ageRange,
           goal: program === "online" ? form.onlineGoal : program === "speed" ? form.speedGoal : form.fbGoal,
           budget: form.commitmentLevel || "",
           commit: form.commitLength || form.sessionsPerWeek || "",
           source,
-          qualified: true,
+          qualified: result.tier === "qualified",
+          tier: result.tier,
+          qualify_reasons: result.reasons,
         }),
       }).catch(() => {});
 
-      router.push("/welcome?name=" + encodeURIComponent(form.name || "") + "&email=" + encodeURIComponent(form.email || "")); // nurture/booking page fires the Meta Pixel Lead
+      trackFormComplete(`enquiry-${program}`, { source, tier: result.tier });
+      // /welcome fires the Meta Pixel Lead — pass the tier through so it can
+      // also fire QualifiedLead for the custom conversion.
+      router.push(
+        "/welcome?name=" +
+          encodeURIComponent(form.name || "") +
+          "&email=" +
+          encodeURIComponent(form.email || "") +
+          "&tier=" +
+          encodeURIComponent(result.tier) +
+          "&area=" +
+          encodeURIComponent(result.area) +
+          "&sportfit=" +
+          encodeURIComponent(result.sportFit),
+      );
     } catch {
       setStatus("error");
     }
@@ -303,7 +339,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
       <div className="py-2">
         <button
           type="button"
-          onClick={() => setOpened(true)}
+          onClick={() => { trackFormStart(`enquiry-${program}`, { source }); setOpened(true); }}
           className="group w-full flex items-center justify-center gap-3 py-5 bg-accent text-white font-extrabold rounded-full hover:bg-orange-500 hover:shadow-xl hover:shadow-accent/30 transition-all text-sm uppercase tracking-[0.15em]"
         >
           {isWaitlist ? "Join The Waitlist" : "Start Application"}
@@ -338,20 +374,20 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
     program === "football" || program === "waitlist"
       ? [
           { value: "U11", label: "U11" },
-          { value: "U12-U13", label: "U12–U13" },
-          { value: "U14-U15", label: "U14–U15" },
+          { value: "U12-U13", label: "U12 to U13" },
+          { value: "U14-U15", label: "U14 to U15" },
           { value: "U16+", label: "U16+ / older" },
         ]
       : [
           { value: "Under 13", label: "Under 13" },
-          { value: "13-15", label: "13–15" },
-          { value: "15-17", label: "15–17" },
+          { value: "13-15", label: "13 to 15" },
+          { value: "15-17", label: "15 to 17" },
           { value: "17+", label: "17+" },
         ];
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-      {/* SHARED — Identity */}
+      {/* SHARED, Identity */}
       <div>
         <label className={fieldLabel} htmlFor="apply-name">
           {program === "football" ? "Athlete's Full Name" : "Full Name"} <span className="text-accent">*</span>
@@ -470,8 +506,8 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
               onChange={(v) => setForm({ ...form, sessionsPerWeek: v })}
               options={[
                 { value: "2 sessions/week", label: "2 sessions/week (minimum to see results)" },
-                { value: "3-4 sessions/week", label: "3–4 sessions/week" },
-                { value: "5+ sessions/week", label: "5+ sessions/week — full commitment" },
+                { value: "3-4 sessions/week", label: "3 to 4 sessions/week" },
+                { value: "5+ sessions/week", label: "5+ sessions/week, full commitment" },
               ]}
             />
           </div>
@@ -548,7 +584,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
               options={[
                 { value: "Right", label: "Right" },
                 { value: "Left", label: "Left" },
-                { value: "Both (ambipedal)", label: "Both — comfortable on either foot" },
+                { value: "Both (ambipedal)", label: "Both, comfortable on either foot" },
               ]}
             />
           </div>
@@ -585,7 +621,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
                 { value: "Get scouted / pathway", label: "Get scouted / play at the highest level" },
                 { value: "Improve technical execution", label: "Improve technical execution & decision-making" },
                 { value: "Speed, power & athleticism", label: "Get faster, stronger, more athletic" },
-                { value: "All of the above — Total Footballer", label: "All of the above — Total Footballer" },
+                { value: "All of the above, Total Footballer", label: "All of the above, Total Footballer" },
               ]}
             />
           </div>
@@ -600,15 +636,15 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
               onChange={(v) => setForm({ ...form, fbSessions: v })}
               options={[
                 { value: "2x / week (minimum)", label: "2x / week (minimum for development)" },
-                { value: "3-4x / week", label: "3–4x / week" },
-                { value: "5-6x / week", label: "5–6x / week — full immersion" },
+                { value: "3-4x / week", label: "3 to 4x / week" },
+                { value: "5-6x / week", label: "5 to 6x / week, full immersion" },
               ]}
             />
           </div>
         </>
       )}
 
-      {/* WAITLIST-SPECIFIC (minimal — just enough to remember them) */}
+      {/* WAITLIST-SPECIFIC (minimal, just enough to remember them) */}
       {program === "waitlist" && (
         <>
           <div>
@@ -677,9 +713,9 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
               value={form.commitmentLevel}
               onChange={(v) => setForm({ ...form, commitmentLevel: v })}
               options={[
-                { value: "$130-150/week, 6+ months", label: "I'm ready to invest $130–150/week and commit 6+ months" },
-                { value: "$150-180/week, 12+ months", label: "I'm ready to invest $150–180/week and commit 12+ months" },
-                { value: "$180+/week, whatever it takes", label: "I'll invest whatever it takes — $180+/week is fine" },
+                { value: "$130-150/week, 6+ months", label: "I'm ready to invest $130 to 150/week and commit 6+ months" },
+                { value: "$150-180/week, 12+ months", label: "I'm ready to invest $150 to 180/week and commit 12+ months" },
+                { value: "$180+/week, whatever it takes", label: "I'll invest whatever it takes, $180+/week is fine" },
                 { value: "Not ready to invest at this level", label: "I'm not ready to invest at this level" },
               ]}
             />
@@ -694,8 +730,8 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
               value={form.commitLength}
               onChange={(v) => setForm({ ...form, commitLength: v })}
               options={[
-                { value: "6-12 months minimum", label: "6–12 months minimum" },
-                { value: "12+ months — whatever it takes", label: "12+ months — whatever it takes" },
+                { value: "6-12 months minimum", label: "6 to 12 months minimum" },
+                { value: "12+ months, whatever it takes", label: "12+ months, whatever it takes" },
               ]}
             />
           </div>
@@ -761,7 +797,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
               id="apply-outcome"
               rows={4}
               maxLength={500}
-              placeholder="Optional — up to 500 characters."
+              placeholder="Optional, up to 500 characters."
               value={form.twelveMonthOutcome}
               onChange={(e) => setForm({ ...form, twelveMonthOutcome: e.target.value })}
               className={`${inputClass} resize-none`}
@@ -773,7 +809,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
         </>
       )}
 
-      {/* SHARED — Open notes (kept short, optional) */}
+      {/* SHARED, Open notes (kept short, optional) */}
       <div>
         <label className={fieldLabel} htmlFor="apply-notes">
           Anything else we should know?

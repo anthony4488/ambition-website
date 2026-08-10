@@ -6,7 +6,7 @@ import { FadeIn } from "@/components/FadeIn";
 import { ArrowLeft } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Why Most Athletes Train Hard But Never Get Faster — Ambition Sports Performance",
+  title: "Why Most Athletes Train Hard But Never Get Faster, Ambition Sports Performance",
   description: "No assessment, no baseline, no limiting factor profile. Just guessing. Here's why that's the #1 reason athletes plateau.",
 };
 
@@ -39,7 +39,7 @@ export default function AssessmentPost() {
                 </p>
 
                 <p>
-                  Without that starting point, you can&apos;t build a real strategy. You can&apos;t tell if what you&apos;re doing is actually working. And you can&apos;t select the corrective exercises that actually transfer to performance — the ones that don&apos;t just make you tired, but actually make you progress toward the end goal, not just make you &ldquo;feel the burn.&rdquo;
+                  Without that starting point, you can&apos;t build a real strategy. You can&apos;t tell if what you&apos;re doing is actually working. And you can&apos;t select the corrective exercises that actually transfer to performance, the ones that don&apos;t just make you tired, but actually make you progress toward the end goal, not just make you &ldquo;feel the burn.&rdquo;
                 </p>
 
                 <h2 className="text-2xl font-extrabold text-gray-900 mt-12 mb-4">The Assessment Gap</h2>
@@ -49,7 +49,7 @@ export default function AssessmentPost() {
                 </p>
 
                 <p>
-                  So athletes copy what everyone else is doing — the same generic drills, the same cookie-cutter programs — and wonder why nothing changes.
+                  So athletes copy what everyone else is doing, the same generic drills, the same cookie-cutter programs, and wonder why nothing changes.
                 </p>
 
                 <p>
@@ -62,7 +62,7 @@ export default function AssessmentPost() {
                   <div className="space-y-6">
                     <div>
                       <p className="font-bold text-gray-900 mb-1">Laser Timing Gates (0.01s precision)</p>
-                      <p className="text-sm text-gray-500">10m, 20m, 30m, 40m splits. Acceleration curve mapping. Speed decay analysis. Not a stopwatch — data.</p>
+                      <p className="text-sm text-gray-500">10m, 20m, 30m, 40m splits. Acceleration curve mapping. Speed decay analysis. Not a stopwatch, data.</p>
                     </div>
                     <div>
                       <p className="font-bold text-gray-900 mb-1">240fps Slow-Motion Video</p>
@@ -70,11 +70,11 @@ export default function AssessmentPost() {
                     </div>
                     <div>
                       <p className="font-bold text-gray-900 mb-1">20+ Performance Indicators</p>
-                      <p className="text-sm text-gray-500">Ground contact time, stride length, stride frequency, hip position, shin angle, force application direction — the full picture.</p>
+                      <p className="text-sm text-gray-500">Ground contact time, stride length, stride frequency, hip position, shin angle, force application direction, the full picture.</p>
                     </div>
                     <div>
                       <p className="font-bold text-gray-900 mb-1">Personalised Report</p>
-                      <p className="text-sm text-gray-500">8-10 pages of findings, prioritised fixes, and a development roadmap. Not a template — your specific limiters and the plan to fix them.</p>
+                      <p className="text-sm text-gray-500">8-10 pages of findings, prioritised fixes, and a development roadmap. Not a template, your specific limiters and the plan to fix them.</p>
                     </div>
                   </div>
                 </div>
@@ -82,7 +82,7 @@ export default function AssessmentPost() {
                 <h2 className="text-2xl font-extrabold text-gray-900 mt-12 mb-4">Why This Changes Everything</h2>
 
                 <p>
-                  When you can see an athlete through our assessment, we map your exact position relative to where you need to be. We can give you a clear picture of exactly how far you are from elite level — and what it takes to close that gap.
+                  When you can see an athlete through our assessment, we map your exact position relative to where you need to be. We can give you a clear picture of exactly how far you are from elite level, and what it takes to close that gap.
                 </p>
 
                 <p>

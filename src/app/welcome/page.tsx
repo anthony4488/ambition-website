@@ -2,40 +2,34 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import Script from "next/script";
-import { Check, ClipboardCheck, ShieldCheck, Target, Instagram, ArrowRight } from "lucide-react";
+import { Check, ClipboardCheck, Phone, Target, Instagram, ArrowRight } from "lucide-react";
+import { fireLeadPixel, type AreaFit, type LeadTier, type SportFit } from "@/lib/qualify";
 
-// Post-application nurture page. Hero = book the assessment call (Calendly,
-// prefilled with the applicant's name/email passed from the form). Fires the
-// Meta Pixel Lead conversion on load.
-
-const CAL_URL = "https://calendly.com/ambitionsportsperformance-info/30min?hide_gdpr_banner=1";
-
-function initCalendly() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const w = window as any;
-  const el = document.getElementById("calendly-embed");
-  if (!w.Calendly || !el || el.childElementCount > 0) return; // guard double-init
-  const sp = new URLSearchParams(window.location.search);
-  w.Calendly.initInlineWidget({
-    url: CAL_URL,
-    parentElement: el,
-    prefill: { name: sp.get("name") || "", email: sp.get("email") || "" },
-  });
-}
+// Post-application confirmation page. No self-serve booking, we capture the
+// applicant's details on the form and follow up directly by SMS. Fires the
+// Meta Pixel Lead conversion on load, plus QualifiedLead when EnquiryForm
+// passed through a qualified tier.
 
 export default function WelcomePage() {
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const w = window as any;
-    if (typeof w.fbq === "function") w.fbq("track", "Lead", { content_name: "Application Complete" });
-    initCalendly(); // in case the widget script was already cached/loaded
+    const sp = new URLSearchParams(window.location.search);
+    // Absent tier (direct visit, or a bookmarked /welcome) degrades to
+    // "review" so we never over-report a qualified conversion.
+    const tier = (sp.get("tier") as LeadTier | null) ?? "review";
+    fireLeadPixel(
+      {
+        tier,
+        area: (sp.get("area") as AreaFit | null) ?? "unknown",
+        sportFit: (sp.get("sportfit") as SportFit | null) ?? "unknown",
+        investReady: null,
+        reasons: [],
+      },
+      { content_category: "enquiry" },
+    );
   }, []);
 
   return (
     <main className="min-h-screen bg-white">
-      <Script src="https://assets.calendly.com/assets/external/widget.js" strategy="afterInteractive" onLoad={initCalendly} />
-
       <div className="mx-auto max-w-2xl px-6 py-12 sm:py-16">
         {/* logo */}
         <div className="mb-8 flex justify-center">
@@ -43,41 +37,27 @@ export default function WelcomePage() {
           <img src="/logo.png" alt="Ambition Sports Performance" className="h-10 w-auto" />
         </div>
 
-        {/* confirmation + booking hero */}
+        {/* confirmation hero */}
         <div className="text-center">
           <div className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full bg-accent/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-accent">
             <Check size={14} strokeWidth={3} /> Application received
           </div>
           <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-gray-900 sm:text-5xl">
-            Last step — <span className="text-accent">book your call.</span>
+            You&apos;re in. <span className="text-accent">Anthony will call you.</span>
           </h1>
           <p className="mx-auto mt-4 max-w-md text-gray-600">
-            Pick a time below. On the call we map exactly what&apos;s limiting your athlete&apos;s speed
-            and whether the Speed System is the right fit. Limited spots — book before they go.
+            Anthony is reviewing your application now. Keep your phone close, he&apos;ll call you
+            from a Sydney number to map out your next step. No calendars to chase, we come to you.
           </p>
         </div>
 
-        {/* Calendly inline embed */}
-        <div className="mt-8 overflow-hidden rounded-2xl border border-gray-100 shadow-lg">
-          <div id="calendly-embed" style={{ minWidth: 320, height: 720 }} />
-          <noscript>
-            <div className="p-6 text-center">
-              <a href={CAL_URL} className="font-bold text-accent underline">Book your assessment call</a>
-            </div>
-          </noscript>
-        </div>
-        <p className="mt-3 text-center text-xs text-gray-400">
-          Trouble seeing the calendar?{" "}
-          <a href={CAL_URL} target="_blank" rel="noreferrer" className="underline">Open it in a new tab</a>.
-        </p>
-
-        {/* what happens on the call */}
-        <div className="mt-14 space-y-4">
-          <h2 className="text-center text-sm font-bold uppercase tracking-[0.18em] text-gray-400">What happens on the call</h2>
+        {/* what happens next */}
+        <div className="mt-12 space-y-4">
+          <h2 className="text-center text-sm font-bold uppercase tracking-[0.18em] text-gray-400">What happens next</h2>
           {[
-            { icon: <ClipboardCheck size={20} />, t: "We review your application", d: "Anthony goes through your answers before you even speak." },
-            { icon: <ShieldCheck size={20} />, t: "Honest fit-check", d: "Is the Speed System right for your athlete? No chasing, no false promises." },
-            { icon: <Target size={20} />, t: "Lock in the $199 assessment", d: "240fps biomechanical analysis to find — and fix — what's limiting speed." },
+            { icon: <ClipboardCheck size={20} />, t: "We review your application", d: "Anthony goes through your answers personally before reaching out." },
+            { icon: <Phone size={20} />, t: "Anthony calls you from a Sydney number", d: "A real call from Anthony, not an automated calendar link. No booking, no chasing." },
+            { icon: <Target size={20} />, t: "We lock in your $199 assessment", d: "240fps biomechanical analysis to find, and fix, what's limiting speed." },
           ].map((s, i) => (
             <div key={i} className="flex items-start gap-4 rounded-2xl border border-gray-100 bg-gray-50 p-5">
               <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-accent/10 text-accent">{s.icon}</span>
@@ -98,7 +78,7 @@ export default function WelcomePage() {
             <div><div className="text-2xl font-extrabold sm:text-3xl">240fps</div><div className="text-[11px] text-gray-400">analysis</div></div>
           </div>
           <p className="mt-5 text-sm text-gray-300">
-            Pete: <span className="font-semibold text-white">32 → 35 km/h</span> · Liam: <span className="font-semibold text-white">28 → 34 km/h</span> — real, measured, on the track.
+            Pete: <span className="font-semibold text-white">32 to 35 km/h</span> · Liam: <span className="font-semibold text-white">28 to 34 km/h</span>, real, measured, on the track.
           </p>
         </div>
 
@@ -113,7 +93,7 @@ export default function WelcomePage() {
           </a>
         </div>
 
-        <p className="mt-10 text-center text-xs italic text-gray-400">Keep your phone close — calls come from a Sydney number.</p>
+        <p className="mt-10 text-center text-xs italic text-gray-400">Keep your phone close, your call comes from a Sydney number.</p>
       </div>
     </main>
   );

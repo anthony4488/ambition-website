@@ -40,7 +40,7 @@ function getUtm() {
 export function VisitTracker() {
   const pathname = usePathname();
 
-  // New-session ping — fires once per browser session.
+  // New-session ping, fires once per browser session.
   useEffect(() => {
     try {
       if (!sessionStorage.getItem("asp_visit")) {
@@ -57,7 +57,7 @@ export function VisitTracker() {
     }
   }, []);
 
-  // High-intent ping — once per high-intent page per session.
+  // High-intent ping, once per high-intent page per session.
   useEffect(() => {
     if (!pathname || !HIGH_INTENT.includes(pathname)) return;
     try {

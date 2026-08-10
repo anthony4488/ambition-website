@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Analytics } from "@/components/Analytics";
+import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
 import { VisitTracker } from "@/components/VisitTracker";
 
 const inter = Inter({
@@ -13,7 +14,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Ambition Sports Performance — Elite Speed Development",
+  title: "Ambition Sports Performance, Elite Speed Development",
   description:
     "World-class speed development for athletes. Speed School, Football School, and Online Coaching programs designed to unlock your athletic potential.",
   keywords: [
@@ -45,6 +46,7 @@ export default function RootLayout({
         <main>{children}</main>
         <Footer />
         <Analytics />
+        <VercelAnalytics />
         <VisitTracker />
       </body>
     </html>

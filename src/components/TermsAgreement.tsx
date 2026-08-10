@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 
-// Read-only Terms & Conditions reference page. Payment = acceptance — no form,
+// Read-only Terms & Conditions reference page. Payment = acceptance, no form,
 // no e-signature. Content stored as HTML strings so <strong> emphasis is preserved.
 type Block = { k: "p" | "clause" | "sub" | "highlight"; html: string };
 type Section = { n: number; name: string; blocks: Block[] };
@@ -13,7 +13,7 @@ const SECTIONS: Section[] = [
     n: 1,
     name: "Program Structure",
     blocks: [
-      { k: "p", html: "Ambition Sports Performance offers two program formats — <strong>in-person coaching</strong> and <strong>online programming</strong> (Section 2) — and these terms cover both. Our in-person program includes:" },
+      { k: "p", html: "Ambition Sports Performance offers two program formats, <strong>in-person coaching</strong> and <strong>online programming</strong> (Section 2), and these terms cover both. Our in-person program includes:" },
       { k: "clause", html: "• One face-to-face session per week in a small group of 4 to 7 athletes, following a specific merit and progressive model designed to produce measurable results" },
       { k: "clause", html: "• Full online programming, mentoring, and ongoing monitoring delivered through a dedicated WhatsApp chat" },
       { k: "clause", html: "• Weekly video feedback: athlete sends through videos of programmed work for review of technique and execution" },
@@ -25,7 +25,7 @@ const SECTIONS: Section[] = [
     name: "Online Programming",
     blocks: [
       { k: "p", html: "For athletes coached remotely, the online program is a complete coaching system delivered to your phone:" },
-      { k: "clause", html: "2.1 The online program delivers individualised remote programming, mentoring, and ongoing monitoring through a dedicated WhatsApp chat — built on the same merit-based, progressive model as our in-person coaching." },
+      { k: "clause", html: "2.1 The online program delivers individualised remote programming, mentoring, and ongoing monitoring through a dedicated WhatsApp chat, built on the same merit-based, progressive model as our in-person coaching." },
       { k: "clause", html: "2.2 Programming is tailored to the athlete's assessment, goals, and available equipment and environment. The athlete is responsible for executing the programmed work and sending weekly videos of key sessions for technique review and adjustment." },
       { k: "clause", html: "2.3 Online programs run in agreed blocks (for example, a 30-week program) and are paid in full prior to commencement, in line with the Payment Terms below." },
       { k: "clause", html: "2.4 Coaching feedback and programming updates are provided within a reasonable turnaround on business days. The online program is ongoing structured support, not a 24/7 on-call service." },
@@ -37,7 +37,7 @@ const SECTIONS: Section[] = [
     n: 3,
     name: "Payment Terms",
     blocks: [
-      { k: "clause", html: "3.1 In-person training is delivered in block periods, and online programs in agreed blocks — both paid in full prior to commencement. Coaching will not commence until payment is completed." },
+      { k: "clause", html: "3.1 In-person training is delivered in block periods, and online programs in agreed blocks, both paid in full prior to commencement. Coaching will not commence until payment is completed." },
       { k: "clause", html: "3.2 Payment covers the agreed number of sessions or the agreed program at the agreed rate. Payment structure and amount will be confirmed in writing prior to commencement." },
       { k: "clause", html: "3.3 <strong>No refunds will be issued on block or program payments under any circumstances.</strong> All payments are final." },
       { k: "clause", html: "3.4 If sessions within a block are delivered as group sessions instead of individual sessions (where applicable), the price difference will be credited forward to the next block." },

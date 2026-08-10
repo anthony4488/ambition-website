@@ -5,7 +5,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 // Visitor alerts → Telegram. Fired by <VisitTracker/> on a new browser session
-// and on high-intent page hits (/apply, /sample-report). Best-effort, non-fatal.
+// and on high-intent page hits (/apply). Best-effort, non-fatal.
 // Volume control via env: VISIT_ALERT_LEVEL = "all" (default) | "high_intent" | "off".
 
 const BOT_UA =
