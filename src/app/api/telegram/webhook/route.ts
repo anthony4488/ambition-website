@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
 import { sendSms } from "@/lib/nurture";
-import { sendTelegramMessage } from "@/lib/telegram";
+import { sendTelegramMessage, answerCallbackQuery } from "@/lib/telegram";
+import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { sendAssessmentLink, parseClientRef } from "@/lib/booking";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -16,7 +18,47 @@ type TgUpdate = {
     chat?: { id?: number | string };
     reply_to_message?: { text?: string };
   };
+  callback_query?: {
+    id?: string;
+    data?: string;
+    from?: { id?: number | string };
+    message?: { chat?: { id?: number | string } };
+  };
 };
+
+// A tap on "Send $199 payment link" on a lead alert. callback_data looks like
+// "sendlink:lg_123__ph_61400000000" — everything needed is in the payload, so
+// the handler works even if the Supabase row is missing.
+async function handleSendLink(cb: NonNullable<TgUpdate["callback_query"]>) {
+  const ref = (cb.data ?? "").replace(/^sendlink:/, "");
+  const { leadgenId, phone } = parseClientRef(ref);
+  if (!phone) {
+    await answerCallbackQuery(cb.id ?? "", "No phone on that lead");
+    return;
+  }
+
+  // Best-effort name/email lookup so the SMS isn't addressed to "there".
+  let name: string | null = null;
+  let email: string | null = null;
+  if (leadgenId) {
+    try {
+      const sb = getSupabaseAdmin();
+      const { data } = await sb
+        .from("assessment_leads")
+        .select("name, email")
+        .eq("leadgen_id", leadgenId)
+        .limit(1)
+        .maybeSingle();
+      name = data?.name ?? null;
+      email = data?.email ?? null;
+    } catch {
+      /* non-fatal */
+    }
+  }
+
+  const r = await sendAssessmentLink({ name, phone, email, leadgenId, via: "telegram-tap" });
+  await answerCallbackQuery(cb.id ?? "", r.ok ? "Link sent ✅" : `Not sent: ${r.detail}`);
+}
 
 export async function POST(req: NextRequest) {
   // Verify the call is genuinely from Telegram (secret set when registering the
@@ -30,6 +72,18 @@ export async function POST(req: NextRequest) {
   try {
     update = (await req.json()) as TgUpdate;
   } catch {
+    return Response.json({ ok: true });
+  }
+
+  // Button taps come through as callback_query, not message.
+  const cb = update.callback_query;
+  if (cb?.data?.startsWith("sendlink:")) {
+    const cbChat = String(cb.message?.chat?.id ?? "");
+    const allowedChat = process.env.TELEGRAM_CHAT_ID;
+    if (allowedChat && cbChat !== String(allowedChat)) {
+      return Response.json({ ok: true });
+    }
+    await handleSendLink(cb);
     return Response.json({ ok: true });
   }
 

@@ -24,6 +24,15 @@ export interface QualifyInput {
   invest?: string;
   /** EnquiryForm online-program commitment option string. */
   commitmentLevel?: string;
+  // ---- Meta lead-form answers (forms 1659777891796341 / 1490958988895522) ----
+  /** "11-13" | "13-15" | "15-17" | "17+" */
+  ageBand?: string;
+  /** "$130-$150/week" | "$150-$180/week" | "$180+/week" | "$100-$130/week" */
+  budget?: string;
+  /** "6-12 months minimum" | "12+ months — whatever it takes" */
+  commitLength?: string;
+  /** "Local/Association club" | "Representative/Academy" | "Higher NPL to Youth 1st Div" | "State level or higher" */
+  level?: string;
   /**
    * True when the enquiry is for an offer that can be delivered remotely
    * (the online program). Out-of-area then downgrades to "review" instead of
@@ -49,53 +58,51 @@ const norm = (s: unknown): string =>
     .replace(/\s+/g, " ")
     .trim();
 
-// Greater Sydney — the real serviceable area, deliberately WIDER than the ad
-// campaign's 25km radius. Campbelltown, Penrith, Blacktown and Liverpool all
-// sit outside 25km from the CBD but are athletes Anthony does take, so the form
-// must not discard them just because the ad targeting is tighter.
+// Serviceable catchment for Georges Hall + Strathfield — roughly a 20 minute
+// drive, inner west and Bankstown.
+//
+// This used to be the whole of Greater Sydney "because Anthony takes them anyway".
+// He doesn't. Campbelltown, Liverpool, Fairfield, Parramatta, Penrith and Blacktown
+// are OUT (confirmed 2026-08-08), and scoring them as qualified was firing a
+// QualifiedLead pixel event that taught Meta to go and find more of them.
 const SYDNEY_MARKERS = [
-  // Core / inner
-  "sydney", "cbd", "surry hills", "redfern", "newtown", "glebe", "pyrmont", "ultimo",
-  "alexandria", "waterloo", "zetland", "erskineville", "marrickville", "dulwich hill",
-  // Inner west
-  "leichhardt", "balmain", "rozelle", "annandale", "ashfield", "burwood", "strathfield",
-  "concord", "five dock", "drummoyne", "croydon", "summer hill", "canada bay",
-  // East
-  "bondi", "coogee", "randwick", "maroubra", "kensington", "clovelly", "bronte",
-  "waverley", "vaucluse", "double bay", "paddington", "woollahra", "rose bay", "botany",
-  "mascot", "eastgardens", "kingsford", "matraville", "malabar",
-  // North shore / northern
-  "north sydney", "chatswood", "willoughby", "lane cove", "crows nest", "st leonards",
-  "artarmon", "gordon", "killara", "lindfield", "roseville", "pymble", "turramurra",
-  "wahroonga", "hornsby", "epping", "eastwood", "ryde", "macquarie park", "north ryde",
-  "meadowbank", "gladesville", "hunters hill", "mosman", "neutral bay", "cremorne",
-  "kirribilli", "castle hill", "baulkham hills", "kellyville", "rouse hill", "the hills",
-  // Northern beaches
-  "manly", "dee why", "brookvale", "narrabeen", "mona vale", "avalon", "freshwater",
-  "curl curl", "collaroy", "warriewood", "newport", "palm beach", "balgowlah", "seaforth",
-  "northern beaches",
-  // West / greater west
-  "parramatta", "harris park", "westmead", "granville", "auburn", "lidcombe", "homebush",
-  "olympic park", "rydalmere", "dundas", "carlingford", "merrylands", "guildford",
-  "blacktown", "seven hills", "toongabbie", "wentworthville", "pendle hill", "prospect",
-  "penrith", "st marys", "kingswood", "emu plains", "glenmore park", "mount druitt",
-  "rooty hill", "quakers hill", "schofields", "marsden park", "riverstone",
-  // South west
-  "bankstown", "punchbowl", "greenacre", "chester hill", "yagoona", "condell park",
+  // Inner west - Strathfield venue
+  "strathfield", "burwood", "ashfield", "croydon", "concord", "homebush",
+  "north strathfield", "flemington", "five dock", "drummoyne", "canada bay",
+  "leichhardt", "haberfield", "summer hill", "lewisham", "petersham",
+  "marrickville", "dulwich hill", "earlwood", "rodd point", "russell lea",
+  // Bankstown / Georges Hall venue
+  "georges hall", "bankstown", "chester hill", "sefton", "yagoona", "birrong",
+  "condell park", "padstow", "revesby", "panania", "east hills", "milperra",
+  "picnic point", "lansdowne", "villawood", "regents park", "potts hill",
+  // Canterbury
+  "canterbury", "campsie", "belmore", "lakemba", "wiley park", "punchbowl",
+  "greenacre", "roselands", "belfield", "clemton park", "hurlstone park",
+  "kingsgrove", "bexley north", "beverly hills", "narwee", "riverwood",
+  // Region words parents actually type
+  "inner west", "bankstown area", "canterbury bankstown",
+];
+
+// Explicitly OUT even though they are Sydney. Too far to sustain weekly
+// attendance at Georges Hall or Strathfield, so they churn.
+const OUT_OF_CATCHMENT = [
+  "campbelltown", "camden", "narellan", "oran park", "gregory hills", "macarthur",
   "liverpool", "casula", "moorebank", "prestons", "hoxton park", "west hoxton",
-  "campbelltown", "macarthur", "camden", "narellan", "oran park", "gregory hills",
   "leppington", "austral", "bringelly", "ingleburn", "minto", "leumeah", "glenfield",
   "fairfield", "cabramatta", "canley", "smithfield", "wetherill park", "bonnyrigg",
-  // South
-  "hurstville", "kogarah", "rockdale", "brighton le sands", "sans souci", "carlton",
-  "beverly hills", "peakhurst", "mortdale", "oatley", "penshurst", "arncliffe",
+  "parramatta", "harris park", "westmead", "granville", "auburn", "lidcombe",
+  "merrylands", "guildford", "rydalmere", "dundas", "carlingford",
+  "blacktown", "seven hills", "toongabbie", "wentworthville", "pendle hill",
+  "penrith", "st marys", "kingswood", "emu plains", "glenmore park", "mount druitt",
+  "rooty hill", "quakers hill", "schofields", "marsden park", "riverstone",
+  "castle hill", "baulkham hills", "kellyville", "rouse hill", "the hills",
   "sutherland", "cronulla", "miranda", "caringbah", "engadine", "menai", "gymea",
-  "sylvania", "kirrawee", "jannali", "como", "bangor", "illawong", "sans souci",
-  "revesby", "padstow", "panania", "east hills", "milperra",
-  // Region words people actually type
-  "greater western sydney", "western sydney", "south west sydney", "sw sydney",
-  "sutherland shire", "the shire", "inner west", "eastern suburbs", "north shore",
-  "hills district", "macarthur region", "nsw",
+  "sylvania", "kirrawee", "jannali", "como", "bangor", "illawong",
+  "manly", "dee why", "brookvale", "narrabeen", "mona vale", "avalon", "freshwater",
+  "curl curl", "collaroy", "warriewood", "newport", "palm beach", "northern beaches",
+  "hornsby", "epping", "castle cove", "western sydney", "greater western sydney",
+  "south west sydney", "sw sydney", "sutherland shire", "the shire", "hills district",
+  "macarthur region",
 ];
 
 // Explicitly NOT serviceable for in-person coaching. Checked FIRST, because a
@@ -123,16 +130,12 @@ const OUT_OF_AREA_MARKERS = [
   "uk", "united kingdom", "london", "usa", "united states", "india", "philippines",
 ];
 
-// Sports where Anthony has direct, demonstrable results. Anything outside this
-// is REVIEW, never rejected — this list is a starting point, not a policy.
-// TODO(Anthony): confirm which sports you actually want excluded.
+// Football only. Confirmed 2026-08-08 — AFL and rugby are NOT the target, even
+// though earlier ads said "football, soccer, AFL or rugby". Anything outside this
+// lands in "review", never auto-rejected, so a genuine enquiry still reaches him.
 const CORE_SPORTS = [
   "football", "soccer", "futsal",
-  "rugby", "league", "union", "nrl",
-  "afl", "aussie rules", "australian rules",
-  "athletics", "track", "sprint", "sprinting", "sprinter", "running",
-  "basketball", "netball",
-  "touch", "oztag",
+  "npl", "ifa", "academy",          // level words parents type instead of the sport
 ];
 
 // Whole-word matching only. Plain substring matching is unsafe here because the
@@ -153,7 +156,7 @@ export function classifyArea(suburb?: string): { fit: AreaFit; matched: string |
   if (!s) return { fit: "unknown", matched: null };
 
   // Out-of-area wins: "Newcastle NSW" must not pass on the "nsw" token.
-  const out = matches(s, OUT_OF_AREA_MARKERS);
+  const out = matches(s, OUT_OF_AREA_MARKERS) ?? matches(s, OUT_OF_CATCHMENT);
   if (out) return { fit: "out_of_area", matched: out };
 
   const inArea = matches(s, SYDNEY_MARKERS);
@@ -181,6 +184,59 @@ export function classifyInvest(invest?: string, commitmentLevel?: string): boole
   return null;
 }
 
+// ---------------------------------------------------------------------------
+// Meta lead-form answers. These are the real LTV filters — age band, level,
+// weekly budget and commitment length are all asked on the live forms and were
+// previously ignored, which parked every lead in "review".
+// ---------------------------------------------------------------------------
+
+// norm() strips digits (it exists for suburb/sport matching, where "wa" inside
+// "Waterloo" is the hazard). These answers are ALL digits — "13-15", "17+",
+// "$130-$150/week" — so they need a normaliser that keeps them.
+const normNum = (s: unknown): string =>
+  String(s ?? "").toLowerCase().replace(/[^a-z0-9+\s-]/g, " ").replace(/\s+/g, " ").trim();
+
+/** 13-17 is the band. 17+ has left the pathway; 11-13 straddles it. */
+export function classifyAge(band?: string): "in" | "edge" | "out" | "unknown" {
+  const s = normNum(band);
+  if (!s) return "unknown";
+  if (s.includes("13-15") || s.includes("15-17")) return "in";
+  if (s.includes("11-13")) return "edge";   // only the top of this band qualifies
+  if (s.includes("17+")) return "out";
+  return "unknown";
+}
+
+/** Park football is the churn cohort. Rep/academy and above is the buyer. */
+export function classifyLevel(level?: string): "in" | "out" | "unknown" {
+  const s = normNum(level);
+  if (!s) return "unknown";
+  if (s.includes("local") || s.includes("association")) return "out";
+  if (s.includes("representative") || s.includes("academy") || s.includes("npl") ||
+      s.includes("state") || s.includes("div")) return "in";
+  return "unknown";
+}
+
+/** The programme floor is $130/week. Anything under can't sustain it. */
+export function classifyBudget(budget?: string): "in" | "under" | "unknown" {
+  const nums = String(budget ?? "").match(/\d+/g)?.map(Number) ?? [];
+  if (!nums.length) return "unknown";
+  // Use the TOP of the band: "$100-$130/week" tops out exactly at the floor,
+  // which is not headroom — treat anything that doesn't clear 130 as under.
+  return Math.max(...nums) > 130 ? "in" : "under";
+}
+
+/** Long horizon is the whole thesis — Maksim took three years. */
+export function classifyCommit(len?: string): "strong" | "ok" | "unknown" {
+  const s = normNum(len);
+  if (!s) return "unknown";
+  // Order matters: "6-12 months minimum" contains "12" but is the LOWER tier.
+  // Check the range before the open-ended "12+".
+  if (/6\s*-\s*12/.test(s)) return "ok";
+  if (s.includes("12+") || /\b12\b/.test(s)) return "strong";
+  if (/\b6\b/.test(s)) return "ok";
+  return "unknown";
+}
+
 export function qualifyLead(input: QualifyInput): QualifyResult {
   const area = classifyArea(input.suburb);
   const sport = classifySport(input.sport);
@@ -201,10 +257,15 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
     reasons.push("Suburb not recognised");
   }
 
+  // A Meta lead answers a budget band instead of the site's yes/no invest
+  // question. When budget is present it IS the money signal — don't also
+  // demote the lead for not answering a question it was never shown.
+  const hasBudgetAnswer = Boolean(input.budget);
+
   if (investReady === false) {
     tier = "unqualified";
     reasons.push("Not ready to invest");
-  } else if (investReady === null && tier === "qualified") {
+  } else if (investReady === null && !hasBudgetAnswer && tier === "qualified") {
     tier = "review";
     reasons.push("Investment readiness not asked");
   }
@@ -219,7 +280,52 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
     }
   }
 
-  if (tier === "qualified") reasons.push("In area, core sport, ready to invest");
+  // ---- Meta lead-form answers. Hard filters first. ----
+  const age = classifyAge(input.ageBand);
+  const lvl = classifyLevel(input.level);
+  const bud = classifyBudget(input.budget);
+  const com = classifyCommit(input.commitLength);
+
+  if (age === "out") {
+    tier = "unqualified";
+    reasons.push("Athlete is 17+ — outside 13-17");
+  } else if (age === "edge" && tier === "qualified") {
+    tier = "review";
+    reasons.push("Age band 11-13 — only qualifies at the top of it");
+  }
+
+  if (lvl === "out") {
+    tier = "unqualified";
+    reasons.push("Local/association club — not NPL, IFA or academy");
+  }
+
+  if (bud === "under") {
+    tier = "unqualified";
+    reasons.push("Budget below the $130/week programme floor");
+  }
+
+  // Football only — a rugby or AFL lead must never promote to qualified, no
+  // matter how well it scores on age, level and budget.
+  const sportOk = sport.fit === "core";
+
+  if (tier !== "unqualified") {
+    if (age === "in" && lvl === "in" && bud === "in" && sportOk) {
+      tier = "qualified";
+      reasons.push(
+        com === "strong"
+          ? "13-17, rep/academy+, budget clears, 12+ month horizon"
+          : "13-17, rep/academy+, budget clears, 6-12 month horizon",
+      );
+    } else if (lvl === "unknown" && age === "in" && bud === "in" && sportOk && tier === "qualified") {
+      // Form 1659777891796341 doesn't ask level — don't punish the lead for it,
+      // but don't claim a level we never asked about either.
+      reasons.push("Level not asked on this form");
+    }
+  }
+
+  if (tier === "qualified" && !reasons.length) {
+    reasons.push("In area, core sport, ready to invest");
+  }
 
   return { tier, area: area.fit, sportFit: sport.fit, investReady, reasons };
 }

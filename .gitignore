@@ -27,6 +27,10 @@ yarn-error.log*
 
 # local env files
 .env*.local
+# `vercel env pull` writes real production secrets here (Supabase service-role
+# key, Twilio, ClickSend, Telegram bot token, FB page token). Never commit it.
+.env.vercel
+.env
 
 # vercel
 .vercel

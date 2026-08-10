@@ -1,8 +1,10 @@
 import { NextRequest } from "next/server";
 import crypto from "crypto";
 import { enrollNurture } from "@/lib/enrollNurture";
-import { sendTelegramMessage, escapeHtml } from "@/lib/telegram";
+import { sendTelegramMessage, sendTelegramWithButtons, escapeHtml } from "@/lib/telegram";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { qualifyLead } from "@/lib/qualify";
+import { sendAssessmentLink, buildClientRef } from "@/lib/booking";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -55,7 +57,19 @@ function pickFields(fd: FieldDatum[]) {
   const first = get("first_name");
   const last = get("last_name");
   const full = get("full_name") || [first, last].filter(Boolean).join(" ") || undefined;
-  return { name: full, email: get("email"), phone: get("phone_number", "phone"), sport: get("sport") };
+  return {
+    name: full,
+    email: get("email"),
+    phone: get("phone_number", "phone"),
+    sport: get("sport"),
+    // Live Meta form answers — these are the real LTV filters.
+    suburb: get("suburb", "where are you", "city", "postcode", "location"),
+    ageBand: get("how old", "age"),
+    budget: get("budget", "weekly budget"),
+    commitLength: get("how long", "commit"),
+    level: get("what level", "level does"),
+    goal: get("goal"),
+  };
 }
 
 async function fetchLead(leadgenId: string) {
@@ -94,13 +108,30 @@ export async function POST(req: NextRequest) {
         const lead = await fetchLead(String(leadgenId));
         if (!lead || (!lead.email && !lead.phone)) continue;
 
+        // Score the lead. Drives (a) whether the payment link auto-sends and
+        // (b) which pixel event fires — see qualify.ts.
+        const q = qualifyLead({
+          suburb: lead.suburb,
+          sport: lead.sport,
+          ageBand: lead.ageBand,
+          budget: lead.budget,
+          commitLength: lead.commitLength,
+          level: lead.level,
+        });
+
         try {
           const sb = getSupabaseAdmin();
+          // leadgen_id is the ONLY key that ties a later Stripe payment back to
+          // this ad. Without it the CAPI Purchase can't attribute and Meta keeps
+          // optimising for form-fills. It used to be discarded here.
           await sb.from("assessment_leads").insert({
             name: lead.name ?? null,
             phone: lead.phone ?? null,
+            email: lead.email ?? null,
+            leadgen_id: String(leadgenId),
+            lead_tier: q.tier,
             source: "fb-lead",
-            notes: `Source: Facebook Lead Form | Email: ${lead.email ?? "—"}`,
+            notes: `Source: Facebook Lead Form | ${q.reasons.join("; ")}`,
           });
         } catch {
           /* ignore insert errors */
@@ -118,17 +149,53 @@ export async function POST(req: NextRequest) {
           /* ignore */
         }
 
-        await sendTelegramMessage(
-          [
-            "🟣 <b>NEW FACEBOOK LEAD</b>",
-            "",
-            `👤 <b>${escapeHtml(lead.name)}</b>`,
-            `📞 ${escapeHtml(lead.phone)}`,
-            `✉️ ${escapeHtml(lead.email)}`,
-            "",
-            "📥 via Facebook lead form",
-          ].join("\n")
-        );
+        // Qualified leads get the payment link straight away. Everything else
+        // waits behind a tap, so an unqualified parent never gets a price blast.
+        let autoSent = false;
+        if (q.tier === "qualified" && lead.phone) {
+          try {
+            const r = await sendAssessmentLink({
+              name: lead.name,
+              phone: lead.phone,
+              email: lead.email,
+              leadgenId: String(leadgenId),
+              via: "auto-qualified",
+            });
+            autoSent = r.ok;
+          } catch {
+            /* non-fatal */
+          }
+        }
+
+        const tierIcon = q.tier === "qualified" ? "🟢" : q.tier === "review" ? "🟡" : "🔴";
+        const lines = [
+          "🟣 <b>NEW FACEBOOK LEAD</b>",
+          "",
+          `👤 <b>${escapeHtml(lead.name)}</b>`,
+          `📞 ${escapeHtml(lead.phone)}`,
+          `✉️ ${escapeHtml(lead.email)}`,
+          `📍 ${escapeHtml(lead.suburb ?? "—")}`,
+          "",
+          `${tierIcon} <b>${q.tier.toUpperCase()}</b> — ${escapeHtml(q.reasons.join("; "))}`,
+          autoSent ? "💳 Payment link auto-sent (qualified)" : "",
+          "",
+          "📥 via Facebook lead form",
+        ].filter(Boolean);
+
+        if (autoSent || !lead.phone) {
+          await sendTelegramMessage(lines.join("\n"));
+        } else {
+          // One tap sends the $199 link. Callback payload carries the ref so the
+          // handler doesn't need to look anything up.
+          await sendTelegramWithButtons(lines.join("\n"), [
+            [
+              {
+                text: "💳 Send $199 payment link",
+                callback_data: `sendlink:${buildClientRef(String(leadgenId), lead.phone)}`,
+              },
+            ],
+          ]);
+        }
       }
     }
   } catch {
