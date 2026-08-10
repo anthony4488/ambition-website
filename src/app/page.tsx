@@ -436,7 +436,7 @@ export default function HomePage() {
           {/* Wall, 4 athletes from the roster */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { name: "George Francis", result: "18 → 34 km/h", context: "Average to elite · stride, hip, contact rebuilt", bunnyId: "3e0332a8-49cb-4ac7-9422-4dd81a207078" },
+              { name: "George Francis", result: "17 → 35 km/h", context: "Started at 11 · stride, hip, contact rebuilt", bunnyId: "3e0332a8-49cb-4ac7-9422-4dd81a207078" },
               { name: "Hadi", result: "30 → 35 km/h", context: "Injured & plateaued → 35 km/h in 8 weeks", bunnyId: "07451a44-854c-46b3-a0c8-877797f015ac" },
               { name: "Virginia State Champion", result: "10.54s · 10 D1 offers", context: "USA · full remote programming", bunnyId: "2a49170c-a185-45e8-a3dc-5e7efcc1f4c0" },
               { name: "Hais", result: "18 → 37 km/h", context: "+19 km/h · Head Coach, Ambition", bunnyId: "eef5e679-3d4a-4b31-9f38-ad8be3a29a4e" },

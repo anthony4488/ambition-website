@@ -53,7 +53,7 @@ const wall: WallCard[] = [
   { name: "James", result: "23 → 32 km/h", context: "+9 km/h max velocity · 25% KPI gain · 14 months", bunnyId: "2ea7ecba-23c4-4d1c-b513-0157f1b307d7" },
   { name: "Xavi", result: "23 → 32 km/h", context: "Coordination · ground power · reactive off every contact · 17 months", bunnyId: "a31a6862-c26c-4337-878c-87a6b0ac94c4" },
   { name: "Maksim", result: "23 → 32 km/h", context: "+27.2% avg speed · +56% bound power · -27% across splits · 3 years", bunnyId: "9ad7f8a3-4d47-4948-a72f-db1f06180c8f" },
-  { name: "George Francis", result: "18 → 34 km/h", context: "Average to elite · stride, hip, contact rebuilt · faster than most semi-pros", bunnyId: "3e0332a8-49cb-4ac7-9422-4dd81a207078" },
+  { name: "George Francis", result: "17 → 35 km/h", context: "Started at 11 · stride, hip, contact rebuilt · faster than most semi-pros", bunnyId: "3e0332a8-49cb-4ac7-9422-4dd81a207078" },
   { name: "Hadi", result: "30 → 35 km/h", context: "Injured & plateaued → 35 km/h in 8 weeks", bunnyId: "07451a44-854c-46b3-a0c8-877797f015ac" },
   { name: "Abi", result: "1.7s first 10m", context: "Elite footballer · explosive starting power", bunnyId: "30ee2823-2ddb-4a82-868d-8eb4af683d3b" },
   { name: "Pete", result: "32 → 35 km/h", context: "Top-end speed gain · +3 km/h", bunnyId: "c3b2ea11-6058-4fe1-8754-729275fa0560" },
@@ -70,12 +70,6 @@ const wall: WallCard[] = [
   { name: "Abdullah", result: "27 → 34.8 km/h", context: "Complete mechanical rebuild · acceleration posture, arm drive, ground contact", mp4Src: "/abdullah-after.mp4" },
   { name: "Dom", result: "Power Transformation", context: "Side-by-side power development · force production rebuilt", mp4Src: "/dom-before-after.mp4" },
   { name: "Speed Ab", result: "Elite Acceleration", context: "First 10 meters is where games are won", youtubeId: "nV6l8hzgfQE" },
-  {
-    name: "Liam Flack",
-    result: "28 → 34 km/h",
-    context: "Multi-sport · specific measurements, no wishy-washy drills",
-    quoteOnly: { quote: "Anthony assessed me from day 1, broke down my mechanics and progressed me from 28 km/h to 34 km/h. His measurements are specific, not wishy washy drills or exercises." },
-  },
 ];
 
 const whatsappWall = [
@@ -97,6 +91,7 @@ const whatsappWall = [
   { src: "/screenshots/testimonial-16.jpeg", name: "Parent feedback", caption: "ran side by side with a top-8-in-the-state sprinter, “there wasn't much between them”" },
   { src: "/screenshots/testimonial-17.jpeg", name: "Parent of a sprinter", caption: "“can't believe the difference in her speed and style already!!! The adjusting and checking in is OUTSTANDING”" },
   { src: "/screenshots/testimonial-18.jpeg", name: "Contest weekend", caption: "“felt really powerful, breaking away and creating space from my opponent, won all three of my games”" },
+  { src: "/screenshots/testimonial-19.jpeg", name: "60m & 120m review", caption: "“I'm really impressed by my stride length compared to like one year ago!”" },
 ];
 
 const talkingHeads = [

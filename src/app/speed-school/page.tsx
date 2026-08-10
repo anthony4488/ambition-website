@@ -287,8 +287,8 @@ export default function SpeedSchoolPage() {
               },
               {
                 name: "George Francis",
-                stat: "18 → 34 km/h",
-                note: "Stride, hip, contact rebuilt",
+                stat: "17 → 35 km/h",
+                note: "Started at 11 · stride, hip, contact rebuilt",
                 bunnyId: "3e0332a8-49cb-4ac7-9422-4dd81a207078",
               },
               {
