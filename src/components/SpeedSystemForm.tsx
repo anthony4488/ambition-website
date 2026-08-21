@@ -19,10 +19,23 @@ type StepBase = { id: string; q: string; sub?: string };
 type RadioStep = StepBase & { type: "radio"; options: string[] };
 type InputStep = StepBase & { type: "text" | "email" | "tel" | "textarea"; placeholder: string };
 type ConsentStep = StepBase & { type: "consent"; label: string };
-type Step = RadioStep | InputStep | ConsentStep;
+/** Final step: name, email, phone and consent on one screen. Four separate
+ *  steps for contact details was the biggest source of drop-off in a 12-step
+ *  form — none of them qualify anything, they just collect. */
+type ContactStep = StepBase & { type: "contact"; label: string };
+type Step = RadioStep | InputStep | ConsentStep | ContactStep;
 
 const STEPS: Step[] = [
-  { id: "age", type: "radio", q: "How old is your athlete?", options: ["Under 14", "14", "15-17", "18+"] },
+  {
+    id: "age",
+    type: "radio",
+    // Bands must match what classifyAge() reads ("13-15", "15-17", "under 13",
+    // "18+"). The old options ("Under 14", "14") matched nothing and fell
+    // through to "unknown", so age never filtered a website lead.
+    q: "How old is your athlete?",
+    sub: "We don't take athletes under 13.",
+    options: ["Under 13", "13-15", "15-17", "18+"],
+  },
   {
     id: "sport",
     type: "text",
@@ -39,56 +52,28 @@ const STEPS: Step[] = [
     id: "why_now",
     type: "textarea",
     q: "In your own words, what is your athlete chasing, and why now?",
-    sub: "This is the one that matters most to us. Be honest and specific.",
+    sub: "This is the one that matters most to us. Be honest and specific. (Results take time. Don't expect a quick journey. For us to give elite results, things take time. We're here for the committed.)",
     placeholder: "Tell us what they're chasing and why the timing is right…",
-  },
-  {
-    id: "goal",
-    type: "radio",
-    q: "What's your goal for your athlete?",
-    sub: "We only work with athletes who want to go all the way to the top.",
-    options: ["Get scouted / play at the highest level", "Make their rep / academy team", "Develop and keep building", "Just exploring options"],
-  },
-  {
-    id: "commitment",
-    type: "radio",
-    q: "How committed is your athlete, honestly?",
-    options: ["They're driving this themselves", "We're both equally committed", "I'm pushing them more than they're pushing themselves"],
-  },
-  {
-    id: "invest",
-    type: "radio",
-    q: "Are you in a position to invest in that right now?",
-    sub: "Our program runs from $100/week ongoing, plus a $199 starting assessment.",
-    options: ["Yes, ready to invest", "Not right now"],
   },
   {
     id: "budget",
     type: "radio",
+    // Absorbed the old "are you ready to invest" step — the budget band is the
+    // harder money signal and asking both was redundant.
     q: "What's your weekly budget for your athlete's development?",
-    options: ["$100-130/week", "$130-160/week", "$160+/week"],
-  },
-  {
-    id: "commit_length",
-    type: "radio",
-    q: "How long are you willing to commit?",
-    options: ["3 months", "6 months", "12+ months, whatever it takes"],
+    sub: "Our program runs from $130/week ongoing, plus a $199 starting assessment.",
+    // The floor is stated explicitly, but a below-floor option is kept on
+    // purpose: classifyBudget() disqualifies on max(nums) <= 130, so this is the
+    // trap that catches anyone who said "ready to invest" but can't clear $130.
+    // Removing it lets every applicant pass the budget check.
+    options: ["Under $130/week", "$130-160/week", "$160+/week"],
   },
   { id: "suburb", type: "text", q: "What suburb are you in?", placeholder: "e.g. Parramatta, Bankstown, Bondi" },
   {
-    id: "name",
-    type: "text",
-    q: "Your full name",
-    sub: "If you're applying for your athlete, put YOUR name (parent / guardian).",
-    placeholder: "Full name",
-  },
-  { id: "email", type: "email", q: "What's your email?", placeholder: "you@email.com" },
-  { id: "phone", type: "tel", q: "Best phone number?", sub: "We'll text you to get started.", placeholder: "+61 4XX XXX XXX" },
-  {
-    id: "consent",
-    type: "consent",
-    q: "One last thing.",
-    sub: "Then we'll review your application.",
+    id: "contact",
+    type: "contact",
+    q: "Last step. How do we reach you?",
+    sub: "If you're applying for your athlete, put YOUR details (parent / guardian). We'll text you to get started.",
     label: "I agree to be contacted by Ambition Sports Performance.",
   },
 ];
@@ -138,6 +123,14 @@ export function SpeedSystemForm() {
   }, [status]);
 
   const set = (v: string) => setAnswers((a) => ({ ...a, [current.id]: v }));
+  /** The contact step writes several keys, so it can't use `set`. */
+  const setField = (k: string, v: string) => setAnswers((a) => ({ ...a, [k]: v }));
+
+  const contactReady =
+    (answers.name ?? "").trim().length > 1 &&
+    /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test((answers.email ?? "").trim()) &&
+    (answers.phone ?? "").replace(/\D/g, "").length >= 8 &&
+    answers.consent === "yes";
 
   const invalid = () => {
     setShake(true);
@@ -166,23 +159,29 @@ export function SpeedSystemForm() {
     // Reads the suburb + sport answers this form already collected. Previously
     // only `invest` was consulted, so out-of-area and off-sport applicants were
     // still marked qualified.
-    const result = qualifyLead({ suburb: a.suburb, sport: a.sport, invest: a.invest });
+    // Every signal the qualifier understands must be passed. This previously
+    // sent only suburb/sport/invest, so classifyAge, classifyLevel,
+    // classifyBudget and classifyCommit never ran on a website lead — age,
+    // level, budget and commitment were silently ignored in the tier.
+    const result = qualifyLead({
+      suburb: a.suburb,
+      sport: a.sport,
+      ageBand: a.age,
+      level: a.level,
+      budget: a.budget,
+    });
     qualification.current = result;
     const qualified = result.tier === "qualified";
     const utm = tracking.current;
 
     const notes = [
-      "Program: SPEED COACHING ($100/wk + $199 assessment)",
+      "Program: SPEED COACHING ($130-160/wk + $199 assessment)",
       `Email: ${a.email}`,
       `Athlete age: ${a.age}`,
       `Sport: ${a.sport}`,
       `Level: ${a.level}`,
       `Why now: ${a.why_now}`,
-      `Goal: ${a.goal}`,
-      `Commitment: ${a.commitment}`,
-      `Investment ready: ${a.invest}`,
       `Weekly budget: ${a.budget}`,
-      `Commit length: ${a.commit_length}`,
       `Suburb: ${a.suburb}`,
       "Consent: YES",
       utm.utm_source ? `UTM: ${utm.utm_source} / ${utm.utm_medium ?? ""} / ${utm.utm_campaign ?? ""}` : "",
@@ -207,12 +206,8 @@ export function SpeedSystemForm() {
           sport: a.sport,
           age: a.age,
           level: a.level,
-          goal: a.goal,
-          commitment: a.commitment,
           why_now: a.why_now,
-          invest: a.invest,
           budget: a.budget,
-          commit: a.commit_length,
           suburb: a.suburb,
           consent: true,
           utm,
@@ -249,7 +244,7 @@ export function SpeedSystemForm() {
             <Globe size={16} /> Our Website
           </a>
         </div>
-        <p className="mt-8 text-xs italic text-gray-500">Keep your phone close — we&apos;ll text you to get started.</p>
+        <p className="mt-8 text-xs italic text-gray-500">Keep your phone close. We&apos;ll text you to get started.</p>
       </div>
     );
   }
@@ -276,6 +271,9 @@ export function SpeedSystemForm() {
           Apply now
           <ArrowRight size={18} className="transition group-hover:translate-x-1" strokeWidth={2.5} />
         </button>
+        <p className="mx-auto mt-6 max-w-md rounded-xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-semibold text-gray-300">
+          Athletes 13 and over only. We don&apos;t take under 13s.
+        </p>
         <p className="mt-5 text-[11px] text-gray-500">2 minutes · Reviewed in 24h · Limited spots</p>
       </div>
     );
@@ -338,6 +336,56 @@ export function SpeedSystemForm() {
               OK <ArrowRight size={16} className="transition group-hover:translate-x-1" strokeWidth={2.5} />
             </button>
           </div>
+        ) : current?.type === "contact" ? (
+          <div className="mt-6 space-y-4">
+            {([
+              { k: "name", label: "Full name", type: "text", placeholder: "Your full name", mode: "text" },
+              { k: "email", label: "Email", type: "email", placeholder: "you@email.com", mode: "email" },
+              { k: "phone", label: "Phone", type: "tel", placeholder: "+61 4XX XXX XXX", mode: "tel" },
+            ] as const).map((f) => (
+              <div key={f.k}>
+                <label htmlFor={`c-${f.k}`} className="mb-1.5 block text-xs font-bold uppercase tracking-[0.15em] text-gray-500">
+                  {f.label}
+                </label>
+                <input
+                  id={`c-${f.k}`}
+                  type={f.type}
+                  inputMode={f.mode}
+                  autoComplete={f.k === "name" ? "name" : f.k === "email" ? "email" : "tel"}
+                  value={answers[f.k] ?? ""}
+                  onChange={(e) => setField(f.k, e.target.value)}
+                  placeholder={f.placeholder}
+                  className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3.5 text-lg text-white outline-none transition placeholder:text-gray-600 focus:border-accent focus:ring-2 focus:ring-accent/20"
+                />
+              </div>
+            ))}
+
+            <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-5 transition hover:border-white/25">
+              <input
+                type="checkbox"
+                checked={answers.consent === "yes"}
+                onChange={(e) => setField("consent", e.target.checked ? "yes" : "")}
+                className="mt-0.5 h-5 w-5 shrink-0 accent-accent"
+              />
+              <span className="text-[15px] leading-snug text-gray-200">{(current as ContactStep).label}</span>
+            </label>
+
+            <button
+              onClick={() => (contactReady ? submit() : invalid())}
+              disabled={status === "submitting"}
+              className="group mt-2 inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3.5 text-sm font-extrabold uppercase tracking-[0.12em] text-white transition hover:bg-orange-500 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {status === "submitting" ? (
+                <>
+                  <Loader2 className="animate-spin" size={16} /> Submitting…
+                </>
+              ) : (
+                <>
+                  Submit application <Check size={16} strokeWidth={2.5} />
+                </>
+              )}
+            </button>
+          </div>
         ) : current?.type === "consent" ? (
           <div className="mt-6">
             <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-5 transition hover:border-white/25">
@@ -388,7 +436,7 @@ export function SpeedSystemForm() {
 
         {status === "error" && (
           <p className="mt-5 text-sm text-red-400">
-            Something went wrong — try again, or email{" "}
+            Something went wrong. Try again, or email{" "}
             <a href="mailto:info@ambitionsportsperformance.com" className="underline">
               info@ambitionsportsperformance.com
             </a>

@@ -5,6 +5,7 @@ import { sendTelegramMessage, sendTelegramWithButtons, escapeHtml } from "@/lib/
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { qualifyLead } from "@/lib/qualify";
 import { sendAssessmentLink, buildClientRef } from "@/lib/booking";
+import { sendLeadStage } from "@/lib/metaCapi";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -117,7 +118,13 @@ export async function POST(req: NextRequest) {
           budget: lead.budget,
           commitLength: lead.commitLength,
           level: lead.level,
+          goal: lead.goal,
         });
+
+        // Conversion Leads: tell Meta what this lead actually was. Without this
+        // the optimiser only ever sees "form submitted" and keeps buying the
+        // cheapest submitters. Fire-and-forget; never block lead intake on it.
+        void sendLeadStage({ leadId: String(leadgenId), stage: q.tier }).catch(() => {});
 
         try {
           const sb = getSupabaseAdmin();

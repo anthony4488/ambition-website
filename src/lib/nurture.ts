@@ -239,6 +239,21 @@ export const normaliseAu = (raw: string) => {
 };
 
 export async function sendSms(to: string, body: string) {
+  // ── MASTER PAUSE ──────────────────────────────────────────────────────────
+  // Every outbound SMS in the app funnels through this function: the payment
+  // link, the post-payment confirmation, day-0 and cron nurture touches, the
+  // speed-audit send, the Telegram-triggered send and the STOP reply.
+  //
+  // PAUSED 2026-08-11. CLICKSEND_FROM is set to a personal mobile in
+  // production, so every text exposed a personal contact card (mobile, second
+  // number, birthday, Instagram, Messenger) to leads.
+  //
+  // TO RESUME: set SMS_ENABLED=true in Vercel production — but point
+  // CLICKSEND_FROM at a dedicated business number first, or the leak returns.
+  if (process.env.SMS_ENABLED !== "true") {
+    return { ok: false, skipped: true, paused: true };
+  }
+
   const username = process.env.CLICKSEND_USERNAME;
   const apiKey = process.env.CLICKSEND_API_KEY;
   const from = process.env.CLICKSEND_FROM || "Ambition";

@@ -38,8 +38,26 @@ const hashPhone = (p?: string | null) => {
   return sha256(v);
 };
 
+/**
+ * Conversion Leads stages. Meta's instant forms fire one undifferentiated Lead
+ * at submit — the optimiser cannot tell a 10-year-old basketballer in Brisbane
+ * from an NPL 15-year-old in Bankstown, so it hunts for whichever is cheaper.
+ * Sending the stage back is the only way it learns the difference.
+ *
+ * Register these exact names in Events Manager → Settings → Lead stages, then
+ * set the ad set's optimization_goal to QUALITY_LEAD instead of LEAD_GENERATION.
+ */
+export const LEAD_STAGE_EVENT = {
+  qualified: "AmbitionQualifiedLead",
+  review: "AmbitionReviewLead",
+  unqualified: "AmbitionDisqualifiedLead",
+  booked: "AmbitionBookedAssessment",
+} as const;
+
+export type LeadStage = keyof typeof LEAD_STAGE_EVENT;
+
 export type CapiEvent = {
-  eventName: "Purchase" | "Lead" | "InitiateCheckout";
+  eventName: "Purchase" | "Lead" | "InitiateCheckout" | (typeof LEAD_STAGE_EVENT)[LeadStage];
   /** Must match the browser pixel's eventID when both fire, or Meta double-counts. */
   eventId: string;
   email?: string | null;
@@ -111,4 +129,40 @@ export async function sendCapiEvent(ev: CapiEvent): Promise<{ ok: boolean; detai
   } catch (e) {
     return { ok: false, detail: e instanceof Error ? e.message : "network error" };
   }
+}
+
+/**
+ * Report a lead's CRM stage back to Meta (Conversion Leads).
+ *
+ * Only meaningful for leads that came from a Meta instant form — `leadId` is the
+ * leadgen_id and is the sole key tying the stage to the ad that produced it.
+ * Website leads have no leadgen_id; they are already scored client-side by
+ * fireLeadPixel(), so they are skipped rather than sent with weak matching.
+ *
+ * action_source is "system_generated" because this event originates from our
+ * CRM, not from a user action on a page. Sending "website" here makes Meta
+ * expect an event_source_url and degrades match quality.
+ *
+ * Never throws. A failed stage report must not break lead intake.
+ */
+export async function sendLeadStage(opts: {
+  leadId?: string | null;
+  stage: LeadStage;
+  /** Optional deal value, e.g. 199 when the assessment is paid. */
+  value?: number;
+  currency?: string;
+}): Promise<{ ok: boolean; detail?: string }> {
+  if (!opts.leadId) return { ok: false, detail: "no leadgen_id — not a Meta form lead, skipped" };
+
+  const eventName = LEAD_STAGE_EVENT[opts.stage];
+  return sendCapiEvent({
+    eventName,
+    // Deterministic per lead+stage so Meta dedupes retries instead of
+    // double-counting a webhook Meta decided to redeliver.
+    eventId: `stage-${opts.stage}-${opts.leadId}`,
+    leadId: opts.leadId,
+    actionSource: "system_generated",
+    value: opts.value,
+    currency: opts.currency,
+  });
 }

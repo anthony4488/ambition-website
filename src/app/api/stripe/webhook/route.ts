@@ -3,7 +3,7 @@ import crypto from "crypto";
 import { sendSms, normaliseAu } from "@/lib/nurture";
 import { sendTelegramMessage, escapeHtml } from "@/lib/telegram";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
-import { sendCapiEvent } from "@/lib/metaCapi";
+import { sendCapiEvent, sendLeadStage } from "@/lib/metaCapi";
 import { parseClientRef, ASSESSMENT_CURRENCY } from "@/lib/booking";
 import { stopNurtureByPhone } from "@/lib/enrollNurture";
 
@@ -164,6 +164,12 @@ export async function POST(req: NextRequest) {
         ? `${process.env.NEXT_PUBLIC_SITE_URL}/apply`
         : undefined,
     });
+
+    // Conversion Leads: a paid assessment is the strongest stage Meta can be
+    // told about. Purchase optimises the pixel; this teaches the LEAD ad which
+    // form-fills were actually worth buying. Both are needed — they train
+    // different things. Meta-form leads only (no leadgen_id, no stage).
+    void sendLeadStage({ leadId: leadgenId, stage: "booked", value, currency }).catch(() => {});
   }
 
   // 2. CONFIRMATION SMS

@@ -281,13 +281,13 @@ export default function SpeedSchoolPage() {
             {[
               {
                 name: "Hais",
-                stat: "18 → 37 km/h",
+                stat: "17-18 → 37 km/h",
                 note: "Below average to elite · Head Coach",
                 bunnyId: "eef5e679-3d4a-4b31-9f38-ad8be3a29a4e",
               },
               {
                 name: "George Francis",
-                stat: "17 → 35 km/h",
+                stat: "17-19 → 35 km/h",
                 note: "Started at 11 · stride, hip, contact rebuilt",
                 bunnyId: "3e0332a8-49cb-4ac7-9422-4dd81a207078",
               },

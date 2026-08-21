@@ -436,10 +436,10 @@ export default function HomePage() {
           {/* Wall, 4 athletes from the roster */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { name: "George Francis", result: "17 → 35 km/h", context: "Started at 11 · stride, hip, contact rebuilt", bunnyId: "3e0332a8-49cb-4ac7-9422-4dd81a207078" },
+              { name: "George Francis", result: "17-19 → 35 km/h", context: "Started at 11 · stride, hip, contact rebuilt", bunnyId: "3e0332a8-49cb-4ac7-9422-4dd81a207078" },
               { name: "Hadi", result: "30 → 35 km/h", context: "Injured & plateaued → 35 km/h in 8 weeks", bunnyId: "07451a44-854c-46b3-a0c8-877797f015ac" },
               { name: "Virginia State Champion", result: "10.54s · 10 D1 offers", context: "USA · full remote programming", bunnyId: "2a49170c-a185-45e8-a3dc-5e7efcc1f4c0" },
-              { name: "Hais", result: "18 → 37 km/h", context: "+19 km/h · Head Coach, Ambition", bunnyId: "eef5e679-3d4a-4b31-9f38-ad8be3a29a4e" },
+              { name: "Hais", result: "17-18 → 37 km/h", context: "+19-20 km/h · Head Coach, Ambition", bunnyId: "eef5e679-3d4a-4b31-9f38-ad8be3a29a4e" },
             ].map((c, i) => (
               <FadeIn key={c.name} delay={(i % 4) * 80}>
                 <div className="rounded-xl overflow-hidden bg-white border border-gray-100 hover:border-accent/30 transition-colors h-full flex flex-col shadow-sm">
@@ -535,7 +535,7 @@ export default function HomePage() {
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
                     <h3 className="text-3xl sm:text-4xl font-extrabold text-white mb-2 tracking-tight">Haisam Wylie</h3>
-                    <p className="text-accent text-xs uppercase tracking-[0.2em] mb-4 font-bold">Head Coach · 18 → 37 km/h</p>
+                    <p className="text-accent text-xs uppercase tracking-[0.2em] mb-4 font-bold">Head Coach · 17-18 → 37 km/h</p>
                     <div className="flex flex-wrap gap-1.5 mb-4">
                       <span className="px-2.5 py-1 text-[10px] uppercase tracking-[0.15em] text-white/80 bg-white/10 backdrop-blur border border-white/15 rounded-full font-semibold">500+ Hours</span>
                       <span className="px-2.5 py-1 text-[10px] uppercase tracking-[0.15em] text-white/80 bg-white/10 backdrop-blur border border-white/15 rounded-full font-semibold">6+ Years In System</span>
