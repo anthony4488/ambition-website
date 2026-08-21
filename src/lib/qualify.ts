@@ -34,6 +34,11 @@ export interface QualifyInput {
   /** "Local/Association club" | "Representative/Academy" | "Higher NPL to Youth 1st Div" | "State level or higher" */
   level?: string;
   /**
+   * "Get scouted/play at the highest level" | "Make a representative or academy
+   * team" | "Want to get fit". Only on form 28291627200469783.
+   */
+  goal?: string;
+  /**
    * True when the enquiry is for an offer that can be delivered remotely
    * (the online program). Out-of-area then downgrades to "review" instead of
    * "unqualified" — an interstate online applicant is a real lead, it just
@@ -162,7 +167,31 @@ export function classifyArea(suburb?: string): { fit: AreaFit; matched: string |
   const inArea = matches(s, SYDNEY_MARKERS);
   if (inArea) return { fit: "in_area", matched: inArea };
 
+  // City-level fallback. Form 28291627200469783 asks "What city are you located
+  // in?" and offers Sydney / Brisbane / Victoria, so the answer arrives as a bare
+  // metro name with no suburb in it. Without this every Sydney lead from that
+  // form scored "unknown" and parked in review, which meant the QualifiedLead
+  // pixel event never fired and Meta only ever learned from the generic Lead.
+  // The out-of-area and out-of-catchment lists are checked above, so anything
+  // reaching here that says Sydney has no disqualifying suburb attached.
+  // Deliberately coarser than a suburb — the reason string says so.
+  if (matches(s, ["sydney"])) return { fit: "in_area", matched: "sydney (city level)" };
+
   return { fit: "unknown", matched: null };
+}
+
+/**
+ * "What's your goal for your athlete?" on the conditional-logic Meta form.
+ * "Want to get fit" is the cleanest disqualifier on the whole form — it is an
+ * explicit answer, not missing data, so it rejects rather than parks in review.
+ */
+export function classifyGoal(goal?: string): "elite" | "rep" | "casual" | "unknown" {
+  const s = norm(goal);
+  if (!s) return "unknown";
+  if (s.includes("fit")) return "casual";
+  if (s.includes("scouted") || s.includes("highest level")) return "elite";
+  if (s.includes("representative") || s.includes("academy")) return "rep";
+  return "unknown";
 }
 
 export function classifySport(sport?: string): { fit: SportFit; matched: string | null } {
@@ -200,16 +229,67 @@ const normNum = (s: unknown): string =>
 export function classifyAge(band?: string): "in" | "edge" | "out" | "unknown" {
   const s = normNum(band);
   if (!s) return "unknown";
+  // Hard floor: under 13 is not taken at all. Checked first so it can't be
+  // swallowed by a later substring match. "under 10" and "11-12" are the bands
+  // on form 28291627200469783 — both sit entirely below the floor, unlike
+  // "11-13" whose top edge just reaches it.
+  if (s.includes("under 10") || s.includes("under 13") || s.includes("under 14")) return "out";
+  if (s.includes("11-12")) return "out";
   if (s.includes("13-15") || s.includes("15-17")) return "in";
   if (s.includes("11-13")) return "edge";   // only the top of this band qualifies
-  if (s.includes("17+")) return "out";
+  if (s.includes("17+") || s.includes("18+")) return "out";
   return "unknown";
 }
+
+/**
+ * Turns a date of birth into one of the age bands `classifyAge` already reads,
+ * so the website form can collect an exact DOB without duplicating the banding
+ * rules that the Meta lead forms depend on.
+ *
+ * Returns undefined for anything unparseable — the caller then passes no band
+ * and the lead lands in "review", which is the safe default.
+ */
+export function ageBandFromDob(dob?: string): string | undefined {
+  if (!dob) return undefined;
+  const d = new Date(dob);
+  if (Number.isNaN(d.getTime())) return undefined;
+
+  const now = new Date();
+  let age = now.getFullYear() - d.getFullYear();
+  const beforeBirthday =
+    now.getMonth() < d.getMonth() ||
+    (now.getMonth() === d.getMonth() && now.getDate() < d.getDate());
+  if (beforeBirthday) age -= 1;
+
+  // Guard against typos (a mistyped year giving a 300-year-old athlete).
+  if (age < 3 || age > 60) return undefined;
+
+  if (age < 11) return "under 10";
+  if (age < 13) return "11-12";
+  if (age < 15) return "13-15";
+  if (age < 18) return "15-17";
+  return "17+";
+}
+
+/** The exact option strings on the website application's level select. */
+const WEBSITE_LEVEL: Record<string, "in" | "out" | "unknown"> = {
+  "npl": "in",
+  "ifa": "in",
+  "club academy": "in",
+  // Genuine athletes, but not the band this programme is built around — review,
+  // never auto-reject.
+  "school representative": "unknown",
+  "school or social": "out",
+  "other": "unknown",
+};
 
 /** Park football is the churn cohort. Rep/academy and above is the buyer. */
 export function classifyLevel(level?: string): "in" | "out" | "unknown" {
   const s = normNum(level);
   if (!s) return "unknown";
+  // Exact website options first: "School representative" contains
+  // "representative" and would otherwise score as high as NPL.
+  if (s in WEBSITE_LEVEL) return WEBSITE_LEVEL[s];
   if (s.includes("local") || s.includes("association")) return "out";
   if (s.includes("representative") || s.includes("academy") || s.includes("npl") ||
       s.includes("state") || s.includes("div")) return "in";
@@ -288,7 +368,12 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
 
   if (age === "out") {
     tier = "unqualified";
-    reasons.push("Athlete is 17+ — outside 13-17");
+    // "out" covers both ends of the band. Say which, or the Telegram alert
+    // reports an 11 year old as being 17+.
+    const tooYoung = /under 10|under 13|under 14|11-12/.test(normNum(input.ageBand));
+    reasons.push(
+      tooYoung ? "Athlete is under 13 — outside 13-17" : "Athlete is 17+ — outside 13-17",
+    );
   } else if (age === "edge" && tier === "qualified") {
     tier = "review";
     reasons.push("Age band 11-13 — only qualifies at the top of it");
@@ -304,6 +389,15 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
     reasons.push("Budget below the $130/week programme floor");
   }
 
+  // "Want to get fit" is an explicit no, not missing data, so it rejects the
+  // same way an out-of-area answer does. Without this the strongest signal on
+  // the form was collected and then ignored.
+  const goal = classifyGoal(input.goal);
+  if (goal === "casual") {
+    tier = "unqualified";
+    reasons.push("Goal is general fitness, not the pathway");
+  }
+
   // Football only — a rugby or AFL lead must never promote to qualified, no
   // matter how well it scores on age, level and budget.
   const sportOk = sport.fit === "core";
@@ -311,10 +405,14 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
   if (tier !== "unqualified") {
     if (age === "in" && lvl === "in" && bud === "in" && sportOk) {
       tier = "qualified";
+      // The apply form no longer asks commit length, so "unknown" must not be
+      // reported as a 6-12 month horizon we were never told about.
       reasons.push(
         com === "strong"
           ? "13-17, rep/academy+, budget clears, 12+ month horizon"
-          : "13-17, rep/academy+, budget clears, 6-12 month horizon",
+          : com === "ok"
+            ? "13-17, rep/academy+, budget clears, 6-12 month horizon"
+            : "13-17, rep/academy+, budget clears",
       );
     } else if (lvl === "unknown" && age === "in" && bud === "in" && sportOk && tier === "qualified") {
       // Form 1659777891796341 doesn't ask level — don't punish the lead for it,

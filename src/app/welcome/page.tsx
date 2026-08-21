@@ -13,9 +13,26 @@ import { fireLeadPixel, type AreaFit, type LeadTier, type SportFit } from "@/lib
 export default function WelcomePage() {
   useEffect(() => {
     const sp = new URLSearchParams(window.location.search);
-    // Absent tier (direct visit, or a bookmarked /welcome) degrades to
-    // "review" so we never over-report a qualified conversion.
-    const tier = (sp.get("tier") as LeadTier | null) ?? "review";
+    const tier = sp.get("tier") as LeadTier | null;
+
+    // No tier means this page wasn't reached by completing a form — a direct
+    // visit, a bookmark, or a back-button. It previously degraded to "review"
+    // and fired anyway, which reported conversions that never happened AND
+    // mislabelled real qualified leads as review.
+    if (!tier) return;
+
+    // A refresh re-runs this effect. Dedupe per submission (keyed on the query
+    // string) so one application reports exactly one Lead, while a genuine
+    // second application still counts.
+    const key = `asp_lead_fired_${window.location.search}`;
+    try {
+      if (sessionStorage.getItem(key)) return;
+      sessionStorage.setItem(key, "1");
+    } catch {
+      // Storage blocked — firing a possible duplicate beats losing a real
+      // conversion, so fall through.
+    }
+
     fireLeadPixel(
       {
         tier,
