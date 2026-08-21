@@ -159,6 +159,108 @@ export default function ContactPage() {
         </FadeIn>
       </Section>
 
+      {/* FAQ, the hard questions people ask before applying */}
+      <section className="py-20 sm:py-28 bg-white border-t border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="mb-12 max-w-3xl">
+              <div className="accent-line mb-6" />
+              <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">Before You Apply</p>
+              <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4 leading-tight">
+                The hard questions, <span className="text-accent">answered straight.</span>
+              </h2>
+              <p className="text-gray-500 leading-relaxed">
+                The ones people hesitate to ask on a call. We&apos;d rather you read the honest answer now than find out later.
+              </p>
+            </div>
+          </FadeIn>
+
+          <div className="max-w-3xl space-y-3">
+            {[
+              {
+                q: "What happens the moment I hit submit?",
+                a: "The application lands with us straight away, and every one gets read by a coach. If the athlete looks like a fit we call or text within 24 hours for a short qualification conversation, goals, training history, schedule, budget. If it's a yes on both sides we book the assessment. If it isn't, we tell you that instead of chasing you.",
+              },
+              {
+                q: "What does it actually cost?",
+                a: "The online assessment is $200 and that price is published on the Online Coaching page. In-person pricing is confirmed on the qualification call, once we've checked the program is the right fit. We don't publish it cold because the honest number depends on how often the athlete needs to train, and quoting before we know that helps nobody.",
+              },
+              {
+                q: "Why do I have to apply? Why can't I just pay and start?",
+                a: "Because we don't take athletes we can't move. Groups are capped and every athlete gets retested, so if the program isn't going to shift your numbers we'd be taking your money and wasting your time. The application is a five-minute filter that protects both of us.",
+              },
+              {
+                q: "What if my athlete isn't elite yet? Are they good enough?",
+                a: "Level isn't the filter, commitment is. We work with athletes from local club through to academy, state league and professional. What we need is someone who will show up twice a week and do the work in between. If that's your athlete, the system works regardless of where they're starting from.",
+              },
+              {
+                q: "Is my child too young for this?",
+                a: "We coach from around U11 upwards. Young athletes get the same assessment and the same diagnosis; what changes is the prescription, more coordination and mechanics work, lower loading. If we think an athlete is genuinely too young to benefit, we'll say so on the call rather than take the booking.",
+              },
+              {
+                q: "How is this different from a session that's just cones and drills?",
+                a: "We measure before we prescribe. Every athlete is electronically timed and filmed at 240fps, six speed traits scored against elite benchmarks, and the single biggest limiter named out loud. Then the training attacks that limiter and we retest to prove it moved. If you've ever been told to just run faster, that's the gap we close.",
+              },
+              {
+                q: "What if we do it and nothing changes?",
+                a: "The first session is guaranteed. If the assessment doesn't give you specific numbers, your #1 limiter named explicitly, and a clear training prescription, we refund it in full. After that, every block is retested, so you never have to take our word for whether it's working, the timing gates tell you.",
+              },
+              {
+                q: "We're not in Sydney. Is the online version watered down?",
+                a: "No, it's the same diagnostic system delivered remotely. Five tests filmed on your own phone, the same report and limiter analysis, then weekly programming and video feedback over WhatsApp. Athletes across Europe, the UK and the US run it. What you lose is hands-on coaching inside the session; what you keep is the diagnosis and the plan.",
+              },
+              {
+                q: "How much time does this take, and can they keep playing club?",
+                a: "Twice a week is the floor, three to four is where the serious athletes sit, and yes, you keep club training. We periodise around your match schedule so the athlete peaks in season, not against it. We'd rather work with your team load than fight it.",
+              },
+              {
+                q: "Can we actually afford it?",
+                a: "It isn't cheap and we won't pretend otherwise, this is a serious investment in an athlete's development. Online coaching is paid in two blocks rather than up front, and the $200 assessment is a low-risk way to get the diagnosis first and decide on the program later. If the timing is wrong, say so on the call and we'll tell you what's worth doing in the meantime for free.",
+              },
+              {
+                q: "Are your coaches checked and insured?",
+                a: "Yes. Every coach working with minors holds a current Working With Children Check and current first-aid certification, and public liability insurance is in place across all training locations. Ask to see any of it and we'll send it through.",
+              },
+            ].map((faq, i) => (
+              <FadeIn key={faq.q} delay={(i % 5) * 60}>
+                <details className="group bg-gray-50 rounded-xl border border-gray-100 overflow-hidden">
+                  <summary className="cursor-pointer list-none flex items-center justify-between p-5 sm:p-6 font-semibold text-gray-900 hover:bg-gray-100 transition-colors">
+                    <span className="text-sm sm:text-base pr-4">{faq.q}</span>
+                    <span className="text-accent text-2xl font-light shrink-0 group-open:rotate-45 transition-transform duration-200">+</span>
+                  </summary>
+                  <div className="px-5 pb-5 sm:px-6 sm:pb-6 text-sm text-gray-600 leading-relaxed border-t border-gray-100 pt-4">
+                    {faq.a}
+                  </div>
+                </details>
+              </FadeIn>
+            ))}
+          </div>
+
+          <FadeIn delay={200}>
+            <div className="mt-12 max-w-3xl">
+              <div className="rounded-2xl bg-gray-900 p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-8">
+                <div className="flex-1">
+                  <p className="text-accent text-[10px] uppercase tracking-[0.25em] font-bold mb-2">Still Not Sure?</p>
+                  <p className="text-white font-extrabold text-lg sm:text-xl tracking-tight leading-snug mb-1">
+                    Ask it inside the application.
+                  </p>
+                  <p className="text-gray-400 text-sm leading-relaxed">
+                    There&apos;s a free-text box at the end. Put your question in it and we&apos;ll answer it on the call, no obligation either way.
+                  </p>
+                </div>
+                <Link
+                  href="/speed-school#apply"
+                  className="group inline-flex shrink-0 items-center justify-center gap-2 px-7 py-4 bg-accent text-white font-bold text-sm uppercase tracking-wider rounded-full hover:bg-orange-500 transition-all"
+                >
+                  Apply Now
+                  <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" strokeWidth={2.5} />
+                </Link>
+              </div>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
       {/* For existing athletes only */}
       <section className="py-20 sm:py-24 bg-gray-50 border-t border-gray-100">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { ApplyBar } from "@/components/ApplyBar";
 import { Analytics } from "@/components/Analytics";
 import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
 import { VisitTracker } from "@/components/VisitTracker";
@@ -45,6 +46,7 @@ export default function RootLayout({
         <Navbar />
         <main>{children}</main>
         <Footer />
+        <ApplyBar />
         <Analytics />
         <VercelAnalytics />
         <VisitTracker />
