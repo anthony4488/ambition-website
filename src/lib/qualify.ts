@@ -80,6 +80,12 @@ const SYDNEY_MARKERS = [
   "georges hall", "bankstown", "chester hill", "sefton", "yagoona", "birrong",
   "condell park", "padstow", "revesby", "panania", "east hills", "milperra",
   "picnic point", "lansdowne", "villawood", "regents park", "potts hill",
+  // Arncliffe venue. The application offers Arncliffe as one of three
+  // locations, but the suburb was never in this list, so anyone picking it
+  // scored "Suburb not recognised" and parked in review. Only the venue itself
+  // is listed — its surrounding catchment has not been defined the way
+  // Strathfield's and Georges Hall's have.
+  "arncliffe",
   // Canterbury
   "canterbury", "campsie", "belmore", "lakemba", "wiley park", "punchbowl",
   "greenacre", "roselands", "belfield", "clemton park", "hurlstone park",
@@ -135,9 +141,8 @@ const OUT_OF_AREA_MARKERS = [
   "uk", "united kingdom", "london", "usa", "united states", "india", "philippines",
 ];
 
-// Football only. Confirmed 2026-08-08 — AFL and rugby are NOT the target, even
-// though earlier ads said "football, soccer, AFL or rugby". Anything outside this
-// lands in "review", never auto-rejected, so a genuine enquiry still reaches him.
+// Football is the core. Confirmed 2026-08-08, revisited 2026-08-25: other
+// sports are no longer rejected, they reach review and get judged by hand.
 const CORE_SPORTS = [
   "football", "soccer", "futsal",
   "npl", "ifa", "academy",          // level words parents type instead of the sport
@@ -225,19 +230,30 @@ export function classifyInvest(invest?: string, commitmentLevel?: string): boole
 const normNum = (s: unknown): string =>
   String(s ?? "").toLowerCase().replace(/[^a-z0-9+\s-]/g, " ").replace(/\s+/g, " ").trim();
 
-/** 13-17 is the band. 17+ has left the pathway; 11-13 straddles it. */
+/**
+ * Age is context, never a veto.
+ *
+ * This used to enforce a hard 13-17 band, which was right when the offer was
+ * "footballers 13 to 17 at NPL, IFA or academy level". It is wrong now. The
+ * application accepts Professional, Semi-professional and National / Olympic
+ * representative, and every one of those athletes is an adult — so the old rule
+ * scored the best applicants `out` on age the moment they arrived. It marked an
+ * 18-year-old NPL player at Western Sydney Wanderers UNQUALIFIED on a birthday.
+ *
+ * Now: 13 and up never downgrades anyone, whatever the number, and level does
+ * the work. Below that returns `edge`, which lands the lead in review rather
+ * than unqualified — young athletes may still be worth taking, they just want
+ * a closer look. Nothing here can produce `out` on its own any more.
+ */
 export function classifyAge(band?: string): "in" | "edge" | "out" | "unknown" {
   const s = normNum(band);
   if (!s) return "unknown";
-  // Hard floor: under 13 is not taken at all. Checked first so it can't be
-  // swallowed by a later substring match. "under 10" and "11-12" are the bands
-  // on form 28291627200469783 — both sit entirely below the floor, unlike
-  // "11-13" whose top edge just reaches it.
-  if (s.includes("under 10") || s.includes("under 13") || s.includes("under 14")) return "out";
-  if (s.includes("11-12")) return "out";
-  if (s.includes("13-15") || s.includes("15-17")) return "in";
-  if (s.includes("11-13")) return "edge";   // only the top of this band qualifies
-  if (s.includes("17+") || s.includes("18+")) return "out";
+  // Below the band the methodology assumes. Worth a look, not a rejection.
+  if (s.includes("under 10") || s.includes("under 13") || s.includes("under 14")) return "edge";
+  if (s.includes("11-12")) return "edge";
+  if (s.includes("11-13")) return "edge";   // straddles it
+  // 13 and up, including seniors and professionals.
+  if (s.includes("13-15") || s.includes("15-17") || s.includes("17+") || s.includes("18+")) return "in";
   return "unknown";
 }
 
@@ -272,7 +288,14 @@ export function ageBandFromDob(dob?: string): string | undefined {
 }
 
 /** The exact option strings on the website application's level select. */
+// Keys are the normNum() form of each option: lowercased, punctuation to
+// spaces, collapsed. "National / Olympic representative" arrives here as
+// "national olympic representative".
 const WEBSITE_LEVEL: Record<string, "in" | "out" | "unknown"> = {
+  "professional": "in",
+  "semi-professional": "in",
+  "national olympic representative": "in",
+  "state representative": "in",
   "npl": "in",
   "ifa": "in",
   "club academy": "in",
@@ -337,17 +360,16 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
     reasons.push("Suburb not recognised");
   }
 
-  // A Meta lead answers a budget band instead of the site's yes/no invest
-  // question. When budget is present it IS the money signal — don't also
-  // demote the lead for not answering a question it was never shown.
-  const hasBudgetAnswer = Boolean(input.budget);
-
+  // An explicit "no" on money still disqualifies. Silence does not.
+  //
+  // The application deliberately stopped asking about money — no budget band,
+  // and the consent box names only the $199 assessment. Treating that silence
+  // as "unconfirmed" capped every website lead at review, which meant tier
+  // `qualified` was unreachable and the QualifiedLead pixel event had never
+  // fired once. Level and area carry the signal instead.
   if (investReady === false) {
     tier = "unqualified";
     reasons.push("Not ready to invest");
-  } else if (investReady === null && !hasBudgetAnswer && tier === "qualified") {
-    tier = "review";
-    reasons.push("Investment readiness not asked");
   }
 
   if (tier !== "unqualified") {
@@ -366,17 +388,12 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
   const bud = classifyBudget(input.budget);
   const com = classifyCommit(input.commitLength);
 
-  if (age === "out") {
-    tier = "unqualified";
-    // "out" covers both ends of the band. Say which, or the Telegram alert
-    // reports an 11 year old as being 17+.
-    const tooYoung = /under 10|under 13|under 14|11-12/.test(normNum(input.ageBand));
-    reasons.push(
-      tooYoung ? "Athlete is under 13 — outside 13-17" : "Athlete is 17+ — outside 13-17",
-    );
-  } else if (age === "edge" && tier === "qualified") {
+  // Age can no longer disqualify. classifyAge never returns "out" — seniors and
+  // professionals are in scope now, and young athletes get looked at rather
+  // than binned.
+  if (age === "edge" && tier === "qualified") {
     tier = "review";
-    reasons.push("Age band 11-13 — only qualifies at the top of it");
+    reasons.push("Younger than the methodology assumes — worth a look");
   }
 
   if (lvl === "out") {
@@ -403,16 +420,23 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
   const sportOk = sport.fit === "core";
 
   if (tier !== "unqualified") {
-    if (age === "in" && lvl === "in" && bud === "in" && sportOk) {
+    // `bud` only has to not be "under" — an explicit under-floor answer has
+    // already forced unqualified above, and an absent one must not block green.
+    //
+    // `tier === "qualified"` is load-bearing: this branch CONFIRMS a clean lead
+    // and attaches the reason, it must never promote one that something above
+    // already downgraded. Without it an applicant with an unrecognised suburb
+    // came out green while still carrying "Suburb not recognised" as its reason.
+    if (tier === "qualified" && age === "in" && lvl === "in" && bud !== "under" && sportOk) {
       tier = "qualified";
       // The apply form no longer asks commit length, so "unknown" must not be
       // reported as a 6-12 month horizon we were never told about.
       reasons.push(
         com === "strong"
-          ? "13-17, rep/academy+, budget clears, 12+ month horizon"
+          ? "Rep/academy+, budget clears, 12+ month horizon"
           : com === "ok"
-            ? "13-17, rep/academy+, budget clears, 6-12 month horizon"
-            : "13-17, rep/academy+, budget clears",
+            ? "Rep/academy+, budget clears, 6-12 month horizon"
+            : "Rep/academy+, budget clears",
       );
     } else if (lvl === "unknown" && age === "in" && bud === "in" && sportOk && tier === "qualified") {
       // Form 1659777891796341 doesn't ask level — don't punish the lead for it,
