@@ -9,13 +9,20 @@ import { trackFormComplete, trackFormStart } from "@/lib/formTelemetry";
 //
 // WHY NOT THE STEPPED FORM: paid clicks landed on the homepage and needed three
 // or four more loads before reaching an input. This version puts real fields in
-// front of the visitor immediately, and appears twice on the page so a reader
-// who scrolls the proof never has to scroll back up.
+// front of the visitor immediately. There is exactly ONE of it on the page —
+// the three programs are a choice inside the form, not three destinations.
 //
 // Anyone may apply. Age and level are required because they drive the tier that
 // sharpens the Telegram alert and the pixel event — never to reject anyone.
 
+// Highest first. The ladder runs all the way to professional and Olympic
+// because the system is already used at that level — capping the select at NPL
+// told a senior athlete this wasn't for them before they reached the button.
 const LEVELS = [
+  "Professional",
+  "Semi-professional",
+  "National / Olympic representative",
+  "State representative",
   "NPL",
   "IFA",
   "Club academy",
@@ -24,7 +31,27 @@ const LEVELS = [
   "Other",
 ] as const;
 
-const LOCATIONS = ["Georges Hall", "Arncliffe", "Homebush", "None of these"] as const;
+const LOCATIONS = ["Georges Hall", "Arncliffe", "Homebush"] as const;
+
+// One application, three ways in. The program is chosen at the top of the form
+// rather than on a separate page, so a paid click still only ever loads once.
+const PROGRAMS = [
+  {
+    id: "Speed, face to face",
+    hint: "In-person speed assessment and training, across Sydney.",
+    remote: false,
+  },
+  {
+    id: "Speed, online",
+    hint: "The same diagnostic system, delivered anywhere in the world.",
+    remote: true,
+  },
+  {
+    id: "Football School",
+    hint: "Sydney football program. Biomechanics, technical, speed and power.",
+    remote: false,
+  },
+] as const;
 
 const TRACKED = [
   "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term",
@@ -32,11 +59,13 @@ const TRACKED = [
 ] as const;
 
 type Values = {
+  program: string;
   parentName: string;
   email: string;
   phone: string;
   athleteName: string;
   dob: string;
+  sport: string;
   level: string;
   club: string;
   location: string;
@@ -45,9 +74,24 @@ type Values = {
 };
 
 const EMPTY: Values = {
-  parentName: "", email: "", phone: "", athleteName: "", dob: "",
+  program: PROGRAMS[0].id,
+  parentName: "", email: "", phone: "", athleteName: "", dob: "", sport: "",
   level: "", club: "", location: "", goal: "", consent: false,
 };
+
+/** Exact age for the inline confirmation under the date field. Returns null
+ *  until a plausible date is entered, so it never renders on the server. */
+function exactAge(dob: string): number | null {
+  if (!dob || !ageBandFromDob(dob)) return null;
+  const d = new Date(dob);
+  const now = new Date();
+  const a = now.getFullYear() - d.getFullYear();
+  const before =
+    now.getMonth() < d.getMonth() || (now.getMonth() === d.getMonth() && now.getDate() < d.getDate());
+  return before ? a - 1 : a;
+}
+
+const programOf = (id: string) => PROGRAMS.find((p) => p.id === id) ?? PROGRAMS[0];
 
 type Errors = Partial<Record<keyof Values, string>>;
 
@@ -59,8 +103,10 @@ function validate(v: Values): Errors {
   if (v.athleteName.trim().length < 2) e.athleteName = "Please enter the athlete's first name.";
   if (!v.dob) e.dob = "Please enter the athlete's date of birth.";
   else if (!ageBandFromDob(v.dob)) e.dob = "Please check that date.";
+  if (v.sport.trim().length < 2) e.sport = "Please enter their sport.";
   if (!v.level) e.level = "Please select a playing level.";
-  if (!v.location) e.location = "Please select the closest location.";
+  // Online applicants have no Sydney location to give.
+  if (!programOf(v.program).remote && !v.location) e.location = "Please select the closest location.";
   if (!v.consent) e.consent = "Please confirm you've read the costs.";
   return e;
 }
@@ -70,8 +116,15 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [started, setStarted] = useState(false);
+  const [maxDob, setMaxDob] = useState("");
   const tracking = useRef<Record<string, string>>({});
   const firstErrorRef = useRef<HTMLDivElement | null>(null);
+  const age = exactAge(v.dob);
+
+  // Set client-side so the server and client render the same markup.
+  useEffect(() => {
+    setMaxDob(new Date().toISOString().slice(0, 10));
+  }, []);
 
   // Capture ad attribution once, on mount.
   useEffect(() => {
@@ -106,11 +159,16 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
 
     setStatus("submitting");
 
+    const prog = programOf(v.program);
+    const remote = prog.remote;
     const result: QualifyResult = qualifyLead({
-      suburb: v.location === "None of these" ? "" : v.location,
-      sport: "Football",
+      suburb: remote ? "" : v.location,
+      sport: v.sport.trim(),
       ageBand: ageBandFromDob(v.dob),
       level: v.level,
+      // Online is open, so an interstate applicant is a real lead — `remote`
+      // makes the qualifier downgrade out-of-area to review, not unqualified.
+      remote,
     });
 
     const utm = tracking.current;
@@ -120,11 +178,12 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
       phone: v.phone.trim(),
       athlete_name: v.athleteName.trim(),
       dob: v.dob,
+      program: v.program,
       level: v.level,
       club: v.club.trim(),
-      location: v.location,
+      location: remote ? "Online, outside Sydney" : v.location,
       goal: v.goal.trim(),
-      sport: "Football",
+      sport: v.sport.trim(),
       consent: true,
       source: "apply",
       placement,
@@ -201,9 +260,28 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
       className="rounded-2xl bg-white p-5 shadow-xl sm:p-7"
       aria-label="Application form"
     >
-      <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.2em] text-accent">
+      <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.2em] text-accent">
         Apply for an assessment
       </p>
+
+      {/* One application; the program is a choice inside it, not another page. */}
+      <div className="mb-5">
+        <label className={label} htmlFor={`pg-${placement}`}>What are you looking for?</label>
+        <select
+          id={`pg-${placement}`}
+          className={field}
+          value={v.program}
+          onChange={(e) => set("program", e.target.value)}
+          aria-describedby={`pgh-${placement}`}
+        >
+          {PROGRAMS.map((p) => (
+            <option key={p.id} value={p.id}>{p.id}</option>
+          ))}
+        </select>
+        <p id={`pgh-${placement}`} className="mt-1.5 text-xs leading-relaxed text-gray-500">
+          {programOf(v.program).hint}
+        </p>
+      </div>
 
       <div className="space-y-3.5">
         <div ref={anchor("parentName")}>
@@ -251,11 +329,33 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
             <label className={label} htmlFor={`db-${placement}`}>Athlete&apos;s date of birth</label>
             <input
               id={`db-${placement}`} className={field} type="date"
+              // Bounds stop the picker opening on today's date and stop obvious
+              // typos (a future date, or a year in the 1800s) reaching the form.
+              // maxDob is set client-side so server and client markup match.
+              min="1960-01-01" max={maxDob || undefined}
               value={v.dob} onChange={(e) => set("dob", e.target.value)}
               aria-invalid={!!errors.dob}
+              aria-describedby={`dbh-${placement}`}
             />
-            {errors.dob && <p className={errText}>{errors.dob}</p>}
+            {errors.dob ? (
+              <p className={errText}>{errors.dob}</p>
+            ) : (
+              <p id={`dbh-${placement}`} className="mt-1 text-xs text-gray-400">
+                {age !== null ? `Age ${age}, benchmarked against this age group.` : "Day / month / year."}
+              </p>
+            )}
           </div>
+        </div>
+
+        <div ref={anchor("sport")}>
+          <label className={label} htmlFor={`sp-${placement}`}>Sport</label>
+          <input
+            id={`sp-${placement}`} className={field} type="text" autoComplete="off"
+            value={v.sport} onChange={(e) => set("sport", e.target.value)}
+            aria-invalid={!!errors.sport}
+            placeholder="Football, rugby, athletics…"
+          />
+          {errors.sport && <p className={errText}>{errors.sport}</p>}
         </div>
 
         <div ref={anchor("level")}>
@@ -280,17 +380,20 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
           />
         </div>
 
-        <div ref={anchor("location")}>
-          <label className={label} htmlFor={`lo-${placement}`}>Closest Sydney location</label>
-          <select
-            id={`lo-${placement}`} className={field} value={v.location}
-            onChange={(e) => set("location", e.target.value)} aria-invalid={!!errors.location}
-          >
-            <option value="">Select one</option>
-            {LOCATIONS.map((l) => <option key={l} value={l}>{l}</option>)}
-          </select>
-          {errors.location && <p className={errText}>{errors.location}</p>}
-        </div>
+        {/* Only in-person programs have a location to pick. */}
+        {!programOf(v.program).remote && (
+          <div ref={anchor("location")}>
+            <label className={label} htmlFor={`lo-${placement}`}>Closest location</label>
+            <select
+              id={`lo-${placement}`} className={field} value={v.location}
+              onChange={(e) => set("location", e.target.value)} aria-invalid={!!errors.location}
+            >
+              <option value="">Select one</option>
+              {LOCATIONS.map((l) => <option key={l} value={l}>{l}</option>)}
+            </select>
+            {errors.location && <p className={errText}>{errors.location}</p>}
+          </div>
+        )}
 
         <div>
           <label className={label} htmlFor={`gl-${placement}`}>
@@ -311,8 +414,7 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
               className="mt-0.5 h-5 w-5 shrink-0 cursor-pointer rounded border-gray-300 text-accent focus:ring-2 focus:ring-accent/40"
             />
             <span className="text-[13px] leading-snug text-gray-600">
-              I understand the assessment is <strong className="text-gray-900">$199</strong>, and that
-              ongoing training is <strong className="text-gray-900">$130&ndash;160 per week</strong>.
+              I understand the assessment is <strong className="text-gray-900">$199</strong>.
             </span>
           </label>
           {errors.consent && <p className={errText}>{errors.consent}</p>}
@@ -321,7 +423,7 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
 
       {status === "error" && (
         <div role="alert" className="mt-4 rounded-lg border border-red-200 bg-red-50 p-3.5 text-sm text-red-700">
-          That didn&apos;t send. Nothing you typed is lost &mdash; press the button again. If it keeps
+          That didn&apos;t send. Nothing you typed is lost. Press the button again. If it keeps
           failing, email <a className="font-semibold underline" href="mailto:info@ambitionsportsperformance.com">info@ambitionsportsperformance.com</a>.
         </div>
       )}

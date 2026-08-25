@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
     const utmIn = b.utm && typeof b.utm === "object" ? (b.utm as Record<string, string>) : {};
     const reasonList = Array.isArray(b.qualify_reasons) ? (b.qualify_reasons as unknown[]).map(String) : [];
     const notes = [
-      "Program: SPEED COACHING ($130-160/wk + $199 assessment)",
+      `Program: ${str(b.program) ?? "SPEED COACHING"} ($130-160/wk + $199 assessment)`,
       `Athlete: ${str(b.athlete_name) ?? "—"}`,
       `DOB: ${str(b.dob) ?? "—"}`,
       `Level: ${str(b.level) ?? "—"}`,
@@ -141,6 +141,7 @@ export async function POST(req: NextRequest) {
   // 3) Email the full submission to the inbox
   const utmObj = b.utm && typeof b.utm === "object" ? (b.utm as Record<string, string>) : {};
   const allRows: [string, unknown][] = [
+    ["Program", b.program],
     ["Parent", b.name],
     ["Email", b.email],
     ["Phone", b.phone],
@@ -188,6 +189,7 @@ export async function POST(req: NextRequest) {
     // Likewise `dob` vs the banded `age`.
     `🏅 ${esc(b.sport)} · 🎂 ${esc(b.dob ?? b.age)} · 📈 ${esc(b.level)}`,
   ];
+  if (b.program) lines.push(`🎽 <b>${esc(b.program)}</b>`);
   if (b.athlete_name) lines.push(`⚽ Athlete: ${esc(b.athlete_name)}${b.club ? ` · ${esc(b.club)}` : ""}`);
   if (b.commitment) lines.push(`🙋 Commitment: ${esc(b.commitment)}`);
   if (b.budget || b.commit) lines.push(`💵 ${esc(b.budget)} · ⏳ ${esc(b.commit)}`);

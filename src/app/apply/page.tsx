@@ -5,7 +5,7 @@ import { ApplyForm } from "@/components/ApplyForm";
 export const metadata: Metadata = {
   title: "Apply, Ambition Sports Performance",
   description:
-    "Apply for a biomechanical speed assessment in Sydney. $199 assessment, measured at 240fps. Built for footballers 13-17 at NPL, IFA or club academy level.",
+    "Apply for a biomechanical speed assessment. $199, measured at 240fps. For athletes chasing the top of their sport, in Sydney or online worldwide.",
   robots: { index: false }, // ad landing page, keep out of search
 };
 
@@ -40,13 +40,6 @@ const STEPS = [
   },
 ];
 
-const PRICING = [
-  ["$199 assessment", "A full biomechanical diagnostic. Not a tryout."],
-  ["$130–160 per week", "Ongoing program, minimum."],
-  ["5–7 athletes per coach", "Small groups."],
-  ["Programming between sessions", "Personalised, delivered online."],
-  ["6–12 months or more", "Athletes are worked with long-term."],
-];
 
 const LOCATIONS = ["Georges Hall", "Arncliffe", "Homebush"];
 
@@ -54,7 +47,7 @@ export default function ApplyPage() {
   return (
     <>
       {/* 1. Hero + form */}
-      <section className="relative bg-gray-950 pt-24 pb-14 sm:pt-32 sm:pb-20">
+      <section className="relative overflow-hidden bg-gray-950 pt-24 pb-14 sm:pt-32 sm:pb-20">
         <div className="pointer-events-none absolute -top-20 left-1/2 h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-accent/10 blur-[150px]" />
         <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-start gap-8 px-4 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-8">
           <div className="lg:pt-6">
@@ -66,11 +59,11 @@ export default function ApplyPage() {
               A measured biomechanical assessment in Sydney. We name the fault, then we fix it.
             </p>
             <p className="mt-4 inline-block rounded-full border border-white/15 px-4 py-2 text-[12px] font-semibold text-gray-300 sm:text-[13px]">
-              Built for footballers 13–17 at NPL, IFA or club academy level, in Sydney.
+              For athletes chasing the top of their sport. In Sydney, or online anywhere.
             </p>
           </div>
 
-          <div className="lg:sticky lg:top-24">
+          <div id="apply-form" className="scroll-mt-24 lg:sticky lg:top-24">
             <ApplyForm placement="hero" />
           </div>
         </div>
@@ -81,11 +74,15 @@ export default function ApplyPage() {
         <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
           <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-accent">Who this is built for</p>
           <p className="mt-4 text-2xl font-extrabold leading-tight tracking-tight text-gray-900 sm:text-4xl">
-            Footballers aged 13–17, playing NPL, IFA or club academy level, in Sydney.
+            Athletes chasing the top of their sport, and the ones already there.
           </p>
           <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-gray-600">
-            That&apos;s who the program is built around. It isn&apos;t a gate. If your athlete sits
-            outside it, apply anyway and we&apos;ll tell you honestly whether we can move them.
+            Football, rugby, AFL, basketball, athletics. The biomechanics of speed are the same
+            in every one.
+          </p>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-gray-600">
+            That&apos;s a description of who trains here, not a gate. If your athlete is serious about
+            how far they can go, apply.
           </p>
         </div>
       </section>
@@ -135,24 +132,6 @@ export default function ApplyPage() {
         </div>
       </section>
 
-      {/* 5. Pricing and commitment */}
-      <section className="bg-white py-16 sm:py-24">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-          <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-accent">Cost and commitment</p>
-          <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-            Stated plainly.
-          </h2>
-          <dl className="mt-8 divide-y divide-gray-100 border-y border-gray-100">
-            {PRICING.map(([term, detail]) => (
-              <div key={term} className="grid grid-cols-1 gap-1 py-4 sm:grid-cols-[220px_1fr] sm:gap-6">
-                <dt className="text-[15px] font-extrabold text-gray-900">{term}</dt>
-                <dd className="text-[15px] leading-relaxed text-gray-600">{detail}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </section>
-
       {/* 6. Locations */}
       <section className="border-y border-gray-200 bg-gray-50 py-14 sm:py-20">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
@@ -165,7 +144,11 @@ export default function ApplyPage() {
             ))}
           </div>
           <p className="mt-5 text-sm leading-relaxed text-gray-600">
-            Face-to-face only. Online coaching for athletes outside Sydney is launching soon.
+            In-person across Sydney. Outside Sydney,{" "}
+            <Link href="/online-coaching" className="font-semibold text-accent underline hover:text-orange-500">
+              online coaching is open now
+            </Link>{" "}
+            . The same system, delivered remotely.
           </p>
           {/* TODO(anthony): confirm Homebush is running now, not planned. */}
         </div>
@@ -181,8 +164,8 @@ export default function ApplyPage() {
           <div className="mt-8 space-y-5 text-[15px] leading-relaxed text-gray-600">
             <p>
               <strong className="text-gray-900">This is long-term.</strong> It isn&apos;t a
-              school-holiday block or a short-term fix. Athletes are worked with for 6&ndash;12 months
-              or more, and that&apos;s where the change comes from.
+              school-holiday block or a short-term fix. Athletes are worked with for 24 months or
+              more, and that&apos;s where the change comes from.
             </p>
             <p>
               <strong className="text-gray-900">Younger athletes are welcome to apply.</strong> The
@@ -191,26 +174,38 @@ export default function ApplyPage() {
               whether they&apos;re better served enjoying their sport and building a base.
             </p>
             <p>
-              <strong className="text-gray-900">Outside Sydney, tell us anyway.</strong> Training is
-              face-to-face for now. Online is coming, and we&apos;ll let you know when it opens.
+              <strong className="text-gray-900">Outside Sydney? Online coaching is open.</strong> The
+              same diagnostic system, delivered remotely.{" "}
+              <Link href="/online-coaching" className="font-semibold text-accent underline hover:text-orange-500">
+                See how online coaching works
+              </Link>.
             </p>
             <p>
-              <strong className="text-gray-900">Any level can apply.</strong> The program is built
-              around NPL, IFA and academy footballers. If that isn&apos;t your athlete yet, we&apos;ll
-              give you a straight answer rather than a sales pitch.
+              <strong className="text-gray-900">Any sport, any level.</strong> Football, rugby, AFL,
+              basketball, athletics. Acceleration and top-end speed work the same way in all of
+              them. Whatever level your athlete is at now, you&apos;ll get a straight answer rather
+              than a sales pitch.
             </p>
           </div>
         </div>
       </section>
 
-      {/* 8. Form, repeated */}
+      {/* 8. Close, sends back to the single form rather than repeating it */}
       <section className="bg-gray-950 py-16 sm:py-24">
-        <div className="mx-auto max-w-xl px-4 sm:px-6 lg:px-8">
-          <h2 className="mb-6 text-center text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+        <div className="mx-auto max-w-xl px-4 text-center sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
             Apply for an assessment.
           </h2>
-          <ApplyForm placement="footer" />
-          <p className="mt-8 text-center text-xs text-gray-500">
+          <p className="mx-auto mt-4 max-w-md text-[15px] leading-relaxed text-gray-400">
+            One application. Choose face to face, online, or Football School at the top of the form.
+          </p>
+          <a
+            href="#apply-form"
+            className="mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-accent px-8 py-4 text-sm font-extrabold uppercase tracking-[0.1em] text-white transition-colors hover:bg-orange-500"
+          >
+            Start my application
+          </a>
+          <p className="mt-8 text-xs text-gray-500">
             Questions first? <Link href="/contact" className="font-semibold text-gray-300 underline hover:text-white">See the common ones answered</Link>.
           </p>
         </div>
