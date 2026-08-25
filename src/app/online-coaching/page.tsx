@@ -131,7 +131,7 @@ export default function OnlineCoachingPage() {
                 See The Proof
               </Link>
             </div>
-            <PaymentPlans tone="dark" className="mt-5 !justify-start" />
+            <PaymentPlans tone="dark" className="mt-5 !items-start" />
           </FadeIn>
         </div>
       </section>
