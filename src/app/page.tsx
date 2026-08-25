@@ -109,7 +109,7 @@ export default function HomePage() {
           <FadeIn delay={300}>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
-                href="/contact"
+                href="/apply"
                 className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-accent text-white font-bold rounded-full hover:bg-orange-500 hover:shadow-lg hover:shadow-accent/25 transition-all text-base uppercase tracking-wider"
               >
                 Start Training
@@ -275,7 +275,7 @@ export default function HomePage() {
                   Programs
                 </h2>
               </div>
-              <Link href="/contact" className="hidden sm:inline-flex items-center gap-2 text-accent text-sm font-semibold uppercase tracking-wider hover:gap-3 transition-all">
+              <Link href="/apply" className="hidden sm:inline-flex items-center gap-2 text-accent text-sm font-semibold uppercase tracking-wider hover:gap-3 transition-all">
                 Apply Now <ArrowRight size={14} />
               </Link>
             </div>

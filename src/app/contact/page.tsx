@@ -249,7 +249,7 @@ export default function ContactPage() {
                   </p>
                 </div>
                 <Link
-                  href="/speed-school#apply"
+                  href="/apply"
                   className="group inline-flex shrink-0 items-center justify-center gap-2 px-7 py-4 bg-accent text-white font-bold text-sm uppercase tracking-wider rounded-full hover:bg-orange-500 transition-all"
                 >
                   Apply Now

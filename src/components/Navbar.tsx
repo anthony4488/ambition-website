@@ -81,7 +81,7 @@ export function Navbar() {
               </Link>
             ))}
             <Link
-              href="/contact"
+              href="/apply"
               className="ml-4 px-6 py-2.5 bg-accent text-white text-[13px] font-bold uppercase tracking-[0.1em] rounded-full hover:bg-orange-500 hover:shadow-lg hover:shadow-accent/20 transition-all duration-300"
             >
               Apply
@@ -124,7 +124,7 @@ export function Navbar() {
               </Link>
             ))}
             <Link
-              href="/contact"
+              href="/apply"
               onClick={() => setOpen(false)}
               className="block mt-4 px-4 py-3.5 bg-accent text-white text-sm font-bold uppercase tracking-[0.1em] rounded-full text-center hover:bg-orange-500 transition-colors"
             >

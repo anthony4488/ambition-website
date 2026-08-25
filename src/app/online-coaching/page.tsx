@@ -467,7 +467,7 @@ export default function OnlineCoachingPage() {
                       </li>
                     ))}
                   </ul>
-                  <Link href="/contact" className={`block text-center py-3.5 rounded-full font-bold text-sm uppercase tracking-wider transition-all ${
+                  <Link href="/apply" className={`block text-center py-3.5 rounded-full font-bold text-sm uppercase tracking-wider transition-all ${
                     tier.highlight ? "bg-accent text-white hover:bg-orange-500" : "bg-gray-900 text-white hover:bg-black"
                   }`}>{tier.cta}</Link>
                 </div>

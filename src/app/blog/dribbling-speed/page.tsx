@@ -96,7 +96,7 @@ export default function DribblingPost() {
         </div>
       </Section>
 
-      <CTASection title="Fix your on-ball speed." description="Our Football School combines sprint mechanics with football-specific movement patterns." buttonText="Apply Now" buttonHref="/contact" />
+      <CTASection title="Fix your on-ball speed." description="Our Football School combines sprint mechanics with football-specific movement patterns." buttonText="Apply Now" buttonHref="/apply" />
     </>
   );
 }

@@ -54,7 +54,7 @@ const wall: WallCard[] = [
   { name: "Xavi", result: "23 → 32 km/h", context: "Coordination · ground power · reactive off every contact · 17 months", bunnyId: "a31a6862-c26c-4337-878c-87a6b0ac94c4" },
   { name: "Maksim", result: "23 → 32 km/h", context: "+27.2% avg speed · +56% bound power · -27% across splits · 3 years", bunnyId: "9ad7f8a3-4d47-4948-a72f-db1f06180c8f" },
   { name: "George Francis", result: "17-19 → 35 km/h", context: "Started at 11 · stride, hip, contact rebuilt · faster than most semi-pros", bunnyId: "3e0332a8-49cb-4ac7-9422-4dd81a207078" },
-  { name: "George Francis — 35 km/h run", result: "35 km/h on camera", context: "Timed top-speed run · the number, on film", bunnyId: "38fb4d8f-6eda-4ccb-b803-85721759a37c" },
+  { name: "George Francis, 35 km/h run", result: "35 km/h on camera", context: "Timed top-speed run · the number, on film", bunnyId: "38fb4d8f-6eda-4ccb-b803-85721759a37c" },
   { name: "Hadi", result: "30 → 35 km/h", context: "Injured & plateaued → 35 km/h in 8 weeks", bunnyId: "07451a44-854c-46b3-a0c8-877797f015ac" },
   { name: "Abi", result: "1.7s first 10m", context: "Elite footballer · explosive starting power", bunnyId: "30ee2823-2ddb-4a82-868d-8eb4af683d3b" },
   { name: "Pete", result: "32 → 35 km/h", context: "Top-end speed gain · +3 km/h", bunnyId: "c3b2ea11-6058-4fe1-8754-729275fa0560" },

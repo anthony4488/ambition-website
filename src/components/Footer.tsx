@@ -10,6 +10,7 @@ const navLinks = [
   { href: "/football-school", label: "Football School" },
   { href: "/online-coaching", label: "Online Coaching" },
   { href: "/success-stories", label: "Success Stories" },
+  { href: "/apply", label: "Apply" },
   { href: "/contact", label: "Contact" },
 ];
 

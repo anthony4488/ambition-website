@@ -371,7 +371,7 @@ export default function FootballSchoolPage() {
           <FadeIn delay={300}>
             <div className="flex flex-wrap items-center justify-center gap-4">
               <Link
-                href="/contact"
+                href="/apply"
                 className="inline-flex items-center gap-2 px-8 py-5 bg-accent text-white font-bold text-sm uppercase tracking-wider rounded-full hover:bg-orange-500 transition-colors shadow-lg shadow-accent/30"
               >
                 Apply Now, Pick Your Program <ArrowRight size={16} />
@@ -511,7 +511,7 @@ export default function FootballSchoolPage() {
               </FadeIn>
               <FadeIn delay={400}>
                 <div className="flex flex-wrap gap-3">
-                  <a href="/speed-school#apply" className="inline-flex items-center gap-2 px-5 py-3 border border-white/20 text-white text-xs font-bold uppercase tracking-wider rounded-full hover:bg-white/5 transition-colors">
+                  <a href="/apply" className="inline-flex items-center gap-2 px-5 py-3 border border-white/20 text-white text-xs font-bold uppercase tracking-wider rounded-full hover:bg-white/5 transition-colors">
                     Apply for Speed School
                   </a>
                   <a href="/online-coaching#apply" className="inline-flex items-center gap-2 px-5 py-3 border border-white/20 text-white text-xs font-bold uppercase tracking-wider rounded-full hover:bg-white/5 transition-colors">

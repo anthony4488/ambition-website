@@ -12,7 +12,7 @@ export function CTASection({
   title = "Ready to get faster?",
   description = "Apply for a free assessment and discover what's holding your speed back.",
   buttonText = "Apply Now",
-  buttonHref = "/contact",
+  buttonHref = "/apply",
 }: CTASectionProps) {
   return (
     <section className="relative py-28 sm:py-36 bg-gradient-to-br from-gray-900 via-gray-900 to-dark-200 overflow-hidden">
