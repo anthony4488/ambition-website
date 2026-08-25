@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Section } from "@/components/Section";
 import { FadeIn } from "@/components/FadeIn";
 import { EnquiryForm } from "@/components/EnquiryForm";
+import { PaymentPlans } from "@/components/PaymentPlans";
 import { Check, ArrowRight, PlayCircle, ShieldCheck } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -130,6 +131,7 @@ export default function OnlineCoachingPage() {
                 See The Proof
               </Link>
             </div>
+            <PaymentPlans tone="dark" className="mt-5 !justify-start" />
           </FadeIn>
         </div>
       </section>

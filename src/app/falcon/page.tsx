@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { FalconBuy } from "@/components/FalconBuy";
+import { PaymentPlans } from "@/components/PaymentPlans";
 
 // Ad landing page for the video breakdown offer. Deliberately short: it exists
 // to make a $175 cold purchase reasonable, not to tell the whole story. No
@@ -72,6 +73,7 @@ export default function FalconPage() {
             <p className="mt-3 text-xs text-gray-500">
               One video. One breakdown. Back within 48 hours.
             </p>
+            <PaymentPlans tone="dark" className="mt-2" />
           </div>
         </div>
       </section>
@@ -163,6 +165,7 @@ export default function FalconPage() {
           </p>
           <div className="mt-8">
             <FalconBuy price={PRICE} />
+            <PaymentPlans tone="dark" className="mt-3" />
           </div>
           <p className="mt-8 text-xs text-gray-500">
             Training in Sydney or online?{" "}
