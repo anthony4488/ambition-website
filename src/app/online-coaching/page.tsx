@@ -5,6 +5,7 @@ import { Section } from "@/components/Section";
 import { FadeIn } from "@/components/FadeIn";
 import { EnquiryForm } from "@/components/EnquiryForm";
 import { PaymentPlans } from "@/components/PaymentPlans";
+import { Figure } from "@/components/Figure";
 import { Check, ArrowRight, PlayCircle, ShieldCheck } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -292,6 +293,14 @@ export default function OnlineCoachingPage() {
             <p className="text-gray-500 max-w-2xl">If the assessment shows the right fit, we move into the full program. 5 training blocks. New block every 6 weeks. Built specifically around what&apos;s holding the athlete back.</p>
           </div>
         </FadeIn>
+        <FadeIn>
+          <Figure
+            src="/adam-band-drive.jpg"
+            alt="Athlete driving out against resistance in a low acceleration position"
+            ratio="aspect-[21/9]"
+            className="mb-12"
+          />
+        </FadeIn>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           {blocks.map((b) => (
             <FadeIn key={b.n}>
@@ -378,6 +387,14 @@ export default function OnlineCoachingPage() {
       <section className="py-20 sm:py-24 bg-black border-y border-gray-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <FadeIn>
+            <div className="mx-auto mb-6 h-20 w-20 overflow-hidden rounded-full ring-2 ring-accent/30">
+              <Figure
+                src="/anthony-profile.png"
+                alt="Anthony Atanasov, Program Director"
+                ratio="aspect-square"
+                className="h-full w-full [&>div]:rounded-none"
+              />
+            </div>
             <p className="text-accent text-[11px] uppercase tracking-[0.3em] font-bold mb-7">From A Real Assessment</p>
           </FadeIn>
           <FadeIn delay={100}>

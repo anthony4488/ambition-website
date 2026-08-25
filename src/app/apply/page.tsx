@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ApplyForm } from "@/components/ApplyForm";
+import { Figure } from "@/components/Figure";
 
 export const metadata: Metadata = {
   title: "Apply, Ambition Sports Performance",
@@ -95,14 +96,21 @@ export default function ApplyPage() {
             Measured, not claimed.
           </h2>
 
-          <ul className="mt-8 grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
-            {PROOF.map((p) => (
-              <li key={p} className="flex items-start gap-3 border-b border-gray-100 py-3 text-[15px] text-gray-700">
-                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-                {p}
-              </li>
-            ))}
-          </ul>
+          <div className="mt-8 grid grid-cols-1 items-start gap-10 lg:grid-cols-2">
+            <ul className="grid grid-cols-1 gap-x-8 gap-y-3">
+              {PROOF.map((p) => (
+                <li key={p} className="flex items-start gap-3 border-b border-gray-100 py-3 text-[15px] text-gray-700">
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                  {p}
+                </li>
+              ))}
+            </ul>
+            <Figure
+              src="/sean-dulic.jpg"
+              alt="Footballer in an international shirt competing for the ball at full speed"
+              ratio="aspect-[4/5]"
+            />
+          </div>
 
           <p className="mt-8 max-w-2xl text-[15px] leading-relaxed text-gray-600">
             The coach played 8 years in Europe across 6 first-division clubs in 5 countries, then
@@ -120,7 +128,14 @@ export default function ApplyPage() {
           <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
             240 frames per second.
           </h2>
-          <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-3">
+          <Figure
+            src="/speed-school-testing-setup.jpg"
+            alt="Athlete accelerating past electronic timing gates while a coach films from a tripod"
+            ratio="aspect-[21/9]"
+            className="mt-10"
+            caption="Electronic gates and a camera on the line. Every number starts here."
+          />
+          <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-3">
             {STEPS.map((s) => (
               <div key={s.n}>
                 <p className="text-sm font-bold text-accent">{s.n}</p>

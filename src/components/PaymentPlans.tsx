@@ -50,7 +50,7 @@ export function PaymentPlans({
               key={p.alt}
               src={p.src}
               alt={`${p.alt} — pay in four`}
-              className="h-8 w-auto rounded"
+              className="h-8 w-auto rounded-lg"
               loading="lazy"
               decoding="async"
               onError={(e) => {
