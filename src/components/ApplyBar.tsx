@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, X } from "lucide-react";
 
 /**
@@ -16,7 +16,10 @@ import { ArrowRight, X } from "lucide-react";
  * Hidden on legal/admin/post-application pages and on the pages that *are* the
  * application (/contact picks the program, /apply is the form itself).
  */
-const HIDDEN_EXACT = ["/contact", "/apply", "/welcome", "/agreement", "/privacy", "/terms"];
+const HIDDEN_EXACT = ["/contact", "/apply", "/welcome", "/agreement", "/privacy", "/terms",
+  // Falcon is a paid checkout funnel — a $199 assessment bar competing with a
+  // $175 buy button costs more than it earns.
+  "/falcon", "/falcon/sent"];
 const HIDDEN_PREFIX = ["/admin"];
 
 const DISMISS_KEY = "asp_apply_bar_dismissed";
@@ -30,6 +33,7 @@ export function ApplyBar() {
   const [visible, setVisible] = useState(false);
   const [dismissed, setDismissed] = useState(true); // assume dismissed until storage is read (no SSR flash)
   const [href, setHref] = useState("/apply");
+  const barRef = useRef<HTMLDivElement | null>(null);
 
   const hidden =
     HIDDEN_EXACT.includes(pathname) || HIDDEN_PREFIX.some((p) => pathname.startsWith(p));
@@ -66,11 +70,29 @@ export function ApplyBar() {
     };
   }, [hidden, dismissed]);
 
-  // Keep the footer clear of the bar.
+  // Keep the footer clear of the bar. The height is measured rather than
+  // assumed: a fixed 104px was right on a wide screen but ~50px short on a
+  // phone, where the CTA wraps onto its own line and the headline runs to two,
+  // leaving the bar sitting over the end of the footer.
   useEffect(() => {
     if (!visible) return;
-    document.body.style.paddingBottom = "104px";
+    const el = barRef.current;
+    if (!el) return;
+
+    const apply = () => {
+      document.body.style.paddingBottom = `${el.offsetHeight}px`;
+    };
+    apply();
+
+    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(apply) : null;
+    ro?.observe(el);
+    window.addEventListener("resize", apply);
+    window.addEventListener("orientationchange", apply);
+
     return () => {
+      ro?.disconnect();
+      window.removeEventListener("resize", apply);
+      window.removeEventListener("orientationchange", apply);
       document.body.style.paddingBottom = "";
     };
   }, [visible]);
@@ -88,6 +110,7 @@ export function ApplyBar() {
 
   return (
     <div
+      ref={barRef}
       className={`fixed inset-x-0 bottom-0 z-40 transition-all duration-500 ease-out ${
         visible ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
       }`}
@@ -109,14 +132,17 @@ export function ApplyBar() {
             <p className="mt-1 text-sm font-extrabold leading-snug text-white sm:text-base">
               Applications are open for speed training.
             </p>
-            <p className="mt-0.5 hidden text-xs text-gray-400 sm:block">
+            {/* The three-step line only fits on one row from lg up. Between
+                640px and 1024px it wrapped and pushed the bar taller, so the
+                short version covers tablets as well as phones. */}
+            <p className="mt-0.5 hidden text-xs text-gray-400 lg:block">
               <span className="font-semibold text-gray-300">1.</span> Apply in 2 minutes
               <span className="mx-2 text-gray-600">→</span>
               <span className="font-semibold text-gray-300">2.</span> We review and call you within 24 hours
               <span className="mx-2 text-gray-600">→</span>
               <span className="font-semibold text-gray-300">3.</span> Book your assessment
             </p>
-            <p className="mt-0.5 text-xs text-gray-400 sm:hidden">
+            <p className="mt-0.5 text-xs text-gray-400 lg:hidden">
               2-minute form · we call within 24 hours
             </p>
           </div>
