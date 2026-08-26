@@ -137,6 +137,14 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
     });
     if (document.referrer) got.referrer = document.referrer;
     tracking.current = got;
+
+    // /falcon links in with ?program=online so the online offer arrives
+    // preselected instead of defaulting to face to face.
+    const wanted = sp.get("program");
+    if (wanted) {
+      const match = PROGRAMS.find((pr) => pr.id.toLowerCase().includes(wanted.toLowerCase()));
+      if (match) setV((prev) => ({ ...prev, program: match.id }));
+    }
   }, []);
 
   const set = <K extends keyof Values>(k: K, val: Values[K]) => {
