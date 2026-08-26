@@ -128,6 +128,12 @@ export default function ApplyPage() {
           <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
             240 frames per second.
           </h2>
+          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
+            <Figure src="/analysis/annotated-drive.jpg" alt="Sprint frame with circles marked on the hip and knee and arrows showing drive direction" ratio="aspect-[16/9]" />
+            <Figure src="/analysis/annotated-bound.jpg" alt="Bound frame with the athlete's trajectory drawn and an arrow showing vertical travel" ratio="aspect-[16/9]" />
+            <Figure src="/analysis/annotated-vertical.jpg" alt="Sprint frame with a vertical line marking projection at toe off" ratio="aspect-[16/9]" />
+          </div>
+          <p className="mt-5 text-sm leading-relaxed text-gray-400">Frames from real breakdowns. Every fault is marked on your own footage.</p>
           <Figure
             src="/speed-school-testing-setup.jpg"
             alt="Athlete accelerating past electronic timing gates while a coach films from a tripod"

@@ -113,8 +113,31 @@ export default function FalconPage() {
               </div>
             ))}
           </div>
-          {/* TODO(anthony): drop a 60-90s clip from the corpus in here. Showing a
-              real breakdown beats describing one. Ali, Julian and Dean are cleared. */}
+          {/* Real frames from real breakdowns. Describing the deliverable is
+              weaker than showing it, and there are 90-odd assessments to draw on. */}
+          <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
+            <Figure
+              src="/analysis/annotated-drive.jpg"
+              alt="Sprint frame with circles marked on the hip and knee and arrows showing horizontal drive direction"
+              ratio="aspect-[16/9]"
+              caption="Hip and knee marked, drive direction drawn."
+            />
+            <Figure
+              src="/analysis/annotated-bound.jpg"
+              alt="Bound frame with an ellipse drawn around the athlete's trajectory and an arrow showing vertical travel"
+              ratio="aspect-[16/9]"
+              caption="Travelling up instead of forward."
+            />
+            <Figure
+              src="/analysis/annotated-vertical.jpg"
+              alt="Sprint frame with a vertical line and arrow marking the athlete's projection at toe off"
+              ratio="aspect-[16/9]"
+              caption="Projection at toe off, measured against vertical."
+            />
+          </div>
+          <p className="mt-6 text-center text-sm text-gray-500">
+            Frames from real breakdowns. Every fault is marked on your own footage, not described in a paragraph.
+          </p>
         </div>
       </section>
 
