@@ -135,6 +135,13 @@ export default function ApplyPage() {
           </div>
           <p className="mt-5 text-sm leading-relaxed text-gray-400">Frames from real breakdowns. Every fault is marked on your own footage.</p>
           <Figure
+            src="/analysis/report-benchmarks.jpg"
+            alt="Report section comparing sprint splits, top speed and bound distance against above-average and elite junior benchmarks, with the gap to each shown as a percentage"
+            ratio="aspect-[1216/600]"
+            className="mt-10"
+            caption="Your numbers against two benchmarks, with the gap to each stated. A real assessment, shared with permission."
+          />
+          <Figure
             src="/speed-school-testing-setup.jpg"
             alt="Athlete accelerating past electronic timing gates while a coach films from a tripod"
             ratio="aspect-[21/9]"

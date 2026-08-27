@@ -138,6 +138,32 @@ export default function FalconPage() {
           <p className="mt-6 text-center text-sm text-gray-500">
             Frames from real breakdowns. Every fault is marked on your own footage, not described in a paragraph.
           </p>
+
+          {/* The written report itself. Nothing sells a $200 diagnosis like
+              showing the diagnosis. Julian's, used with permission. */}
+          <div className="mt-16">
+            <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-accent">And the written report</p>
+            <h3 className="mt-3 max-w-2xl text-2xl font-extrabold leading-tight tracking-tight text-white sm:text-3xl">
+              Your numbers against the benchmark, gap by gap.
+            </h3>
+            <div className="mt-8 flex flex-col gap-8">
+              <Figure
+                src="/analysis/report-benchmarks.jpg"
+                alt="Report section comparing the athlete's sprint splits, top speed and bound distance against above-average and elite junior benchmarks, with the gap to each shown as a percentage"
+                ratio="aspect-[1216/600]"
+                caption="Every metric against two benchmarks, with the gap to each stated as a number."
+              />
+              <Figure
+                src="/analysis/report-splits.jpg"
+                alt="Report section breaking a sprint into acceleration phase, speed maintenance, max velocity and bounding, each with the split times and a written analysis"
+                ratio="aspect-[1216/620]"
+                caption="The run split into phases, each one explained. Not a score, a diagnosis."
+              />
+            </div>
+            <p className="mt-6 text-sm leading-relaxed text-gray-500">
+              A real assessment, shared with permission. Yours comes back in the same shape.
+            </p>
+          </div>
         </div>
       </section>
 
