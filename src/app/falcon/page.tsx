@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Figure } from "@/components/Figure";
 import { PaymentPlans } from "@/components/PaymentPlans";
+import { BuyButton } from "@/components/BuyButton";
 
 // Online sprint assessment, $200. Most ad traffic lands on the Meta instant
 // form; this page is the destination for the round-two test and the
@@ -13,7 +14,10 @@ import { PaymentPlans } from "@/components/PaymentPlans";
 // send it, it comes back. "Online" is never left implied.
 
 const PRICE = "$200";
-const APPLY = "/apply?program=online&utm_source=site&utm_medium=falcon_page";
+// Direct checkout. Falcon is a $200 product, not an application: the report
+// itself is what pitches the programme afterwards, so there is no call to book
+// and nothing to qualify before paying.
+const BUY = "https://book.stripe.com/4gMaEY1rI5RG72y4Y86Vq0u";
 
 export const metadata: Metadata = {
   title: "Online Sprint Assessment, Ambition Sports Performance",
@@ -62,13 +66,13 @@ export default function FalconPage() {
             gets analysed at 240 frames a second, and the full breakdown comes back within 48 hours.
           </p>
           <div className="mx-auto mt-9 max-w-md">
-            <Link
-              href={APPLY}
+            <BuyButton
+              href={BUY}
               className="group inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-accent px-8 py-5 text-base font-extrabold uppercase tracking-[0.08em] text-white transition-all hover:bg-orange-500 hover:shadow-xl hover:shadow-accent/25"
             >
-              Start my assessment
+              Get my breakdown, {PRICE}
               <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
-            </Link>
+            </BuyButton>
             <PaymentPlans tone="dark" className="mt-4" />
           </div>
         </div>
@@ -216,13 +220,13 @@ export default function FalconPage() {
             You&apos;ll know what&apos;s limiting your speed within 48 hours. {PRICE}, anywhere in the world.
           </p>
           <div className="mt-8">
-            <Link
-              href={APPLY}
+            <BuyButton
+              href={BUY}
               className="group inline-flex items-center justify-center gap-2.5 rounded-full bg-accent px-8 py-5 text-base font-extrabold uppercase tracking-[0.08em] text-white transition-all hover:bg-orange-500"
             >
-              Start my assessment
+              Get my breakdown, {PRICE}
               <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
-            </Link>
+            </BuyButton>
             <PaymentPlans tone="dark" className="mt-4" />
           </div>
           <p className="mt-8 text-xs text-gray-500">
