@@ -121,7 +121,9 @@ export function ApplyBar() {
         {/* On phones the CTA wraps onto its own full-width line (order-3) so the
             copy never gets squeezed into a three-line column. */}
         <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-2.5 px-4 py-3.5 sm:flex-nowrap sm:px-6 sm:py-4 lg:px-8">
-          <div className="order-1 min-w-0 flex-1">
+          {/* The whole copy block is the link. Clarity caught taps landing on
+              the headline and the step line, both of which did nothing. */}
+          <Link href={href} className="order-1 min-w-0 flex-1">
             <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.22em] text-accent">
               <span className="relative flex h-2 w-2 shrink-0">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-70" />
@@ -145,7 +147,7 @@ export function ApplyBar() {
             <p className="mt-0.5 text-xs text-gray-400 lg:hidden">
               2-minute form · we call within 24 hours
             </p>
-          </div>
+          </Link>
 
           <Link
             href={href}

@@ -409,9 +409,13 @@ export default function ApplyPage() {
           <p className="text-[13px] font-bold uppercase tracking-[0.22em] text-accent">Where</p>
           <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
             {LOCATIONS.map((l) => (
-              <span key={l} className="rounded-full bg-white px-5 py-2.5 text-sm font-bold text-gray-900 shadow-sm">
+              <a
+                key={l}
+                href="#apply-form"
+                className="rounded-full bg-white px-6 py-3 text-[16px] font-bold text-gray-900 shadow-sm transition-colors hover:bg-accent hover:text-white"
+              >
                 {l}
-              </span>
+              </a>
             ))}
           </div>
           <p className="mt-5 text-[17px] leading-relaxed text-gray-600">

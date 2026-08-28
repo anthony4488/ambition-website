@@ -143,11 +143,18 @@ export default function HomePage() {
           </FadeIn>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-scroll-indicator">
-          <ChevronDown size={24} className="text-white/30" />
-        </div>
+        {/* Scroll indicator. It was decorative and took half the taps on this
+            page, so it now actually scrolls. */}
+        <a
+          href="#below-hero"
+          aria-label="Scroll down"
+          className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 animate-scroll-indicator rounded-full p-3 transition-colors hover:bg-white/10"
+        >
+          <ChevronDown size={28} className="text-white/50" />
+        </a>
       </section>
+
+      <div id="below-hero" className="scroll-mt-20" />
 
       {/* === CREDIBILITY STRIP === */}
       <CredibilityStrip />
