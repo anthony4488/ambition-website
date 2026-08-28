@@ -10,7 +10,7 @@ import { sendTelegramMessage, escapeHtml } from "./telegram";
 import { getSupabaseAdmin } from "./supabaseAdmin";
 
 // Single source of truth for the advertised price. The CAPI Purchase value is
-// NOT taken from here — it reads Stripe's amount_total, so reporting stays
+// NOT taken from here, it reads Stripe's amount_total, so reporting stays
 // correct even if this drifts. This only controls what the SMS says.
 // Set ASSESSMENT_PRICE in Vercel when the price changes; never hardcode it in copy.
 export const ASSESSMENT_PRICE = Number(process.env.ASSESSMENT_PRICE) || 199;
@@ -67,21 +67,21 @@ export async function sendAssessmentLink(lead: {
   try {
     const sb = getSupabaseAdmin();
     const { data } = await sb
-      .from("assessment_bookings")
-      .select("id")
-      .eq("client_ref", ref)
-      .in("status", ["link_sent", "paid"])
-      .limit(1)
-      .maybeSingle();
+     .from("assessment_bookings")
+     .select("id")
+     .eq("client_ref", ref)
+     .in("status", ["link_sent", "paid"])
+     .limit(1)
+     .maybeSingle();
     if (data) return { ok: false, detail: "link already sent" };
   } catch {
-    /* table may not exist yet — don't block the send */
+    /* table may not exist yet, don't block the send */
   }
 
   // Deliberately no price in the message. If the SMS and the Stripe page ever
   // disagree the booking dies at the last click, and the page is always right.
   const body =
-    `${firstName(lead.name)} — Anthony from Ambition. ` +
+    `${firstName(lead.name)}. Anthony from Ambition. ` +
     `Here's the link to lock in your speed assessment: ${link} ` +
     `Once it's paid I'll text you to book the time. Georges Hall or Strathfield.`;
 
@@ -108,8 +108,8 @@ export async function sendAssessmentLink(lead: {
 
   await sendTelegramMessage(
     res.ok
-      ? `💳 Payment link sent to <b>${escapeHtml(lead.name)}</b> — ${escapeHtml(lead.phone)} (${lead.via})`
-      : `⚠️ Couldn't send payment link to ${escapeHtml(lead.phone)} — check ClickSend`,
+      ? `💳 Payment link sent to <b>${escapeHtml(lead.name)}</b>, ${escapeHtml(lead.phone)} (${lead.via})`
+      : `⚠️ Couldn't send payment link to ${escapeHtml(lead.phone)}, check ClickSend`,
   );
 
   return { ok: res.ok, detail: res.ok ? "sent" : "clicksend failed" };

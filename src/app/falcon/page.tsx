@@ -9,7 +9,7 @@ import { PaymentPlans } from "@/components/PaymentPlans";
 // retargeting pool that Dragon gets sold into.
 //
 // THE RULE, from the May test: that campaign failed because the creative read
-// as face-to-face. Every section here states the mechanism — you film it, you
+// as face-to-face. Every section here states the mechanism, you film it, you
 // send it, it comes back. "Online" is never left implied.
 
 const PRICE = "$200";
@@ -18,14 +18,14 @@ const APPLY = "/apply?program=online&utm_source=site&utm_medium=falcon_page";
 export const metadata: Metadata = {
   title: "Online Sprint Assessment, Ambition Sports Performance",
   description:
-    "Film one sprint on your phone, send it, get a full biomechanical breakdown within 48 hours. $200, anywhere in Australia, nothing in person.",
+    "Film one sprint on your phone, send it, get a full biomechanical breakdown within 48 hours. $200, anywhere in the world, nothing in person.",
   robots: { index: false },
 };
 
 const STEPS = [
   { n: "01", t: "You film it", d: "One run on your phone. Side on, 20 to 40 metres. No equipment, no appointment, no travel." },
   { n: "02", t: "You send it", d: "Straight through on WhatsApp. That's when the 48 hours starts." },
-  { n: "03", t: "I break it down", d: "Frame by frame at 240 a second, where the fault stops hiding." },
+  { n: "03", t: "We break it down", d: "Frame by frame at 240 a second, where the fault stops hiding." },
   { n: "04", t: "It comes back", d: "What's limiting you, why, and what to do about it. Within 48 hours." },
 ];
 
@@ -55,11 +55,11 @@ export default function FalconPage() {
           </p>
           <h1 className="mt-4 text-[36px] font-extrabold leading-[1.05] tracking-tight text-white sm:text-6xl">
             Film one sprint on your phone.<br />
-            <span className="text-accent">I&apos;ll tell you what&apos;s costing you speed.</span>
+            <span className="text-accent">We&apos;ll tell you what&apos;s costing you speed.</span>
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-gray-300 sm:text-lg">
-            Anywhere in Australia. Nothing in person, no travel, no appointment. Send one run, I
-            analyse it at 240 frames a second, and the full breakdown comes back within 48 hours.
+            Anywhere in the world. Nothing in person, no travel, no appointment. Send one run, it
+            gets analysed at 240 frames a second, and the full breakdown comes back within 48 hours.
           </p>
           <div className="mx-auto mt-9 max-w-md">
             <Link
@@ -140,7 +140,8 @@ export default function FalconPage() {
           </p>
 
           {/* The written report itself. Nothing sells a $200 diagnosis like
-              showing the diagnosis. Julian's, used with permission. */}
+              showing the diagnosis. A real assessment with the athlete's name
+              stripped, no client is identifiable on a page that runs as an ad. */}
           <div className="mt-16">
             <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-accent">And the written report</p>
             <h3 className="mt-3 max-w-2xl text-2xl font-extrabold leading-tight tracking-tight text-white sm:text-3xl">
@@ -148,16 +149,16 @@ export default function FalconPage() {
             </h3>
             <div className="mt-8 flex flex-col gap-8">
               <Figure
-                src="/analysis/report-benchmarks.jpg"
-                alt="Report section comparing the athlete's sprint splits, top speed and bound distance against above-average and elite junior benchmarks, with the gap to each shown as a percentage"
-                ratio="aspect-[1216/600]"
+                src="/analysis/report-measure.jpg"
+                alt="Report section comparing the athlete's sprint splits, top speed and bound distance against their age group and senior professional standard, with the gap to each shown as a percentage"
+                ratio="aspect-[1300/1824]"
                 caption="Every metric against two benchmarks, with the gap to each stated as a number."
               />
               <Figure
-                src="/analysis/report-splits.jpg"
-                alt="Report section breaking a sprint into acceleration phase, speed maintenance, max velocity and bounding, each with the split times and a written analysis"
-                ratio="aspect-[1216/620]"
-                caption="The run split into phases, each one explained. Not a score, a diagnosis."
+                src="/analysis/report-fix.jpg"
+                alt="Report section listing three ranked development priorities, each with the drills that address it and a twelve-month target"
+                ratio="aspect-[1300/867]"
+                caption="Three ranked priorities, each with a target attached. Not a score, a prescription."
               />
             </div>
             <p className="mt-6 text-sm leading-relaxed text-gray-500">
@@ -212,7 +213,7 @@ export default function FalconPage() {
             Send one run.
           </h2>
           <p className="mx-auto mt-4 max-w-md text-[15px] leading-relaxed text-gray-400">
-            You&apos;ll know what&apos;s limiting your speed within 48 hours. {PRICE}, anywhere in Australia.
+            You&apos;ll know what&apos;s limiting your speed within 48 hours. {PRICE}, anywhere in the world.
           </p>
           <div className="mt-8">
             <Link

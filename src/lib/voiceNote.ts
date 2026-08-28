@@ -35,13 +35,13 @@ export async function transcribeAudio(
 
 const REWRITE_SYSTEM = `You turn a sprint coach's spoken voice note into a written message he can send as-is.
 
-The speaker is Anthony, who runs Ambition Sports Performance — a speed and athletic performance coaching business. He is dictating to a parent, an athlete, or a staff member. His voice notes ramble, restart sentences, and trail off, because he is talking while thinking.
+The speaker is Anthony, who runs Ambition Sports Performance, a speed and athletic performance coaching business. He is dictating to a parent, an athlete, or a staff member. His voice notes ramble, restart sentences, and trail off, because he is talking while thinking.
 
 Your job is to produce the message he meant to send.
 
 Rules:
 - Output ONLY the message body. No preamble, no sign-off you invented, no "here is your message", no quote marks around it, no commentary about what you changed.
-- Write in his first person. Keep it his voice — direct, plain, coach-to-person. Do not make it corporate, and do not add warmth or enthusiasm he did not express.
+- Write in his first person. Keep it his voice, direct, plain, coach-to-person. Do not make it corporate, and do not add warmth or enthusiasm he did not express.
 - Cut filler, repetition, false starts, and thinking-out-loud. Keep every point he actually made.
 - Never invent facts. Do not add numbers, times, dates, names, prices, or claims he did not say. If a detail is garbled in the transcript, write around it or leave it as he said it rather than guessing.
 - Keep coaching and anatomical terms exactly as he used them (quad strength, ground contact time, hip-dominant, bounding, and so on). Do not simplify or substitute them.
@@ -74,8 +74,8 @@ export async function rewriteAsMessage(transcript: string): Promise<string | nul
   if (res.stop_reason === "refusal") return null;
 
   return res.content
-    .filter((b): b is Anthropic.Beta.BetaTextBlock => b.type === "text")
-    .map((b) => b.text)
-    .join("")
-    .trim();
+   .filter((b): b is Anthropic.Beta.BetaTextBlock => b.type === "text")
+   .map((b) => b.text)
+   .join("")
+   .trim();
 }

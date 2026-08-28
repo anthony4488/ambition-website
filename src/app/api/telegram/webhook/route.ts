@@ -27,7 +27,7 @@ type TgUpdate = {
 };
 
 // A tap on "Send $199 payment link" on a lead alert. callback_data looks like
-// "sendlink:lg_123__ph_61400000000" — everything needed is in the payload, so
+// "sendlink:lg_123__ph_61400000000", everything needed is in the payload, so
 // the handler works even if the Supabase row is missing.
 async function handleSendLink(cb: NonNullable<TgUpdate["callback_query"]>) {
   const ref = (cb.data ?? "").replace(/^sendlink:/, "");
@@ -44,11 +44,11 @@ async function handleSendLink(cb: NonNullable<TgUpdate["callback_query"]>) {
     try {
       const sb = getSupabaseAdmin();
       const { data } = await sb
-        .from("assessment_leads")
-        .select("name, email")
-        .eq("leadgen_id", leadgenId)
-        .limit(1)
-        .maybeSingle();
+       .from("assessment_leads")
+       .select("name, email")
+       .eq("leadgen_id", leadgenId)
+       .limit(1)
+       .maybeSingle();
       name = data?.name ?? null;
       email = data?.email ?? null;
     } catch {

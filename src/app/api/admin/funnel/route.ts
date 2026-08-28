@@ -23,9 +23,9 @@ export async function GET(req: NextRequest) {
 
   // 1) Form-event funnel: count distinct sessions per form per event
   const { data: events } = await sb
-    .from("form_events")
-    .select("form_id, event, session_id, created_at")
-    .gte("created_at", sinceISO);
+   .from("form_events")
+   .select("form_id, event, session_id, created_at")
+   .gte("created_at", sinceISO);
 
   type FunnelRow = { form_id: string; started: number; step: number; completed: number; drop_off_rate: string };
   const funnelMap = new Map<string, { started: Set<string>; step: Set<string>; completed: Set<string> }>();
@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
     else if (e.event === "completed" && e.session_id) f.completed.add(e.session_id);
   }
   const funnel: FunnelRow[] = Array.from(funnelMap.entries())
-    .map(([form_id, sets]) => {
+   .map(([form_id, sets]) => {
       const started = sets.started.size;
       const completed = sets.completed.size;
       const drop = started > 0 ? Math.round(((started - completed) / started) * 100) : 0;
@@ -48,16 +48,16 @@ export async function GET(req: NextRequest) {
         started,
         step: sets.step.size,
         completed,
-        drop_off_rate: started > 0 ? `${drop}%` : "—",
+        drop_off_rate: started > 0 ? `${drop}%` : "n/a",
       };
     })
-    .sort((a, b) => b.started - a.started);
+   .sort((a, b) => b.started - a.started);
 
   // 2) Nurture status counts (active / booked / completed)
   const { data: nurture } = await sb
-    .from("nurture_enrollments")
-    .select("status, source, created_at")
-    .gte("created_at", sinceISO);
+   .from("nurture_enrollments")
+   .select("status, source, created_at")
+   .gte("created_at", sinceISO);
   const nurtureBySource = new Map<string, { active: number; booked: number; completed: number; total: number }>();
   for (const n of nurture ?? []) {
     const s = n.source || "unknown";
@@ -69,21 +69,21 @@ export async function GET(req: NextRequest) {
     else row.active++;
   }
   const nurtureRows = Array.from(nurtureBySource.entries())
-    .map(([source, v]) => ({
+   .map(([source, v]) => ({
       source,
       total: v.total,
       active_nurture: v.active,
       booked_call: v.booked,
       completed_sequence: v.completed,
-      book_rate: v.total > 0 ? `${Math.round((v.booked / v.total) * 100)}%` : "—",
+      book_rate: v.total > 0 ? `${Math.round((v.booked / v.total) * 100)}%` : "n/a",
     }))
-    .sort((a, b) => b.total - a.total);
+   .sort((a, b) => b.total - a.total);
 
   // 3) Speed-audit submissions
   const { count: audits } = await sb
-    .from("speed_audits")
-    .select("*", { count: "exact", head: true })
-    .gte("created_at", sinceISO);
+   .from("speed_audits")
+   .select("*", { count: "exact", head: true })
+   .gte("created_at", sinceISO);
 
   // 4) Recent drop-offs (started but not completed in same session, > 30 min ago)
   const recentDropOffs: { form_id: string; session: string; started_at: string }[] = [];
@@ -98,7 +98,7 @@ export async function GET(req: NextRequest) {
   for (const e of events ?? []) {
     if (e.event !== "started" || !e.session_id) continue;
     const startedAt = new Date(e.created_at).getTime();
-    if (startedAt > cutoffOld) continue; // too recent — might still finish
+    if (startedAt > cutoffOld) continue; // too recent, might still finish
     const completed = sessionCompletedMap.get(e.session_id);
     if (completed?.has(e.form_id)) continue; // they did finish
     recentDropOffs.push({

@@ -10,13 +10,13 @@ export const dynamic = "force-dynamic";
 // Each step is independent + non-fatal so the form never breaks.
 
 const esc = (s: unknown) =>
-  String(s ?? "—").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  String(s ?? "n/a").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const str = (v: unknown) => (typeof v === "string" ? v : undefined);
 
 /**
  * Server-side check for website applications only. Meta lead-webhook and
- * EnquiryForm payloads use a different shape, so they are left alone —
- * validating them here would drop real leads.
+ * EnquiryForm payloads use a different shape, so they are left alone.
+ * Validating them here would drop real leads.
  */
 function invalidApplication(b: Record<string, unknown>): string | null {
   if (str(b.source) !== "apply") return null;
@@ -32,7 +32,7 @@ function invalidApplication(b: Record<string, unknown>): string | null {
 /**
  * Emails the full submission to the inbox. Uses the Resend REST API directly,
  * the same way nurture.ts does, so this adds no dependency. No-ops when
- * RESEND_API_KEY is unset — the Telegram alert below is then the only notice,
+ * RESEND_API_KEY is unset, the Telegram alert below is then the only notice,
  * which is the behaviour that existed before.
  */
 async function emailSubmission(b: Record<string, unknown>, rows: [string, unknown][]) {
@@ -44,7 +44,7 @@ async function emailSubmission(b: Record<string, unknown>, rows: [string, unknow
   const level = str(b.level) || "level not given";
 
   const html = [
-    `<h2 style="font-family:system-ui,sans-serif">New application — ${esc(athlete)}</h2>`,
+    `<h2 style="font-family:system-ui,sans-serif">New application, ${esc(athlete)}</h2>`,
     `<table cellpadding="6" style="font-family:system-ui,sans-serif;font-size:14px;border-collapse:collapse">`,
     ...rows.map(
       ([k, val]) =>
@@ -62,7 +62,7 @@ async function emailSubmission(b: Record<string, unknown>, rows: [string, unknow
         from,
         to: [to],
         reply_to: str(b.email) || undefined,
-        subject: `New application — ${athlete} (${level})`,
+        subject: `New application, ${athlete} (${level})`,
         html,
       }),
     });
@@ -86,19 +86,21 @@ export async function POST(req: NextRequest) {
   // 0) Persist website applications server-side. Doing the insert here rather
   // than in the browser keeps @supabase/supabase-js out of the /apply client
   // bundle, which is the single biggest JS cost on a page whose whole job is
-  // to load fast on mobile. Gated on source so EnquiryForm — which still
-  // inserts from the client — doesn't write a duplicate row.
+  // to load fast on mobile. Gated on source so EnquiryForm, which still
+  // inserts from the client, doesn't write a duplicate row.
   if (str(b.source) === "apply") {
     const utmIn = b.utm && typeof b.utm === "object" ? (b.utm as Record<string, string>) : {};
     const reasonList = Array.isArray(b.qualify_reasons) ? (b.qualify_reasons as unknown[]).map(String) : [];
     const notes = [
       `Program: ${str(b.program) ?? "SPEED COACHING"} ($130-160/wk + $199 assessment)`,
-      `Athlete: ${str(b.athlete_name) ?? "—"}`,
-      `DOB: ${str(b.dob) ?? "—"}`,
-      `Level: ${str(b.level) ?? "—"}`,
+      `Athlete: ${str(b.athlete_name) ?? "n/a"}`,
+      // The website form now sends a banded `age`; Meta lead forms always did.
+      // `dob` is still read first for any older payload still in flight.
+      `Age: ${str(b.dob) ?? str(b.age) ?? "n/a"}`,
+      `Level: ${str(b.level) ?? "n/a"}`,
       str(b.club) ? `Club: ${str(b.club)}` : "",
-      `Location: ${str(b.location) ?? "—"}`,
-      `Email: ${str(b.email) ?? "—"}`,
+      `Location: ${str(b.location) ?? "n/a"}`,
+      `Email: ${str(b.email) ?? "n/a"}`,
       str(b.goal) ? `Wants to change: ${str(b.goal)}` : "",
       "Consent: YES",
       utmIn.utm_source ? `UTM: ${utmIn.utm_source} / ${utmIn.utm_medium ?? ""} / ${utmIn.utm_campaign ?? ""}` : "",
@@ -146,7 +148,7 @@ export async function POST(req: NextRequest) {
     ["Email", b.email],
     ["Phone", b.phone],
     ["Athlete", b.athlete_name],
-    ["Date of birth", b.dob],
+    ["Age", b.dob ?? b.age],
     ["Playing level", b.level],
     ["Club or team", b.club],
     ["Closest location", b.location ?? b.suburb],
@@ -171,10 +173,10 @@ export async function POST(req: NextRequest) {
   const reasons = Array.isArray(b.qualify_reasons) ? (b.qualify_reasons as unknown[]).map(String) : [];
   const heading =
     tier === "unqualified"
-      ? "🔴 <b>NEW APPLICATION — likely not a fit</b>"
+      ? "🔴 <b>NEW APPLICATION, likely not a fit</b>"
       : tier === "qualified" || (!tier && qualified)
       ? "🟢 <b>NEW QUALIFIED APPLICATION</b>"
-      : "🟠 <b>NEW APPLICATION — review fit</b>";
+      : "🟠 <b>NEW APPLICATION, review fit</b>";
   const utm = b.utm && typeof b.utm === "object" ? (b.utm as Record<string, string>) : {};
   const lines = [
     heading,

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Check, Loader2 } from "lucide-react";
-import { ageBandFromDob, fireLeadPixel, qualifyLead, type QualifyResult } from "@/lib/qualify";
+import { fireLeadPixel, qualifyLead, type QualifyResult } from "@/lib/qualify";
 import { trackFormComplete, trackFormStart } from "@/lib/formTelemetry";
 import { PaymentPlans } from "@/components/PaymentPlans";
 
@@ -10,14 +10,20 @@ import { PaymentPlans } from "@/components/PaymentPlans";
 //
 // WHY NOT THE STEPPED FORM: paid clicks landed on the homepage and needed three
 // or four more loads before reaching an input. This version puts real fields in
-// front of the visitor immediately. There is exactly ONE of it on the page —
-// the three programs are a choice inside the form, not three destinations.
+// front of the visitor immediately. There is exactly ONE of it on the page, // the three programs are a choice inside the form, not three destinations.
+//
+// WHY EVERYTHING TAPPABLE IS A CHOICE: the click-to-lead rate is the constraint
+// on this page, not the traffic. Every question that has a knowable set of
+// answers is a chip, so a parent on a phone answers most of the form with their
+// thumb and only types the four things we genuinely cannot offer as options, // their name, email, phone, and the athlete's first name. Those four sit at the
+// BOTTOM: the cheap questions build momentum before the form asks for contact
+// details.
 //
 // Anyone may apply. Age and level are required because they drive the tier that
-// sharpens the Telegram alert and the pixel event — never to reject anyone.
+// sharpens the Telegram alert and the pixel event, never to reject anyone.
 
 // Highest first. The ladder runs all the way to professional and Olympic
-// because the system is already used at that level — capping the select at NPL
+// because the system is already used at that level, capping the select at NPL
 // told a senior athlete this wasn't for them before they reached the button.
 const LEVELS = [
   "Professional",
@@ -33,6 +39,31 @@ const LEVELS = [
 ] as const;
 
 const LOCATIONS = ["Georges Hall", "Arncliffe", "Homebush"] as const;
+
+// Football is the core sport, so it leads. The rest are the ones that actually
+// turn up in applications; anything else picks "Other" and lands in review.
+const SPORTS = ["Football", "Rugby", "AFL", "Basketball", "Athletics", "Other"] as const;
+
+// The label is what a parent reads; the value is the exact band string
+// `classifyAge` in lib/qualify already understands. Keeping the two separate
+// means the form can read naturally without touching the qualifier's bands.
+const AGE_BANDS = [
+  { label: "10 or under", value: "under 10" },
+  { label: "11–12", value: "11-12" },
+  { label: "13–14", value: "13-15" },
+  { label: "15–17", value: "15-17" },
+  { label: "18+", value: "17+" },
+] as const;
+
+// Optional, and deliberately phrased the way a parent describes the problem
+// rather than the way a coach would. "Not sure yet" is a real answer here, // not knowing what is wrong is the reason most of them are applying.
+const GOALS = [
+  "Slow off the mark",
+  "No top-end speed",
+  "Struggles to turn and change direction",
+  "Keeps getting injured",
+  "Not sure yet, that's why I'm here",
+] as const;
 
 // One application, three ways in. The program is chosen at the top of the form
 // rather than on a separate page, so a paid click still only ever loads once.
@@ -65,50 +96,36 @@ type Values = {
   email: string;
   phone: string;
   athleteName: string;
-  dob: string;
+  ageBand: string;
   sport: string;
   level: string;
   club: string;
   location: string;
   goal: string;
-  consent: boolean;
 };
 
 const EMPTY: Values = {
   program: PROGRAMS[0].id,
-  parentName: "", email: "", phone: "", athleteName: "", dob: "", sport: "",
-  level: "", club: "", location: "", goal: "", consent: false,
+  parentName: "", email: "", phone: "", athleteName: "", ageBand: "", sport: "",
+  level: "", club: "", location: "", goal: "",
 };
 
-/** Exact age for the inline confirmation under the date field. Returns null
- *  until a plausible date is entered, so it never renders on the server. */
-function exactAge(dob: string): number | null {
-  if (!dob || !ageBandFromDob(dob)) return null;
-  const d = new Date(dob);
-  const now = new Date();
-  const a = now.getFullYear() - d.getFullYear();
-  const before =
-    now.getMonth() < d.getMonth() || (now.getMonth() === d.getMonth() && now.getDate() < d.getDate());
-  return before ? a - 1 : a;
-}
-
 const programOf = (id: string) => PROGRAMS.find((p) => p.id === id) ?? PROGRAMS[0];
+const ageLabelOf = (value: string) => AGE_BANDS.find((a) => a.value === value)?.label ?? value;
 
 type Errors = Partial<Record<keyof Values, string>>;
 
 function validate(v: Values): Errors {
   const e: Errors = {};
+  if (!v.sport) e.sport = "Please pick their sport.";
+  if (!v.ageBand) e.ageBand = "Please pick their age.";
+  if (!v.level) e.level = "Please pick a playing level.";
+  // Online applicants have no Sydney location to give.
+  if (!programOf(v.program).remote && !v.location) e.location = "Please pick the closest location.";
   if (v.parentName.trim().length < 2) e.parentName = "Please enter your name.";
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email.trim())) e.email = "Please enter a valid email address.";
   if ((v.phone.replace(/\D/g, "").length || 0) < 8) e.phone = "Please enter a contact number.";
   if (v.athleteName.trim().length < 2) e.athleteName = "Please enter the athlete's first name.";
-  if (!v.dob) e.dob = "Please enter the athlete's date of birth.";
-  else if (!ageBandFromDob(v.dob)) e.dob = "Please check that date.";
-  if (v.sport.trim().length < 2) e.sport = "Please enter their sport.";
-  if (!v.level) e.level = "Please select a playing level.";
-  // Online applicants have no Sydney location to give.
-  if (!programOf(v.program).remote && !v.location) e.location = "Please select the closest location.";
-  if (!v.consent) e.consent = "Please confirm you've read the costs.";
   return e;
 }
 
@@ -117,15 +134,8 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [started, setStarted] = useState(false);
-  const [maxDob, setMaxDob] = useState("");
   const tracking = useRef<Record<string, string>>({});
   const firstErrorRef = useRef<HTMLDivElement | null>(null);
-  const age = exactAge(v.dob);
-
-  // Set client-side so the server and client render the same markup.
-  useEffect(() => {
-    setMaxDob(new Date().toISOString().slice(0, 10));
-  }, []);
 
   // Capture ad attribution once, on mount.
   useEffect(() => {
@@ -143,7 +153,7 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
     const wanted = sp.get("program");
     if (wanted) {
       const match = PROGRAMS.find((pr) => pr.id.toLowerCase().includes(wanted.toLowerCase()));
-      if (match) setV((prev) => ({ ...prev, program: match.id }));
+      if (match) setV((prev) => ({...prev, program: match.id }));
     }
   }, []);
 
@@ -152,9 +162,9 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
       setStarted(true);
       trackFormStart("apply", { placement });
     }
-    setV((prev) => ({ ...prev, [k]: val }));
+    setV((prev) => ({...prev, [k]: val }));
     // Clear the error as soon as they start fixing it.
-    setErrors((prev) => (prev[k] ? { ...prev, [k]: undefined } : prev));
+    setErrors((prev) => (prev[k] ? {...prev, [k]: undefined } : prev));
   };
 
   async function onSubmit(e: React.FormEvent) {
@@ -172,10 +182,10 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
     const remote = prog.remote;
     const result: QualifyResult = qualifyLead({
       suburb: remote ? "" : v.location,
-      sport: v.sport.trim(),
-      ageBand: ageBandFromDob(v.dob),
+      sport: v.sport,
+      ageBand: v.ageBand,
       level: v.level,
-      // Online is open, so an interstate applicant is a real lead — `remote`
+      // Online is open, so an interstate applicant is a real lead, `remote`
       // makes the qualifier downgrade out-of-area to review, not unqualified.
       remote,
     });
@@ -186,13 +196,15 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
       email: v.email.trim(),
       phone: v.phone.trim(),
       athlete_name: v.athleteName.trim(),
-      dob: v.dob,
+      // The form no longer collects an exact date of birth, the alert and the
+      // email read `age` (the same key the Meta lead webhook already sends).
+      age: ageLabelOf(v.ageBand),
       program: v.program,
       level: v.level,
       club: v.club.trim(),
       location: remote ? "Online, outside Sydney" : v.location,
-      goal: v.goal.trim(),
-      sport: v.sport.trim(),
+      goal: v.goal,
+      sport: v.sport,
       consent: true,
       source: "apply",
       placement,
@@ -204,7 +216,7 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
 
     // One request. The route writes to Supabase, emails the inbox and alerts
     // Telegram server-side, which keeps @supabase/supabase-js out of this
-    // bundle — the largest single JS cost on a page that has to load fast on
+    // bundle, the largest single JS cost on a page that has to load fast on
     // a phone. A failure here is surfaced, never swallowed: the values stay in
     // state so the visitor can just press the button again.
     let delivered = false;
@@ -224,7 +236,7 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
       return;
     }
 
-    // Pixel fires only here — never on load, never on a validation failure.
+    // Pixel fires only here, never on load, never on a validation failure.
     fireLeadPixel(result, { content_name: "Application Complete", placement });
     trackFormComplete("apply", { source: "apply", placement, qualified: result.tier === "qualified" });
     setStatus("success");
@@ -248,9 +260,9 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
     );
   }
 
-  const field = "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base text-gray-900 placeholder-gray-400 transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30";
-  const label = "mb-1.5 block text-[13px] font-semibold text-gray-700";
-  const errText = "mt-1 text-xs font-medium text-red-600";
+  const field = "w-full rounded-lg border border-gray-300 bg-white px-4 py-3.5 text-[17px] text-gray-900 placeholder-gray-400 transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30";
+  const label = "mb-2.5 block text-[15px] font-bold text-gray-800";
+  const errText = "mt-1.5 text-sm font-semibold text-red-600";
 
   // The first invalid field gets the scroll target.
   let errorAnchored = false;
@@ -262,6 +274,29 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
     return undefined;
   };
 
+  /**
+   * One tappable answer. A real <button> rather than a styled radio so the whole
+   * chip is the hit target on a phone, `aria-pressed` carries the state to a
+   * screen reader the way a radio's checked state would.
+   */
+  const Chip = ({
+    selected, onSelect, children,
+  }: { selected: boolean; onSelect: () => void; children: React.ReactNode }) => (
+    <button
+      type="button"
+      onClick={onSelect}
+      aria-pressed={selected}
+      className={
+        "rounded-lg border px-4 py-3 text-left text-[15px] font-semibold leading-snug transition-colors " +
+        (selected
+          ? "border-accent bg-accent text-white"
+          : "border-gray-300 bg-white text-gray-700 hover:border-accent hover:text-gray-900")
+      }
+    >
+      {children}
+    </button>
+  );
+
   return (
     <form
       onSubmit={onSubmit}
@@ -269,165 +304,145 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
       className="rounded-2xl bg-white p-5 shadow-xl sm:p-7"
       aria-label="Application form"
     >
-      <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.2em] text-accent">
+      <p className="mb-4 text-[13px] font-bold uppercase tracking-[0.18em] text-accent">
         Apply for an assessment
       </p>
 
-      {/* One application; the program is a choice inside it, not another page. */}
-      <div className="mb-5">
-        <label className={label} htmlFor={`pg-${placement}`}>What are you looking for?</label>
-        <select
-          id={`pg-${placement}`}
-          className={field}
-          value={v.program}
-          onChange={(e) => set("program", e.target.value)}
-          aria-describedby={`pgh-${placement}`}
-        >
-          {PROGRAMS.map((p) => (
-            <option key={p.id} value={p.id}>{p.id}</option>
-          ))}
-        </select>
-        <p id={`pgh-${placement}`} className="mt-1.5 text-xs leading-relaxed text-gray-500">
-          {programOf(v.program).hint}
-        </p>
-      </div>
-
-      <div className="space-y-3.5">
-        <div ref={anchor("parentName")}>
-          <label className={label} htmlFor={`pn-${placement}`}>Your name</label>
-          <input
-            id={`pn-${placement}`} className={field} type="text" autoComplete="name"
-            value={v.parentName} onChange={(e) => set("parentName", e.target.value)}
-            aria-invalid={!!errors.parentName} placeholder="Parent or guardian"
-          />
-          {errors.parentName && <p className={errText}>{errors.parentName}</p>}
+      <div className="space-y-5">
+        {/* One application; the program is a choice inside it, not another page. */}
+        <div role="group" aria-labelledby={`pgl-${placement}`}>
+          <span id={`pgl-${placement}`} className={label}>What are you looking for?</span>
+          <div className="grid grid-cols-1 gap-2">
+            {PROGRAMS.map((p) => (
+              <Chip key={p.id} selected={v.program === p.id} onSelect={() => set("program", p.id)}>
+                {p.id}
+              </Chip>
+            ))}
+          </div>
+          <p className="mt-2.5 text-[14px] leading-relaxed text-gray-500">
+            {programOf(v.program).hint}
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
-          <div ref={anchor("email")}>
-            <label className={label} htmlFor={`em-${placement}`}>Email</label>
-            <input
-              id={`em-${placement}`} className={field} type="email" inputMode="email"
-              autoComplete="email" value={v.email} onChange={(e) => set("email", e.target.value)}
-              aria-invalid={!!errors.email} placeholder="you@example.com"
-            />
-            {errors.email && <p className={errText}>{errors.email}</p>}
+        <div ref={anchor("sport")} role="group" aria-labelledby={`spl-${placement}`}>
+          <span id={`spl-${placement}`} className={label}>Their sport</span>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {SPORTS.map((s) => (
+              <Chip key={s} selected={v.sport === s} onSelect={() => set("sport", s)}>{s}</Chip>
+            ))}
           </div>
-          <div ref={anchor("phone")}>
-            <label className={label} htmlFor={`ph-${placement}`}>Phone</label>
-            <input
-              id={`ph-${placement}`} className={field} type="tel" inputMode="tel"
-              autoComplete="tel" value={v.phone} onChange={(e) => set("phone", e.target.value)}
-              aria-invalid={!!errors.phone} placeholder="04__ ___ ___"
-            />
-            {errors.phone && <p className={errText}>{errors.phone}</p>}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
-          <div ref={anchor("athleteName")}>
-            <label className={label} htmlFor={`an-${placement}`}>Athlete&apos;s first name</label>
-            <input
-              id={`an-${placement}`} className={field} type="text" autoComplete="off"
-              value={v.athleteName} onChange={(e) => set("athleteName", e.target.value)}
-              aria-invalid={!!errors.athleteName}
-            />
-            {errors.athleteName && <p className={errText}>{errors.athleteName}</p>}
-          </div>
-          <div ref={anchor("dob")}>
-            <label className={label} htmlFor={`db-${placement}`}>Athlete&apos;s date of birth</label>
-            <input
-              id={`db-${placement}`} className={field} type="date"
-              // Bounds stop the picker opening on today's date and stop obvious
-              // typos (a future date, or a year in the 1800s) reaching the form.
-              // maxDob is set client-side so server and client markup match.
-              min="1960-01-01" max={maxDob || undefined}
-              value={v.dob} onChange={(e) => set("dob", e.target.value)}
-              aria-invalid={!!errors.dob}
-              aria-describedby={`dbh-${placement}`}
-            />
-            {errors.dob ? (
-              <p className={errText}>{errors.dob}</p>
-            ) : (
-              <p id={`dbh-${placement}`} className="mt-1 text-xs text-gray-400">
-                {age !== null ? `Age ${age}, benchmarked against this age group.` : "Day / month / year."}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div ref={anchor("sport")}>
-          <label className={label} htmlFor={`sp-${placement}`}>Sport</label>
-          <input
-            id={`sp-${placement}`} className={field} type="text" autoComplete="off"
-            value={v.sport} onChange={(e) => set("sport", e.target.value)}
-            aria-invalid={!!errors.sport}
-            placeholder="Football, rugby, athletics…"
-          />
           {errors.sport && <p className={errText}>{errors.sport}</p>}
         </div>
 
-        <div ref={anchor("level")}>
-          <label className={label} htmlFor={`lv-${placement}`}>Current playing level</label>
-          <select
-            id={`lv-${placement}`} className={field} value={v.level}
-            onChange={(e) => set("level", e.target.value)} aria-invalid={!!errors.level}
-          >
-            <option value="">Select one</option>
-            {LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
-          </select>
-          {errors.level && <p className={errText}>{errors.level}</p>}
+        <div ref={anchor("ageBand")} role="group" aria-labelledby={`agl-${placement}`}>
+          <span id={`agl-${placement}`} className={label}>Athlete&apos;s age</span>
+          <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
+            {AGE_BANDS.map((a) => (
+              <Chip key={a.value} selected={v.ageBand === a.value} onSelect={() => set("ageBand", a.value)}>
+                {a.label}
+              </Chip>
+            ))}
+          </div>
+          {errors.ageBand ? (
+            <p className={errText}>{errors.ageBand}</p>
+          ) : (
+            <p className="mt-2.5 text-[14px] text-gray-500">Benchmarked against this age group.</p>
+          )}
         </div>
 
-        <div>
-          <label className={label} htmlFor={`cl-${placement}`}>
-            Current club or team <span className="font-normal text-gray-400">(optional)</span>
-          </label>
-          <input
-            id={`cl-${placement}`} className={field} type="text" autoComplete="off"
-            value={v.club} onChange={(e) => set("club", e.target.value)}
-          />
+        <div ref={anchor("level")} role="group" aria-labelledby={`lvl-${placement}`}>
+          <span id={`lvl-${placement}`} className={label}>Current playing level</span>
+          <div className="grid grid-cols-2 gap-2">
+            {LEVELS.map((l) => (
+              <Chip key={l} selected={v.level === l} onSelect={() => set("level", l)}>{l}</Chip>
+            ))}
+          </div>
+          {errors.level && <p className={errText}>{errors.level}</p>}
         </div>
 
         {/* Only in-person programs have a location to pick. */}
         {!programOf(v.program).remote && (
-          <div ref={anchor("location")}>
-            <label className={label} htmlFor={`lo-${placement}`}>Closest location</label>
-            <select
-              id={`lo-${placement}`} className={field} value={v.location}
-              onChange={(e) => set("location", e.target.value)} aria-invalid={!!errors.location}
-            >
-              <option value="">Select one</option>
-              {LOCATIONS.map((l) => <option key={l} value={l}>{l}</option>)}
-            </select>
+          <div ref={anchor("location")} role="group" aria-labelledby={`lol-${placement}`}>
+            <span id={`lol-${placement}`} className={label}>Closest location</span>
+            <div className="grid grid-cols-3 gap-2">
+              {LOCATIONS.map((l) => (
+                <Chip key={l} selected={v.location === l} onSelect={() => set("location", l)}>{l}</Chip>
+              ))}
+            </div>
             {errors.location && <p className={errText}>{errors.location}</p>}
           </div>
         )}
 
-        <div>
-          <label className={label} htmlFor={`gl-${placement}`}>
+        <div role="group" aria-labelledby={`gll-${placement}`}>
+          <span id={`gll-${placement}`} className={label}>
             What are you hoping to change? <span className="font-normal text-gray-400">(optional)</span>
-          </label>
-          <textarea
-            id={`gl-${placement}`} className={`${field} min-h-[76px] resize-y`} rows={2}
-            value={v.goal} onChange={(e) => set("goal", e.target.value)}
-            placeholder="A sentence is plenty."
-          />
+          </span>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {GOALS.map((g) => (
+              // Tapping the chosen answer again clears it, this question is
+              // optional, so there has to be a way back out of it.
+              <Chip key={g} selected={v.goal === g} onSelect={() => set("goal", v.goal === g ? "" : g)}>
+                {g}
+              </Chip>
+            ))}
+          </div>
         </div>
 
-        <div ref={anchor("consent")} className="pt-1">
-          <label className="flex cursor-pointer items-start gap-3">
+        {/* The four things that cannot be offered as options, kept to the end. */}
+        <div className="space-y-3.5 border-t border-gray-100 pt-5">
+          <div ref={anchor("parentName")}>
+            <label className={label} htmlFor={`pn-${placement}`}>Your name</label>
             <input
-              type="checkbox" checked={v.consent} onChange={(e) => set("consent", e.target.checked)}
-              aria-invalid={!!errors.consent}
-              className="mt-0.5 h-5 w-5 shrink-0 cursor-pointer rounded border-gray-300 text-accent focus:ring-2 focus:ring-accent/40"
+              id={`pn-${placement}`} className={field} type="text" autoComplete="name"
+              value={v.parentName} onChange={(e) => set("parentName", e.target.value)}
+              aria-invalid={!!errors.parentName} placeholder="Parent or guardian"
             />
-            <span className="text-[13px] leading-snug text-gray-600">
-              I understand the assessment is <strong className="text-gray-900">$199</strong>.
-            </span>
-          </label>
-          {errors.consent && <p className={errText}>{errors.consent}</p>}
+            {errors.parentName && <p className={errText}>{errors.parentName}</p>}
+          </div>
+
+          <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+            <div ref={anchor("email")}>
+              <label className={label} htmlFor={`em-${placement}`}>Email</label>
+              <input
+                id={`em-${placement}`} className={field} type="email" inputMode="email"
+                autoComplete="email" value={v.email} onChange={(e) => set("email", e.target.value)}
+                aria-invalid={!!errors.email} placeholder="you@example.com"
+              />
+              {errors.email && <p className={errText}>{errors.email}</p>}
+            </div>
+            <div ref={anchor("phone")}>
+              <label className={label} htmlFor={`ph-${placement}`}>Phone</label>
+              <input
+                id={`ph-${placement}`} className={field} type="tel" inputMode="tel"
+                autoComplete="tel" value={v.phone} onChange={(e) => set("phone", e.target.value)}
+                aria-invalid={!!errors.phone} placeholder="04__ ___ ___"
+              />
+              {errors.phone && <p className={errText}>{errors.phone}</p>}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+            <div ref={anchor("athleteName")}>
+              <label className={label} htmlFor={`an-${placement}`}>Athlete&apos;s first name</label>
+              <input
+                id={`an-${placement}`} className={field} type="text" autoComplete="off"
+                value={v.athleteName} onChange={(e) => set("athleteName", e.target.value)}
+                aria-invalid={!!errors.athleteName}
+              />
+              {errors.athleteName && <p className={errText}>{errors.athleteName}</p>}
+            </div>
+            <div>
+              <label className={label} htmlFor={`cl-${placement}`}>
+                Club or team <span className="font-normal text-gray-400">(optional)</span>
+              </label>
+              <input
+                id={`cl-${placement}`} className={field} type="text" autoComplete="off"
+                value={v.club} onChange={(e) => set("club", e.target.value)}
+              />
+            </div>
+          </div>
         </div>
+
       </div>
 
       {status === "error" && (
@@ -449,7 +464,7 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
         )}
       </button>
 
-      <p className="mt-3 text-center text-[11px] leading-relaxed text-gray-400">
+      <p className="mt-4 text-center text-[14px] leading-relaxed text-gray-500">
         Every application is read by a coach. We reply within 24 hours.
       </p>
       <PaymentPlans className="mt-2" />

@@ -25,12 +25,12 @@ const ALLOWED_TABLES = new Set([
 type Field = { k: string; v: string };
 const pick = (r: Record<string, unknown>, keys: string[]): Field[] =>
   keys
-    .map<Field | null>((k) => {
+   .map<Field | null>((k) => {
       const v = r?.[k];
       if (v === null || v === undefined || v === "") return null;
       return { k, v: String(v) };
     })
-    .filter((x): x is Field => x !== null);
+   .filter((x): x is Field => x !== null);
 
 export async function POST(req: NextRequest) {
   // Shared-secret check via custom header (set in Supabase webhook config)
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
   const lines = fields.length
     ? fields.map(({ k, v }) => `• <b>${escapeHtml(k)}:</b> ${escapeHtml(v)}`).join("\n")
     : "(no recognised fields)";
-  const tail = `\n<i>id: ${escapeHtml(r?.id ?? "—")}</i>`;
+  const tail = `\n<i>id: ${escapeHtml(r?.id ?? "n/a")}</i>`;
   const text = `${header}\n${lines}${tail}`;
 
   await sendTelegramMessage(text);

@@ -130,7 +130,7 @@ export default async function FunnelPage({
                   <tr key={f.form_id} className="border-t border-gray-100">
                     <td className="px-4 py-3 font-mono text-xs">{f.form_id}</td>
                     <td className="px-4 py-3 text-right font-semibold">{f.started}</td>
-                    <td className="px-4 py-3 text-right text-gray-600">{f.step || ", "}</td>
+                    <td className="px-4 py-3 text-right text-gray-600">{f.step || "n/a"}</td>
                     <td className="px-4 py-3 text-right font-semibold">{f.completed}</td>
                     <td className={`px-4 py-3 text-right font-bold ${color}`}>{f.drop_off_rate}</td>
                   </tr>

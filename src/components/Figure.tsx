@@ -4,7 +4,7 @@ import Image from "next/image";
  * Standard image block for content sections.
  *
  * next/image lazy-loads by default (no `priority` here on purpose) so adding
- * these below the fold does not touch LCP — on /apply the largest paint is
+ * these below the fold does not touch LCP, on /apply the largest paint is
  * still the headline text, which is the whole reason that page loads fast.
  *
  * `sizes` is set for the two layouts these actually appear in: full width on

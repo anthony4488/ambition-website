@@ -200,7 +200,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
     if (program === "speed") {
       lines.push(
         `Sport & position: ${form.sportPosition}`,
-        `Current top speed: ${form.currentSpeed || ", "}`,
+        `Current top speed: ${form.currentSpeed || "n/a"}`,
         `Goal: ${form.speedGoal}`,
         `Sessions per week: ${form.sessionsPerWeek}`,
         `State/Country: ${form.state}`,
@@ -222,15 +222,15 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
         `Commitment level: ${form.commitmentLevel}`,
         `Commit length: ${form.commitLength}`,
         `State/Country: ${form.state}`,
-        `Current speed: ${form.currentSpeed || ", "}`,
+        `Current speed: ${form.currentSpeed || "n/a"}`,
         `Athlete level: ${form.athleteLevel}`,
-        `12-month outcome: ${form.twelveMonthOutcome || ", "}`,
+        `12-month outcome: ${form.twelveMonthOutcome || "n/a"}`,
       );
     }
     if (program === "waitlist") {
       lines.push(
-        `Current club: ${form.currentClub || ", "}`,
-        `Position: ${form.fbPosition || ", "}`,
+        `Current club: ${form.currentClub || "n/a"}`,
+        `Position: ${form.fbPosition || "n/a"}`,
       );
     }
     if (form.notes.trim()) lines.push(`Additional notes: ${form.notes}`);
@@ -297,7 +297,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
       }).catch(() => {});
 
       trackFormComplete(`enquiry-${program}`, { source, tier: result.tier });
-      // /welcome fires the Meta Pixel Lead — pass the tier through so it can
+      // /welcome fires the Meta Pixel Lead, pass the tier through so it can
       // also fire QualifiedLead for the custom conversion.
       router.push(
         "/welcome?name=" +
@@ -397,7 +397,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
           type="text"
           autoComplete="name"
           value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          onChange={(e) => setForm({...form, name: e.target.value })}
           className={inputClass}
         />
       </div>
@@ -412,7 +412,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
           autoComplete="email"
           inputMode="email"
           value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
+          onChange={(e) => setForm({...form, email: e.target.value })}
           className={inputClass}
         />
       </div>
@@ -428,7 +428,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
           inputMode="tel"
           placeholder="+61 4XX XXX XXX"
           value={form.phone}
-          onChange={(e) => setForm({ ...form, phone: e.target.value })}
+          onChange={(e) => setForm({...form, phone: e.target.value })}
           className={inputClass}
         />
       </div>
@@ -441,7 +441,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
         <RadioGroup
           name="age_range"
           value={form.ageRange}
-          onChange={(v) => setForm({ ...form, ageRange: v })}
+          onChange={(v) => setForm({...form, ageRange: v })}
           options={ageOptions}
         />
       </div>
@@ -458,7 +458,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
               type="text"
               placeholder="e.g. Football · Winger, Rugby · Outside Back, Track · 100m"
               value={form.sportPosition}
-              onChange={(e) => setForm({ ...form, sportPosition: e.target.value })}
+              onChange={(e) => setForm({...form, sportPosition: e.target.value })}
               className={inputClass}
             />
           </div>
@@ -473,7 +473,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
               type="text"
               placeholder="e.g. 28 km/h, 13.2s in 100m, or 'not tested yet'"
               value={form.currentSpeed}
-              onChange={(e) => setForm({ ...form, currentSpeed: e.target.value })}
+              onChange={(e) => setForm({...form, currentSpeed: e.target.value })}
               className={inputClass}
             />
           </div>
@@ -485,7 +485,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
             <RadioGroup
               name="speed_goal"
               value={form.speedGoal}
-              onChange={(v) => setForm({ ...form, speedGoal: v })}
+              onChange={(v) => setForm({...form, speedGoal: v })}
               options={[
                 { value: "Add 5+ km/h to top speed", label: "Add 5+ km/h to my top speed" },
                 { value: "Win the first 5 metres", label: "Win the first 5 metres on the field" },
@@ -503,7 +503,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
             <RadioGroup
               name="sessions_per_week"
               value={form.sessionsPerWeek}
-              onChange={(v) => setForm({ ...form, sessionsPerWeek: v })}
+              onChange={(v) => setForm({...form, sessionsPerWeek: v })}
               options={[
                 { value: "2 sessions/week", label: "2 sessions/week (minimum to see results)" },
                 { value: "3-4 sessions/week", label: "3 to 4 sessions/week" },
@@ -519,7 +519,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
             <select
               id="apply-state"
               value={form.state}
-              onChange={(e) => setForm({ ...form, state: e.target.value })}
+              onChange={(e) => setForm({...form, state: e.target.value })}
               className={selectClass}
             >
               <option value="">Select your state or country…</option>
@@ -549,7 +549,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
               type="text"
               placeholder="e.g. Sydney FC Academy U13, Bankstown City NPL, school team"
               value={form.currentClub}
-              onChange={(e) => setForm({ ...form, currentClub: e.target.value })}
+              onChange={(e) => setForm({...form, currentClub: e.target.value })}
               className={inputClass}
             />
           </div>
@@ -561,7 +561,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
             <RadioGroup
               name="fb_position"
               value={form.fbPosition}
-              onChange={(v) => setForm({ ...form, fbPosition: v })}
+              onChange={(v) => setForm({...form, fbPosition: v })}
               options={[
                 { value: "Goalkeeper", label: "Goalkeeper" },
                 { value: "Defender", label: "Defender (CB / Fullback / Wingback)" },
@@ -580,7 +580,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
             <RadioGroup
               name="dominant_foot"
               value={form.dominantFoot}
-              onChange={(v) => setForm({ ...form, dominantFoot: v })}
+              onChange={(v) => setForm({...form, dominantFoot: v })}
               options={[
                 { value: "Right", label: "Right" },
                 { value: "Left", label: "Left" },
@@ -596,7 +596,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
             <RadioGroup
               name="fb_level"
               value={form.fbLevel}
-              onChange={(v) => setForm({ ...form, fbLevel: v })}
+              onChange={(v) => setForm({...form, fbLevel: v })}
               options={[
                 { value: "School football only", label: "School football only" },
                 { value: "Local club", label: "Local club (district / division)" },
@@ -615,7 +615,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
             <RadioGroup
               name="fb_goal"
               value={form.fbGoal}
-              onChange={(v) => setForm({ ...form, fbGoal: v })}
+              onChange={(v) => setForm({...form, fbGoal: v })}
               options={[
                 { value: "Make an academy / rep team", label: "Make an academy / rep team" },
                 { value: "Get scouted / pathway", label: "Get scouted / play at the highest level" },
@@ -633,7 +633,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
             <RadioGroup
               name="fb_sessions"
               value={form.fbSessions}
-              onChange={(v) => setForm({ ...form, fbSessions: v })}
+              onChange={(v) => setForm({...form, fbSessions: v })}
               options={[
                 { value: "2x / week (minimum)", label: "2x / week (minimum for development)" },
                 { value: "3-4x / week", label: "3 to 4x / week" },
@@ -657,7 +657,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
               type="text"
               placeholder="e.g. Sydney FC Academy U13, school team"
               value={form.currentClub}
-              onChange={(e) => setForm({ ...form, currentClub: e.target.value })}
+              onChange={(e) => setForm({...form, currentClub: e.target.value })}
               className={inputClass}
             />
           </div>
@@ -670,7 +670,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
             <RadioGroup
               name="fb_position"
               value={form.fbPosition}
-              onChange={(v) => setForm({ ...form, fbPosition: v })}
+              onChange={(v) => setForm({...form, fbPosition: v })}
               options={[
                 { value: "Goalkeeper", label: "Goalkeeper" },
                 { value: "Defender", label: "Defender" },
@@ -694,7 +694,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
             <RadioGroup
               name="online_goal"
               value={form.onlineGoal}
-              onChange={(v) => setForm({ ...form, onlineGoal: v })}
+              onChange={(v) => setForm({...form, onlineGoal: v })}
               options={[
                 { value: "Get scouted / play at the highest level", label: "Get scouted / play at the highest level" },
                 { value: "Make a representative or academy team", label: "Make a representative or academy team" },
@@ -711,7 +711,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
             <RadioGroup
               name="commitment_level"
               value={form.commitmentLevel}
-              onChange={(v) => setForm({ ...form, commitmentLevel: v })}
+              onChange={(v) => setForm({...form, commitmentLevel: v })}
               options={[
                 { value: "$130-150/week, 6+ months", label: "I'm ready to invest $130 to 150/week and commit 6+ months" },
                 { value: "$150-180/week, 12+ months", label: "I'm ready to invest $150 to 180/week and commit 12+ months" },
@@ -728,7 +728,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
             <RadioGroup
               name="commit_length"
               value={form.commitLength}
-              onChange={(v) => setForm({ ...form, commitLength: v })}
+              onChange={(v) => setForm({...form, commitLength: v })}
               options={[
                 { value: "6-12 months minimum", label: "6 to 12 months minimum" },
                 { value: "12+ months, whatever it takes", label: "12+ months, whatever it takes" },
@@ -743,7 +743,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
             <select
               id="apply-state"
               value={form.state}
-              onChange={(e) => setForm({ ...form, state: e.target.value })}
+              onChange={(e) => setForm({...form, state: e.target.value })}
               className={selectClass}
             >
               <option value="">Select your state or country…</option>
@@ -769,7 +769,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
               type="text"
               placeholder="e.g. 28 km/h, 13.2s in 100m, or 'not sure'"
               value={form.currentSpeed}
-              onChange={(e) => setForm({ ...form, currentSpeed: e.target.value })}
+              onChange={(e) => setForm({...form, currentSpeed: e.target.value })}
               className={inputClass}
             />
           </div>
@@ -783,7 +783,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
               type="text"
               placeholder="e.g. NPL 1, U16 academy, state league, club rep"
               value={form.athleteLevel}
-              onChange={(e) => setForm({ ...form, athleteLevel: e.target.value })}
+              onChange={(e) => setForm({...form, athleteLevel: e.target.value })}
               className={inputClass}
             />
           </div>
@@ -799,7 +799,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
               maxLength={500}
               placeholder="Optional, up to 500 characters."
               value={form.twelveMonthOutcome}
-              onChange={(e) => setForm({ ...form, twelveMonthOutcome: e.target.value })}
+              onChange={(e) => setForm({...form, twelveMonthOutcome: e.target.value })}
               className={`${inputClass} resize-none`}
             />
             <p className="text-[11px] text-gray-400 mt-1.5 text-right">
@@ -820,7 +820,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
           rows={3}
           placeholder="Injuries, school timetable, what you've tried that didn't work…"
           value={form.notes}
-          onChange={(e) => setForm({ ...form, notes: e.target.value })}
+          onChange={(e) => setForm({...form, notes: e.target.value })}
           className={`${inputClass} resize-none`}
         />
       </div>

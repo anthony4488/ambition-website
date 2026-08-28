@@ -1,4 +1,4 @@
-// Meta Conversions API — server-side events.
+// Meta Conversions API, server-side events.
 //
 // WHY: the pixel only ever sees a Lead (form-fill). Meta therefore optimises
 // toward people who fill forms, not people who pay. Sending a server-side
@@ -8,7 +8,7 @@
 // leads_retrieval/pages_* scopes and /{dataset}/events rejects it with
 // "(#200) permissions error". Generate a System User token against the dataset
 // in Events Manager → Settings → Conversions API → Generate access token, and
-// store it as META_CAPI_TOKEN. Leave the page token alone — the lead webhook
+// store it as META_CAPI_TOKEN. Leave the page token alone, the lead webhook
 // depends on it.
 //
 // ATTRIBUTION: instant lead-ad forms happen on Meta, not on the site, so there
@@ -40,7 +40,7 @@ const hashPhone = (p?: string | null) => {
 
 /**
  * Conversion Leads stages. Meta's instant forms fire one undifferentiated Lead
- * at submit — the optimiser cannot tell a 10-year-old basketballer in Brisbane
+ * at submit, the optimiser cannot tell a 10-year-old basketballer in Brisbane
  * from an NPL 15-year-old in Bankstown, so it hunts for whichever is cheaper.
  * Sending the stage back is the only way it learns the difference.
  *
@@ -62,7 +62,7 @@ export type CapiEvent = {
   eventId: string;
   email?: string | null;
   phone?: string | null;
-  /** leadgen_id from the Meta lead webhook — the attribution key for lead ads. */
+  /** leadgen_id from the Meta lead webhook, the attribution key for lead ads. */
   leadId?: string | null;
   value?: number;
   currency?: string;
@@ -76,7 +76,7 @@ export type CapiEvent = {
 };
 
 /**
- * Fire a single server-side event. Never throws — a Meta outage must not roll
+ * Fire a single server-side event. Never throws, a Meta outage must not roll
  * back a booking that has already been paid for.
  */
 export async function sendCapiEvent(ev: CapiEvent): Promise<{ ok: boolean; detail?: string }> {
@@ -91,7 +91,7 @@ export async function sendCapiEvent(ev: CapiEvent): Promise<{ ok: boolean; detai
   const ph = hashPhone(ev.phone);
   if (em) user_data.em = [em];
   if (ph) user_data.ph = [ph];
-  // lead_id is sent RAW (not hashed) — it's an identifier, not PII.
+  // lead_id is sent RAW (not hashed), it's an identifier, not PII.
   if (ev.leadId) user_data.lead_id = Number(ev.leadId) || ev.leadId;
   if (ev.clientIp) user_data.client_ip_address = ev.clientIp;
   if (ev.userAgent) user_data.client_user_agent = ev.userAgent;
@@ -134,7 +134,7 @@ export async function sendCapiEvent(ev: CapiEvent): Promise<{ ok: boolean; detai
 /**
  * Report a lead's CRM stage back to Meta (Conversion Leads).
  *
- * Only meaningful for leads that came from a Meta instant form — `leadId` is the
+ * Only meaningful for leads that came from a Meta instant form, `leadId` is the
  * leadgen_id and is the sole key tying the stage to the ad that produced it.
  * Website leads have no leadgen_id; they are already scored client-side by
  * fireLeadPixel(), so they are skipped rather than sent with weak matching.
@@ -152,7 +152,7 @@ export async function sendLeadStage(opts: {
   value?: number;
   currency?: string;
 }): Promise<{ ok: boolean; detail?: string }> {
-  if (!opts.leadId) return { ok: false, detail: "no leadgen_id — not a Meta form lead, skipped" };
+  if (!opts.leadId) return { ok: false, detail: "no leadgen_id, not a Meta form lead, skipped" };
 
   const eventName = LEAD_STAGE_EVENT[opts.stage];
   return sendCapiEvent({

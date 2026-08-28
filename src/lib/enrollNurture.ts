@@ -18,13 +18,13 @@ export async function stopNurtureByPhone(
   }
   const target = normaliseAu(phone);
   const { data } = await sb
-    .from("nurture_enrollments")
-    .select("id, phone")
-    .eq("status", "active")
-    .limit(500);
+   .from("nurture_enrollments")
+   .select("id, phone")
+   .eq("status", "active")
+   .limit(500);
   const ids = (data ?? [])
-    .filter((r) => normaliseAu(String(r.phone ?? "")) === target)
-    .map((r) => r.id);
+   .filter((r) => normaliseAu(String(r.phone ?? "")) === target)
+   .map((r) => r.id);
   if (!ids.length) return 0;
   await sb.from("nurture_enrollments").update({ status }).in("id", ids);
   return ids.length;
@@ -51,7 +51,7 @@ async function addToKit(email: string, name: string | undefined, source: string 
 }
 
 // Enroll a lead in the nurture: fire touch-0 SMS immediately + tag into Kit (which
-// runs the email sequence). Safe to call on every form submit / FB lead — dedupes on active email.
+// runs the email sequence). Safe to call on every form submit / FB lead, dedupes on active email.
 export async function enrollNurture(lead: {
   name?: string;
   email?: string;
@@ -66,12 +66,12 @@ export async function enrollNurture(lead: {
 
   if (lead.email) {
     const { data: existing } = await sb
-      .from("nurture_enrollments")
-      .select("id")
-      .eq("email", lead.email)
-      .eq("status", "active")
-      .limit(1)
-      .maybeSingle();
+     .from("nurture_enrollments")
+     .select("id")
+     .eq("email", lead.email)
+     .eq("status", "active")
+     .limit(1)
+     .maybeSingle();
     if (existing) return; // already in an active sequence
   }
 

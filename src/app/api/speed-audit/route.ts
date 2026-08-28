@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
       user_agent: req.headers.get("user-agent") || null,
     });
   } catch {
-    /* non-fatal — Supabase trigger fires Telegram from row insert too */
+    /* non-fatal. Supabase trigger fires Telegram from row insert too */
   }
 
   // 2) Kit tag (triggers post-audit nurture sequence)
@@ -88,14 +88,14 @@ export async function POST(req: NextRequest) {
     `👤 ${escapeHtml(b.name)} (${escapeHtml(b.email)})`,
     b.phone ? `📞 ${escapeHtml(b.phone)}` : null,
     "",
-    `📊 <b>${b.overall_score ?? "—"}% of elite</b> · ${escapeHtml(b.age_bucket)} ${escapeHtml(b.gender)}`,
-    `🎯 Biggest gap: <b>${escapeHtml(b.biggest_gap || "—")}</b>`,
+    `📊 <b>${b.overall_score ?? "n/a"}% of elite</b> · ${escapeHtml(b.age_bucket)} ${escapeHtml(b.gender)}`,
+    `🎯 Biggest gap: <b>${escapeHtml(b.biggest_gap || "n/a")}</b>`,
     "",
-    `0-10m: ${b.sprint_10m ?? "—"}s`,
-    `0-20m: ${b.sprint_20m ?? "—"}s`,
-    `10m fly: ${b.fly_10m ?? "—"}s`,
-    `Bound: ${b.bound_10 ?? "—"}m`,
-    `RSI: ${b.rsi ?? "—"}`,
+    `0-10m: ${b.sprint_10m ?? "n/a"}s`,
+    `0-20m: ${b.sprint_20m ?? "n/a"}s`,
+    `10m fly: ${b.fly_10m ?? "n/a"}s`,
+    `Bound: ${b.bound_10 ?? "n/a"}m`,
+    `RSI: ${b.rsi ?? "n/a"}`,
   ].filter(Boolean) as string[];
   await sendTelegramMessage(lines.join("\n"));
 

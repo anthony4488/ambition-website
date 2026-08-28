@@ -17,7 +17,7 @@ import { ArrowRight, X } from "lucide-react";
  * application (/contact picks the program, /apply is the form itself).
  */
 const HIDDEN_EXACT = ["/contact", "/apply", "/welcome", "/agreement", "/privacy", "/terms",
-  // Falcon is a paid checkout funnel — a $199 assessment bar competing with a
+  // Falcon is a paid checkout funnel, a $199 assessment bar competing with a
   // $175 buy button costs more than it earns.
   "/falcon", "/falcon/sent"];
 const HIDDEN_PREFIX = ["/admin"];

@@ -8,22 +8,22 @@ export const maxDuration = 60;
 // client-side from the user's uploaded video, prompts Claude with Anthony's
 // methodology, returns structured JSON the front-end renders.
 //
-// This is Phase 1 — frame-based vision analysis. Phase 2 will replace this
+// This is Phase 1, frame-based vision analysis. Phase 2 will replace this
 // with the deployed SpeedForm AI pose pipeline for precise angle measurement.
 
 const SYSTEM_PROMPT = `You are Anthony Atanasov - a sprint biomechanics coach with 23 years of experience and 1000+ athletes coached. Your voice is direct, no-fluff, numbers-driven. You diagnose - you don't motivational-speak.
 
 When analysing sprint footage frame-by-frame, look specifically for:
 
-1. **Foot strike** — heel-strike (slow, braking) vs forefoot / mid-foot toe-contact (fast, propulsive). Toe contact, not pad.
-2. **Trunk lean** — angle, integrity through stride, over-rotation through the spine. Forward lean during accel, upright at top speed.
-3. **Knee drive** — height, timing, leg recovery position. Knee-bent from zero on accel; thigh parallel at top speed.
-4. **Arm action** — symmetry, drive angle, blocking the pelvis (rotation comes from arms hijacking the trunk).
-5. **Ground contact time** — long stance phase = "stuck", short = elastic / reactive.
-6. **Stride length / symmetry** — left vs right; over-striding ahead of centre of mass (braking force).
-7. **Hip extension at toe-off** — full extension = propulsion; cut short = wasted force.
-8. **Foot landing position** — land UNDER centre of mass, not ahead of it.
-9. **Asymmetries** — one side weaker, blocking faster movement on the other.
+1. **Foot strike**, heel-strike (slow, braking) vs forefoot / mid-foot toe-contact (fast, propulsive). Toe contact, not pad.
+2. **Trunk lean**, angle, integrity through stride, over-rotation through the spine. Forward lean during accel, upright at top speed.
+3. **Knee drive**, height, timing, leg recovery position. Knee-bent from zero on accel; thigh parallel at top speed.
+4. **Arm action**, symmetry, drive angle, blocking the pelvis (rotation comes from arms hijacking the trunk).
+5. **Ground contact time**, long stance phase = "stuck", short = elastic / reactive.
+6. **Stride length / symmetry**, left vs right; over-striding ahead of centre of mass (braking force).
+7. **Hip extension at toe-off**, full extension = propulsion; cut short = wasted force.
+8. **Foot landing position**, land UNDER centre of mass, not ahead of it.
+9. **Asymmetries**, one side weaker, blocking faster movement on the other.
 
 Output STRICTLY this JSON shape (no extra text, no preamble):
 
@@ -61,7 +61,7 @@ type FramePayload = { data: string; mimeType?: string };
 type Body = {
   frames?: (string | FramePayload)[];
   cohort?: string; // e.g. "U16 male elite"
-  test_type?: string; // e.g. "0-10m sprint" / "max-velocity" — optional context
+  test_type?: string; // e.g. "0-10m sprint" / "max-velocity", optional context
 };
 
 export async function POST(req: NextRequest) {

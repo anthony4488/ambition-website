@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 // Scheduled by Vercel Cron (daily). Sends the next due SMS touch to active leads.
-// (Email touches are handled by Kit sequences, triggered by tag — not here.)
+// (Email touches are handled by Kit sequences, triggered by tag, not here.)
 export async function GET(req: NextRequest) {
   // Optional shared-secret guard
   const secret = process.env.CRON_SECRET;
@@ -27,11 +27,11 @@ export async function GET(req: NextRequest) {
   }
 
   const { data: due } = await sb
-    .from("nurture_enrollments")
-    .select("*")
-    .eq("status", "active")
-    .lte("next_send_at", new Date().toISOString())
-    .limit(100);
+   .from("nurture_enrollments")
+   .select("*")
+   .eq("status", "active")
+   .lte("next_send_at", new Date().toISOString())
+   .limit(100);
 
   let sent = 0;
   for (const e of due ?? []) {
@@ -48,14 +48,14 @@ export async function GET(req: NextRequest) {
     const nextTouch = T[nextStep];
     const created = new Date(e.created_at).getTime();
     await sb
-      .from("nurture_enrollments")
-      .update({
+     .from("nurture_enrollments")
+     .update({
         step: nextStep,
         last_sent_at: new Date().toISOString(),
         next_send_at: nextTouch ? new Date(created + nextTouch.dayOffset * 86400000).toISOString() : e.next_send_at,
         status: nextTouch ? "active" : "completed",
       })
-      .eq("id", e.id);
+     .eq("id", e.id);
   }
 
   return Response.json({ ok: true, due: due?.length ?? 0, sent });

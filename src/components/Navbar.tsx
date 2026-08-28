@@ -16,8 +16,7 @@ const links = [
   { href: "/contact", label: "Contact" },
 ];
 
-// Focused landing pages: logo only, no nav. /apply is deliberately NOT here —
-// paid visitors need to be able to validate the business without leaving.
+// Focused landing pages: logo only, no nav. /apply is deliberately NOT here, // paid visitors need to be able to validate the business without leaving.
 const LANDING = ["/welcome", "/agreement"];
 
 export function Navbar() {

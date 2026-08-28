@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 
 const GRAPH = `https://graph.facebook.com/${process.env.META_GRAPH_VERSION || "v21.0"}`;
 
-// GET — Meta webhook verification handshake (run once when you subscribe the app).
+// GET. Meta webhook verification handshake (run once when you subscribe the app).
 export async function GET(req: NextRequest) {
   const sp = req.nextUrl.searchParams;
   const mode = sp.get("hub.mode");
@@ -63,7 +63,7 @@ function pickFields(fd: FieldDatum[]) {
     email: get("email"),
     phone: get("phone_number", "phone"),
     sport: get("sport"),
-    // Live Meta form answers — these are the real LTV filters.
+    // Live Meta form answers, these are the real LTV filters.
     suburb: get("suburb", "where are you", "city", "postcode", "location"),
     ageBand: get("how old", "age"),
     budget: get("budget", "weekly budget"),
@@ -83,7 +83,7 @@ async function fetchLead(leadgenId: string) {
   return pickFields(j.field_data);
 }
 
-// POST — receives leadgen events, fetches each lead, then mirrors the website
+// POST, receives leadgen events, fetches each lead, then mirrors the website
 // pipeline: save to assessment_leads, enroll in nurture, Telegram alert.
 export async function POST(req: NextRequest) {
   const raw = await req.text();
@@ -110,7 +110,7 @@ export async function POST(req: NextRequest) {
         if (!lead || (!lead.email && !lead.phone)) continue;
 
         // Score the lead. Drives (a) whether the payment link auto-sends and
-        // (b) which pixel event fires — see qualify.ts.
+        // (b) which pixel event fires, see qualify.ts.
         const q = qualifyLead({
           suburb: lead.suburb,
           sport: lead.sport,
@@ -181,9 +181,9 @@ export async function POST(req: NextRequest) {
           `👤 <b>${escapeHtml(lead.name)}</b>`,
           `📞 ${escapeHtml(lead.phone)}`,
           `✉️ ${escapeHtml(lead.email)}`,
-          `📍 ${escapeHtml(lead.suburb ?? "—")}`,
+          `📍 ${escapeHtml(lead.suburb ?? "n/a")}`,
           "",
-          `${tierIcon} <b>${q.tier.toUpperCase()}</b> — ${escapeHtml(q.reasons.join("; "))}`,
+          `${tierIcon} <b>${q.tier.toUpperCase()}</b>, ${escapeHtml(q.reasons.join("; "))}`,
           autoSent ? "💳 Payment link auto-sent (qualified)" : "",
           "",
           "📥 via Facebook lead form",
@@ -206,7 +206,7 @@ export async function POST(req: NextRequest) {
       }
     }
   } catch {
-    /* swallow — still return 200 */
+    /* swallow, still return 200 */
   }
 
   return Response.json({ ok: true });

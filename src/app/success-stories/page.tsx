@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 
 type WallCard = {
   name: string;
+  href?: string;
   result: string;
   context: string;
   bunnyId?: string;
@@ -52,7 +53,7 @@ const proAthletes: WallCard[] = [
 const wall: WallCard[] = [
   { name: "James", result: "Low 20s → 32 km/h", context: "+9 km/h max velocity · 25% KPI gain · 14 months", bunnyId: "2ea7ecba-23c4-4d1c-b513-0157f1b307d7" },
   { name: "Xavi", result: "23 → 32 km/h", context: "Coordination · ground power · reactive off every contact · 17 months", bunnyId: "a31a6862-c26c-4337-878c-87a6b0ac94c4" },
-  { name: "Maksim", result: "23 → 32 km/h", context: "+27.2% avg speed · +56% bound power · -27% across splits · 3 years", bunnyId: "9ad7f8a3-4d47-4948-a72f-db1f06180c8f" },
+  { name: "Maksim", href: "/success-stories/maksim", result: "23 → 32 km/h", context: "+27.2% avg speed · +56% bound power · -27% across splits · 3 years", bunnyId: "9ad7f8a3-4d47-4948-a72f-db1f06180c8f" },
   { name: "George Francis", result: "17-19 → 35 km/h", context: "Started at 11 · stride, hip, contact rebuilt · faster than most semi-pros", bunnyId: "3e0332a8-49cb-4ac7-9422-4dd81a207078" },
   { name: "George Francis, 35 km/h run", result: "35 km/h on camera", context: "Timed top-speed run · the number, on film", bunnyId: "38fb4d8f-6eda-4ccb-b803-85721759a37c" },
   { name: "Hadi", result: "30 → 35 km/h", context: "Injured & plateaued → 35 km/h in 8 weeks", bunnyId: "07451a44-854c-46b3-a0c8-877797f015ac" },
@@ -160,6 +161,14 @@ function MediaCard({ card }: { card: WallCard }) {
         <p className="font-bold text-white text-base">{card.name}</p>
         <p className="text-accent text-sm font-semibold mt-1">{card.result}</p>
         <p className="text-xs text-gray-400 leading-relaxed mt-2">{card.context}</p>
+        {card.href && (
+          <a
+            href={card.href}
+            className="mt-4 inline-flex items-center gap-1 text-accent text-sm font-semibold hover:gap-2 transition-all"
+          >
+            Read the case study &rarr;
+          </a>
+        )}
       </div>
     </div>
   );

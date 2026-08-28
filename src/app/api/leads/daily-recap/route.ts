@@ -39,7 +39,7 @@ function line(l: Lead, now: number, withAge: boolean): string {
   const src = l.source ? ` · ${escapeHtml(l.source)}` : "";
   const age = withAge ? ` · ${Math.floor((now - new Date(l.created_at).getTime()) / DAY)}d ago` : "";
   const snip = snippet(l.notes);
-  return `• <b>${name}</b> — ${phone}${src}${age}${snip ? `\n   ${escapeHtml(snip)}` : ""}`;
+  return `• <b>${name}</b>, ${phone}${src}${age}${snip ? `\n   ${escapeHtml(snip)}` : ""}`;
 }
 
 export async function GET(req: NextRequest) {
@@ -61,11 +61,11 @@ export async function GET(req: NextRequest) {
   const weekAgoISO = new Date(now - 7 * DAY).toISOString();
 
   const { data, error } = await sb
-    .from("assessment_leads")
-    .select("name, phone, source, notes, status, created_at")
-    .gte("created_at", weekAgoISO)
-    .order("created_at", { ascending: false })
-    .limit(200);
+   .from("assessment_leads")
+   .select("name, phone, source, notes, status, created_at")
+   .gte("created_at", weekAgoISO)
+   .order("created_at", { ascending: false })
+   .limit(200);
 
   if (error) return Response.json({ ok: false, error: error.message }, { status: 200 });
 
@@ -84,13 +84,13 @@ export async function GET(req: NextRequest) {
 
   sections.push(
     fresh.length
-      ? `\n🆕 <b>NEW — call these today (${fresh.length})</b>\n${fresh.slice(0, CAP).map((l) => line(l, now, false)).join("\n")}${fresh.length > CAP ? `\n…and ${fresh.length - CAP} more` : ""}`
-      : `\n🆕 <b>NEW — call today:</b> none in the last 24h`,
+      ? `\n🆕 <b>NEW, call these today (${fresh.length})</b>\n${fresh.slice(0, CAP).map((l) => line(l, now, false)).join("\n")}${fresh.length > CAP ? `\n…and ${fresh.length - CAP} more` : ""}`
+      : `\n🆕 <b>NEW, call today:</b> none in the last 24h`,
   );
 
   if (catchUp.length) {
     sections.push(
-      `\n📋 <b>EARLIER THIS WEEK — catch up (${catchUp.length})</b>\n${catchUp.slice(0, CAP).map((l) => line(l, now, true)).join("\n")}${catchUp.length > CAP ? `\n…and ${catchUp.length - CAP} more` : ""}`,
+      `\n📋 <b>EARLIER THIS WEEK, catch up (${catchUp.length})</b>\n${catchUp.slice(0, CAP).map((l) => line(l, now, true)).join("\n")}${catchUp.length > CAP ? `\n…and ${catchUp.length - CAP} more` : ""}`,
     );
   }
 

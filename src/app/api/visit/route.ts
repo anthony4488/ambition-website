@@ -59,13 +59,13 @@ export async function POST(req: NextRequest) {
 
   const utm = (b.utm && typeof b.utm === "object" ? b.utm : {}) as Record<string, unknown>;
   const utmStr = [utm.source, utm.medium, utm.campaign]
-    .map((x) => (typeof x === "string" ? x : ""))
-    .filter(Boolean)
-    .join(" / ");
+   .map((x) => (typeof x === "string" ? x : ""))
+   .filter(Boolean)
+   .join(" / ");
 
   const head =
     type === "high_intent"
-      ? `🔥 <b>HIGH INTENT</b> — viewing <b>${escapeHtml(path)}</b>`
+      ? `🔥 <b>HIGH INTENT</b>, viewing <b>${escapeHtml(path)}</b>`
       : "👀 <b>New visitor</b>";
 
   const lines = [

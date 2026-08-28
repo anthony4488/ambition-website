@@ -1,6 +1,6 @@
 // Client-side form telemetry. Fires a Telegram alert when a user starts a form
 // (so Anthony can see drop-offs vs completions). Completion alerts already fire
-// via /api/notify-lead and /api/speed-audit — this fills the "they started but
+// via /api/notify-lead and /api/speed-audit, this fills the "they started but
 // never finished" gap.
 //
 // Each event is de-duped per browser session per form so a single visitor never
@@ -48,11 +48,11 @@ export function trackFormStart(form_id: string, meta?: Record<string, unknown>) 
 }
 
 export function trackFormStep(form_id: string, step: number | string, meta?: Record<string, unknown>) {
-  // Optional — for forms where Anthony wants drop-off granularity.
+  // Optional, for forms where Anthony wants drop-off granularity.
   const key = `step:${form_id}:${step}`;
   if (fired.has(key)) return;
   fired.add(key);
-  void send(form_id, "step", { step, ...(meta ?? {}) });
+  void send(form_id, "step", { step,...(meta ?? {}) });
 }
 
 export function trackFormComplete(form_id: string, meta?: Record<string, unknown>) {

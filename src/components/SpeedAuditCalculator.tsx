@@ -202,7 +202,7 @@ export function SpeedAuditCalculator() {
     }
   }
 
-  const topSpeedKmh = u.fly10 ? flyToKmh(u.fly10).toFixed(1) : ", ";
+  const topSpeedKmh = u.fly10 ? flyToKmh(u.fly10).toFixed(1) : "n/a";
   const eliteTopSpeed = flyToKmh(elite.fly10).toFixed(1);
 
   return (
@@ -347,31 +347,31 @@ export function SpeedAuditCalculator() {
           <div className="mt-6 space-y-3">
             <Row
               label="Acceleration (0-10m)"
-              yours={u.sprint10 ? `${u.sprint10.toFixed(2)}s` : ", "}
+              yours={u.sprint10 ? `${u.sprint10.toFixed(2)}s` : "n/a"}
               elite={`${elite.sprint10.toFixed(2)}s`}
               pct={scores.sprint10}
             />
             <Row
               label="Full accel (0-20m)"
-              yours={u.sprint20 ? `${u.sprint20.toFixed(2)}s` : ", "}
+              yours={u.sprint20 ? `${u.sprint20.toFixed(2)}s` : "n/a"}
               elite={`${elite.sprint20.toFixed(2)}s`}
               pct={scores.sprint20}
             />
             <Row
               label={`Top speed (10m fly · ${topSpeedKmh} km/h)`}
-              yours={u.fly10 ? `${u.fly10.toFixed(2)}s` : ", "}
+              yours={u.fly10 ? `${u.fly10.toFixed(2)}s` : "n/a"}
               elite={`${elite.fly10.toFixed(2)}s · ${eliteTopSpeed} km/h`}
               pct={scores.fly10}
             />
             <Row
               label="Elastic power (10-bound)"
-              yours={u.bound ? `${u.bound.toFixed(1)}m` : ", "}
+              yours={u.bound ? `${u.bound.toFixed(1)}m` : "n/a"}
               elite={`${elite.bound.toFixed(1)}m`}
               pct={scores.bound}
             />
             <Row
               label="Reactive strength (RSI)"
-              yours={u.rsi ? u.rsi.toFixed(1) : ", "}
+              yours={u.rsi ? u.rsi.toFixed(1) : "n/a"}
               elite={elite.rsi.toFixed(1)}
               pct={scores.rsi}
             />

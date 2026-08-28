@@ -43,3 +43,7 @@ next-env.d.ts
 
 # Claude Code local config (contains secrets)
 .claude/
+
+# local dev noise
+devserver.log
+*.log

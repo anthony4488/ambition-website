@@ -8,8 +8,7 @@ export const dynamic = "force-dynamic";
 // Transcription + rewrite runs inline, so give the function room.
 export const maxDuration = 300;
 
-// Only these numbers get processed. Everything else is ignored silently —
-// this is a personal tool, and transcription costs money per message.
+// Only these numbers get processed. Everything else is ignored silently, // this is a personal tool, and transcription costs money per message.
 function allowedNumbers(): string[] {
   const raw = process.env.VOICE_NOTE_ALLOWED_NUMBERS || "61450205033";
   return raw.split(",").map((n) => n.replace(/\D/g, "")).filter(Boolean);
@@ -26,7 +25,7 @@ type WaChange = { field?: string; value?: WaValue };
 type WaEntry = { changes?: WaChange[] };
 type WaBody = { entry?: WaEntry[] };
 
-// GET — Meta webhook verification handshake (run once when subscribing the
+// GET. Meta webhook verification handshake (run once when subscribing the
 // WhatsApp number to the `messages` field).
 export async function GET(req: NextRequest) {
   const sp = req.nextUrl.searchParams;
@@ -44,13 +43,13 @@ export async function GET(req: NextRequest) {
 
 // Claims the message by inserting its id, which is unique. A duplicate insert
 // means Meta is retrying one we already picked up, so this doubles as the
-// idempotency lock — without it, a retry mid-transcription bills twice and
+// idempotency lock, without it, a retry mid-transcription bills twice and
 // sends the reply twice.
 async function claimMessage(waMessageId: string, from: string): Promise<boolean> {
   const sb = getSupabaseAdmin();
   const { error } = await sb
-    .from("voice_notes")
-    .insert({ wa_message_id: waMessageId, from_number: from, status: "processing" });
+   .from("voice_notes")
+   .insert({ wa_message_id: waMessageId, from_number: from, status: "processing" });
   if (!error) return true;
   if (error.code === "23505") return false; // already claimed
   throw new Error(`claim failed: ${error.message}`);
@@ -62,9 +61,9 @@ async function finish(
 ) {
   const sb = getSupabaseAdmin();
   await sb
-    .from("voice_notes")
-    .update({ ...fields, updated_at: new Date().toISOString() })
-    .eq("wa_message_id", waMessageId);
+   .from("voice_notes")
+   .update({...fields, updated_at: new Date().toISOString() })
+   .eq("wa_message_id", waMessageId);
 }
 
 async function handleVoiceNote(msg: WaMessage): Promise<void> {
@@ -77,14 +76,14 @@ async function handleVoiceNote(msg: WaMessage): Promise<void> {
     transcript = await transcribeAudio(bytes, mimeType);
 
     if (!transcript) {
-      await sendWhatsAppText(from, "Couldn't hear anything in that one — try again?");
+      await sendWhatsAppText(from, "Couldn't hear anything in that one, try again?");
       await finish(waMessageId, { status: "empty" });
       return;
     }
 
     const message = await rewriteAsMessage(transcript);
     if (!message) {
-      // Model declined even after fallback — hand back the raw transcript so
+      // Model declined even after fallback, hand back the raw transcript so
       // the note isn't lost.
       await sendWhatsAppText(from, transcript);
       await finish(waMessageId, { status: "refused", transcript });
@@ -109,7 +108,7 @@ async function handleVoiceNote(msg: WaMessage): Promise<void> {
   }
 }
 
-// POST — receives inbound WhatsApp messages. A voice note comes back as a
+// POST, receives inbound WhatsApp messages. A voice note comes back as a
 // cleaned-up message he can forward on.
 export async function POST(req: NextRequest) {
   const raw = await req.text();
@@ -151,7 +150,7 @@ export async function POST(req: NextRequest) {
       }
     }
   } catch {
-    /* swallow — still 200 so Meta stops retrying */
+    /* swallow, still 200 so Meta stops retrying */
   }
 
   return Response.json({ ok: true });

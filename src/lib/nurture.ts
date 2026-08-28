@@ -24,7 +24,7 @@ const titleCase = (s?: string) => (s || "").trim().replace(/\b\w/g, (c) => c.toU
 //    Safe to enable: it only ever texts the person who just submitted, so it can
 //    never re-text old / already-booked leads.
 //  • NURTURE_CRON_ENABLED  → the day-1/3/6 follow-up touches sent by the daily cron.
-//    This is what previously blasted booked leads — keep OFF until the legacy
+//    This is what previously blasted booked leads, keep OFF until the legacy
 //    active queue has been cleared in Supabase.
 //
 // Both default OFF (unset). The manual Telegram→SMS reply bridge is not gated here.
@@ -248,7 +248,7 @@ export async function sendSms(to: string, body: string) {
   // production, so every text exposed a personal contact card (mobile, second
   // number, birthday, Instagram, Messenger) to leads.
   //
-  // TO RESUME: set SMS_ENABLED=true in Vercel production — but point
+  // TO RESUME: set SMS_ENABLED=true in Vercel production, but point
   // CLICKSEND_FROM at a dedicated business number first, or the leak returns.
   if (process.env.SMS_ENABLED !== "true") {
     return { ok: false, skipped: true, paused: true };

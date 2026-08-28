@@ -7,15 +7,15 @@
  * actually live in Stripe. Promising Afterpay on the page and not offering it
  * at checkout is worse than not mentioning it.
  *
- * NO WHITE CHIPS. Each provider ships its badge on its own brand colour —
- * Afterpay mint, Klarna pink, Zip aubergine — so the badges are rendered
+ * NO WHITE CHIPS. Each provider ships its badge on its own brand colour
+ * (Afterpay mint, Klarna pink, Zip aubergine), so the badges are rendered
  * directly at a uniform height. Dropping a coloured badge inside a white box
  * would be recolouring the surround, which the guidelines do not allow, and it
  * looks like a sticker on a sticker.
  *
  * Rendered at 32px tall from 64px assets, so they stay sharp on retina without
  * shipping anything heavy. Afterpay's guidelines are explicit that the wordmark
- * may never be used alone — these are the full lock-ups.
+ * may never be used alone, these are the full lock-ups.
  *
  * A missing file hides its own badge rather than leaving a broken image next to
  * a price, so assets can be swapped one at a time.
@@ -49,7 +49,7 @@ export function PaymentPlans({
             <img
               key={p.alt}
               src={p.src}
-              alt={`${p.alt} — pay in four`}
+              alt={`${p.alt}, pay in four`}
               className="h-8 w-auto rounded-lg"
               loading="lazy"
               decoding="async"

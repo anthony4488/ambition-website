@@ -13,13 +13,13 @@ export const dynamic = "force-dynamic";
 // Stripe webhook. Fires on checkout.session.completed for the $199 assessment.
 //
 // Does four things, in this order of importance:
-//   1. Meta CAPI Purchase  — points the ad algorithm at buyers, not form-fillers
-//   2. Confirmation SMS    — via the existing ClickSend sender
-//   3. Logs to Supabase    — assessment_bookings
-//   4. Telegram alert      — same channel as lead alerts
+//   1. Meta CAPI Purchase, points the ad algorithm at buyers, not form-fillers
+//   2. Confirmation SMS, via the existing ClickSend sender
+//   3. Logs to Supabase, assessment_bookings
+//   4. Telegram alert, same channel as lead alerts
 //
 // Signature is verified by hand (HMAC-SHA256 over "timestamp.payload") so we
-// don't pull in the Stripe SDK for one route — same approach as the Meta webhook.
+// don't pull in the Stripe SDK for one route, same approach as the Meta webhook.
 
 function verifyStripe(raw: string, header: string | null): boolean {
   // Live and test mode have DIFFERENT signing secrets. Accepting both lets the
@@ -29,7 +29,7 @@ function verifyStripe(raw: string, header: string | null): boolean {
     process.env.STRIPE_WEBHOOK_SECRET,
     process.env.STRIPE_WEBHOOK_SECRET_TEST,
   ].filter((s): s is string => Boolean(s));
-  if (!secrets.length) return false; // fail closed — this endpoint moves money
+  if (!secrets.length) return false; // fail closed, this endpoint moves money
   if (!header) return false;
 
   const parts = Object.fromEntries(
@@ -56,7 +56,7 @@ function verifyStripe(raw: string, header: string | null): boolean {
 }
 
 // Field names differ by Stripe API version. `customer_details` only exists on
-// 2020-03-02 and later — an endpoint pinned to an older version (this account
+// 2020-03-02 and later, an endpoint pinned to an older version (this account
 // defaulted to 2018-11-08) sends `customer_email` instead and no phone at all.
 // Read both so a stale version degrades rather than silently sending a Purchase
 // with no match keys.
@@ -128,16 +128,16 @@ export async function POST(req: NextRequest) {
   if (!email && !phone) {
     await sendTelegramMessage(
       "⚠️ Stripe payment arrived with no email or phone. Check the webhook's " +
-        "API version in Stripe — anything before 2020-03-02 omits customer_details.",
+        "API version in Stripe, anything before 2020-03-02 omits customer_details.",
     );
   }
   const currency = (s.currency || ASSESSMENT_CURRENCY).toUpperCase();
 
-  // Stripe's event id is stable across retries — reuse it as the dedup key so a
+  // Stripe's event id is stable across retries, reuse it as the dedup key so a
   // redelivery can't double-count the Purchase in Meta.
   const eventId = ev.id || s.id || `stripe_${Date.now()}`;
 
-  // 1. META CAPI PURCHASE — the whole point of this route.
+  // 1. META CAPI PURCHASE, the whole point of this route.
   //
   // A Stripe TEST payment must never reach live optimisation data. Meta would
   // learn from a $199 that nobody paid, which is the exact pollution this whole
@@ -149,7 +149,7 @@ export async function POST(req: NextRequest) {
   let capi: { ok: boolean; detail?: string };
 
   if (isTest && !hasTestBucket) {
-    capi = { ok: false, detail: "skipped — Stripe test payment, no META_CAPI_TEST_CODE set" };
+    capi = { ok: false, detail: "skipped. Stripe test payment, no META_CAPI_TEST_CODE set" };
   } else {
     capi = await sendCapiEvent({
       eventName: "Purchase",
@@ -167,7 +167,7 @@ export async function POST(req: NextRequest) {
 
     // Conversion Leads: a paid assessment is the strongest stage Meta can be
     // told about. Purchase optimises the pixel; this teaches the LEAD ad which
-    // form-fills were actually worth buying. Both are needed — they train
+    // form-fills were actually worth buying. Both are needed, they train
     // different things. Meta-form leads only (no leadgen_id, no stage).
     void sendLeadStage({ leadId: leadgenId, stage: "booked", value, currency }).catch(() => {});
   }
@@ -177,9 +177,9 @@ export async function POST(req: NextRequest) {
   if (phone) {
     const r = await sendSms(
       phone,
-      `${firstName(name)} — payment received, you're locked in. ` +
+      `${firstName(name)}, payment received, you're locked in. ` +
         `I'll text you shortly to book your assessment time at Georges Hall or Strathfield. ` +
-        `Bring boots and runners. — Anthony, Ambition`,
+        `Bring boots and runners.. Anthony, Ambition`,
     );
     smsOk = r.ok;
     // A payer should never keep receiving nurture chase messages.
@@ -211,7 +211,7 @@ export async function POST(req: NextRequest) {
       { onConflict: "client_ref" },
     );
   } catch {
-    /* non-fatal — never fail a paid booking on a logging error */
+    /* non-fatal, never fail a paid booking on a logging error */
   }
 
   // 4. TELEGRAM
@@ -224,7 +224,7 @@ export async function POST(req: NextRequest) {
       `✉️ ${escapeHtml(email)}`,
       `💵 $${value ?? "?"} ${currency}`,
       "",
-      leadgenId ? `🎯 Meta lead ${escapeHtml(leadgenId)}` : "🎯 No leadgen_id — attribution will fall back to email/phone",
+      leadgenId ? `🎯 Meta lead ${escapeHtml(leadgenId)}` : "🎯 No leadgen_id, attribution will fall back to email/phone",
       `📡 CAPI Purchase: ${capi.ok ? "✅ sent" : `❌ ${escapeHtml(capi.detail)}`}`,
       `💬 Confirmation SMS: ${smsOk ? "✅" : "❌"}`,
       "",

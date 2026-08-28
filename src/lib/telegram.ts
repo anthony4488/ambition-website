@@ -30,7 +30,7 @@ export type TgButton = { text: string; callback_data: string };
  * Same as sendTelegramMessage but with an inline keyboard. Used to put a
  * "send the payment link" button on unqualified/review leads so nothing goes
  * out automatically to a parent who hasn't been vetted.
- * callback_data is capped at 64 bytes by Telegram — keep refs short.
+ * callback_data is capped at 64 bytes by Telegram, keep refs short.
  */
 export async function sendTelegramWithButtons(
   text: string,
@@ -76,6 +76,6 @@ export async function answerCallbackQuery(id: string, text?: string): Promise<vo
 
 export const escapeHtml = (s: unknown) =>
   String(s ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+   .replace(/&/g, "&amp;")
+   .replace(/</g, "&lt;")
+   .replace(/>/g, "&gt;");

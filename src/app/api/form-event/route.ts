@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
 
   const event = b.event && EVENT_BADGE[b.event] ? b.event : "started";
   const badge = EVENT_BADGE[event];
-  const shortSession = (b.session_id || "—").slice(0, 8);
+  const shortSession = (b.session_id || "n/a").slice(0, 8);
 
   const metaLines: string[] = [];
   if (b.meta) {
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
   const lines: string[] = [
     `${badge.emoji} <b>${badge.label}</b>`,
     `📋 Form: <code>${escapeHtml(b.form_id || "unknown")}</code>`,
-    `📄 Page: ${escapeHtml(b.page || "—")}`,
+    `📄 Page: ${escapeHtml(b.page || "n/a")}`,
     `🔖 Session: ${escapeHtml(shortSession)}`,
   ];
   if (b.referrer) lines.push(`↩️ Ref: ${escapeHtml(b.referrer)}`);
@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
       ip_address: ipAddress,
     });
   } catch {
-    /* non-fatal — Telegram alert still fires */
+    /* non-fatal. Telegram alert still fires */
   }
 
   await sendTelegramMessage(lines.join("\n"));

@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
 
   const num = toE164(from);
 
-  // A reply means the lead has engaged — pull them out of the automated nurture so
+  // A reply means the lead has engaged, pull them out of the automated nurture so
   // they never get another scheduled touch (Anthony handles them personally now).
   // An explicit STOP/UNSUBSCRIBE is a hard opt-out. Non-fatal: never blocks the
   // Telegram forward below.
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
   }
 
   const statusLine = optedOut
-    ? "🛑 <i>Opted out — removed from all automation.</i>"
+    ? "🛑 <i>Opted out, removed from all automation.</i>"
     : stoppedCount > 0
       ? "✅ <i>Auto-removed from nurture (replied). Handle them personally.</i>"
       : "↩️ <i>Reply to this message to text them back.</i>";
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
 
   // Safety net: forward the reply to Anthony's phone so he can text/call the
   // lead directly from his own Messages app (no Telegram needed). The lead's
-  // number is in the body — tap it to start a native thread. Non-fatal.
+  // number is in the body, tap it to start a native thread. Non-fatal.
   const myMobile = process.env.ANTHONY_MOBILE || "+61450205033";
   try {
     await sendSms(

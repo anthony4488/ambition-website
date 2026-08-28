@@ -1,7 +1,7 @@
 // Lead qualification for Ambition Sports Performance.
 //
 // WHY THIS EXISTS: both application forms already collected suburb, sport and
-// age, but nothing read them — SpeedSystemForm qualified purely on "ready to
+// age, but nothing read them. SpeedSystemForm qualified purely on "ready to
 // invest", and EnquiryForm hardcoded qualified:true. So a Newcastle basketball
 // parent scored identically to a Campbelltown football family, and the Meta
 // pixel fired the same generic Lead event for both. This module turns those
@@ -29,7 +29,7 @@ export interface QualifyInput {
   ageBand?: string;
   /** "$130-$150/week" | "$150-$180/week" | "$180+/week" | "$100-$130/week" */
   budget?: string;
-  /** "6-12 months minimum" | "12+ months — whatever it takes" */
+  /** "6-12 months minimum" | "12+ months, whatever it takes" */
   commitLength?: string;
   /** "Local/Association club" | "Representative/Academy" | "Higher NPL to Youth 1st Div" | "State level or higher" */
   level?: string;
@@ -41,7 +41,7 @@ export interface QualifyInput {
   /**
    * True when the enquiry is for an offer that can be delivered remotely
    * (the online program). Out-of-area then downgrades to "review" instead of
-   * "unqualified" — an interstate online applicant is a real lead, it just
+   * "unqualified", an interstate online applicant is a real lead, it just
    * shouldn't count as a conversion for the Sydney in-person campaign.
    */
   remote?: boolean;
@@ -58,12 +58,12 @@ export interface QualifyResult {
 
 const norm = (s: unknown): string =>
   String(s ?? "")
-    .toLowerCase()
-    .replace(/[^a-z\s]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+   .toLowerCase()
+   .replace(/[^a-z\s]/g, " ")
+   .replace(/\s+/g, " ")
+   .trim();
 
-// Serviceable catchment for Georges Hall + Strathfield — roughly a 20 minute
+// Serviceable catchment for Georges Hall + Strathfield, roughly a 20 minute
 // drive, inner west and Bankstown.
 //
 // This used to be the whole of Greater Sydney "because Anthony takes them anyway".
@@ -83,7 +83,7 @@ const SYDNEY_MARKERS = [
   // Arncliffe venue. The application offers Arncliffe as one of three
   // locations, but the suburb was never in this list, so anyone picking it
   // scored "Suburb not recognised" and parked in review. Only the venue itself
-  // is listed — its surrounding catchment has not been defined the way
+  // is listed, its surrounding catchment has not been defined the way
   // Strathfield's and Georges Hall's have.
   "arncliffe",
   // Canterbury
@@ -179,7 +179,7 @@ export function classifyArea(suburb?: string): { fit: AreaFit; matched: string |
   // pixel event never fired and Meta only ever learned from the generic Lead.
   // The out-of-area and out-of-catchment lists are checked above, so anything
   // reaching here that says Sydney has no disqualifying suburb attached.
-  // Deliberately coarser than a suburb — the reason string says so.
+  // Deliberately coarser than a suburb, the reason string says so.
   if (matches(s, ["sydney"])) return { fit: "in_area", matched: "sydney (city level)" };
 
   return { fit: "unknown", matched: null };
@@ -187,7 +187,7 @@ export function classifyArea(suburb?: string): { fit: AreaFit; matched: string |
 
 /**
  * "What's your goal for your athlete?" on the conditional-logic Meta form.
- * "Want to get fit" is the cleanest disqualifier on the whole form — it is an
+ * "Want to get fit" is the cleanest disqualifier on the whole form, it is an
  * explicit answer, not missing data, so it rejects rather than parks in review.
  */
 export function classifyGoal(goal?: string): "elite" | "rep" | "casual" | "unknown" {
@@ -219,14 +219,14 @@ export function classifyInvest(invest?: string, commitmentLevel?: string): boole
 }
 
 // ---------------------------------------------------------------------------
-// Meta lead-form answers. These are the real LTV filters — age band, level,
+// Meta lead-form answers. These are the real LTV filters, age band, level,
 // weekly budget and commitment length are all asked on the live forms and were
 // previously ignored, which parked every lead in "review".
 // ---------------------------------------------------------------------------
 
 // norm() strips digits (it exists for suburb/sport matching, where "wa" inside
-// "Waterloo" is the hazard). These answers are ALL digits — "13-15", "17+",
-// "$130-$150/week" — so they need a normaliser that keeps them.
+// "Waterloo" is the hazard). These answers are ALL digits, "13-15", "17+",
+// "$130-$150/week", so they need a normaliser that keeps them.
 const normNum = (s: unknown): string =>
   String(s ?? "").toLowerCase().replace(/[^a-z0-9+\s-]/g, " ").replace(/\s+/g, " ").trim();
 
@@ -236,13 +236,13 @@ const normNum = (s: unknown): string =>
  * This used to enforce a hard 13-17 band, which was right when the offer was
  * "footballers 13 to 17 at NPL, IFA or academy level". It is wrong now. The
  * application accepts Professional, Semi-professional and National / Olympic
- * representative, and every one of those athletes is an adult — so the old rule
+ * representative, and every one of those athletes is an adult, so the old rule
  * scored the best applicants `out` on age the moment they arrived. It marked an
  * 18-year-old NPL player at Western Sydney Wanderers UNQUALIFIED on a birthday.
  *
  * Now: 13 and up never downgrades anyone, whatever the number, and level does
  * the work. Below that returns `edge`, which lands the lead in review rather
- * than unqualified — young athletes may still be worth taking, they just want
+ * than unqualified, young athletes may still be worth taking, they just want
  * a closer look. Nothing here can produce `out` on its own any more.
  */
 export function classifyAge(band?: string): "in" | "edge" | "out" | "unknown" {
@@ -262,7 +262,7 @@ export function classifyAge(band?: string): "in" | "edge" | "out" | "unknown" {
  * so the website form can collect an exact DOB without duplicating the banding
  * rules that the Meta lead forms depend on.
  *
- * Returns undefined for anything unparseable — the caller then passes no band
+ * Returns undefined for anything unparseable, the caller then passes no band
  * and the lead lands in "review", which is the safe default.
  */
 export function ageBandFromDob(dob?: string): string | undefined {
@@ -299,7 +299,7 @@ const WEBSITE_LEVEL: Record<string, "in" | "out" | "unknown"> = {
   "npl": "in",
   "ifa": "in",
   "club academy": "in",
-  // Genuine athletes, but not the band this programme is built around — review,
+  // Genuine athletes, but not the band this programme is built around, review,
   // never auto-reject.
   "school representative": "unknown",
   "school or social": "out",
@@ -324,11 +324,11 @@ export function classifyBudget(budget?: string): "in" | "under" | "unknown" {
   const nums = String(budget ?? "").match(/\d+/g)?.map(Number) ?? [];
   if (!nums.length) return "unknown";
   // Use the TOP of the band: "$100-$130/week" tops out exactly at the floor,
-  // which is not headroom — treat anything that doesn't clear 130 as under.
+  // which is not headroom, treat anything that doesn't clear 130 as under.
   return Math.max(...nums) > 130 ? "in" : "under";
 }
 
-/** Long horizon is the whole thesis — Maksim took three years. */
+/** Long horizon is the whole thesis. Maksim took three years. */
 export function classifyCommit(len?: string): "strong" | "ok" | "unknown" {
   const s = normNum(len);
   if (!s) return "unknown";
@@ -352,7 +352,7 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
     tier = input.remote ? "review" : "unqualified";
     reasons.push(
       input.remote
-        ? `Outside Sydney (${area.matched}) — online only`
+        ? `Outside Sydney (${area.matched}), online only`
         : `Outside serviceable area (${area.matched})`,
     );
   } else if (area.fit === "unknown") {
@@ -362,7 +362,7 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
 
   // An explicit "no" on money still disqualifies. Silence does not.
   //
-  // The application deliberately stopped asking about money — no budget band,
+  // The application deliberately stopped asking about money, no budget band,
   // and the consent box names only the $199 assessment. Treating that silence
   // as "unconfirmed" capped every website lead at review, which meant tier
   // `qualified` was unreachable and the QualifiedLead pixel event had never
@@ -388,17 +388,17 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
   const bud = classifyBudget(input.budget);
   const com = classifyCommit(input.commitLength);
 
-  // Age can no longer disqualify. classifyAge never returns "out" — seniors and
+  // Age can no longer disqualify. classifyAge never returns "out", seniors and
   // professionals are in scope now, and young athletes get looked at rather
   // than binned.
   if (age === "edge" && tier === "qualified") {
     tier = "review";
-    reasons.push("Younger than the methodology assumes — worth a look");
+    reasons.push("Younger than the methodology assumes, worth a look");
   }
 
   if (lvl === "out") {
     tier = "unqualified";
-    reasons.push("Local/association club — not NPL, IFA or academy");
+    reasons.push("Local/association club, not NPL, IFA or academy");
   }
 
   if (bud === "under") {
@@ -415,12 +415,12 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
     reasons.push("Goal is general fitness, not the pathway");
   }
 
-  // Football only — a rugby or AFL lead must never promote to qualified, no
+  // Football only, a rugby or AFL lead must never promote to qualified, no
   // matter how well it scores on age, level and budget.
   const sportOk = sport.fit === "core";
 
   if (tier !== "unqualified") {
-    // `bud` only has to not be "under" — an explicit under-floor answer has
+    // `bud` only has to not be "under", an explicit under-floor answer has
     // already forced unqualified above, and an absent one must not block green.
     //
     // `tier === "qualified"` is load-bearing: this branch CONFIRMS a clean lead
@@ -439,7 +439,7 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
             : "Rep/academy+, budget clears",
       );
     } else if (lvl === "unknown" && age === "in" && bud === "in" && sportOk && tier === "qualified") {
-      // Form 1659777891796341 doesn't ask level — don't punish the lead for it,
+      // Form 1659777891796341 doesn't ask level, don't punish the lead for it,
       // but don't claim a level we never asked about either.
       reasons.push("Level not asked on this form");
     }
@@ -457,7 +457,7 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
  *
  * Always sends the standard `Lead` event so the existing pixel history and the
  * campaigns already optimising against it keep working. Additionally sends a
- * `QualifiedLead` custom event ONLY for tier === "qualified" — that custom
+ * `QualifiedLead` custom event ONLY for tier === "qualified", that custom
  * event is what a Meta custom conversion should be built on, since neither form
  * produces a distinct success URL to write a URL rule against.
  */
@@ -471,7 +471,7 @@ export function fireLeadPixel(result: QualifyResult, extra: Record<string, unkno
     lead_tier: result.tier,
     lead_area: result.area,
     lead_sport_fit: result.sportFit,
-    ...extra,
+   ...extra,
   };
 
   fbq("track", "Lead", params);

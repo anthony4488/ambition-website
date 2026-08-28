@@ -21,7 +21,7 @@ type InputStep = StepBase & { type: "text" | "email" | "tel" | "textarea"; place
 type ConsentStep = StepBase & { type: "consent"; label: string };
 /** Final step: name, email, phone and consent on one screen. Four separate
  *  steps for contact details was the biggest source of drop-off in a 12-step
- *  form — none of them qualify anything, they just collect. */
+ *  form, none of them qualify anything, they just collect. */
 type ContactStep = StepBase & { type: "contact"; label: string };
 type Step = RadioStep | InputStep | ConsentStep | ContactStep;
 
@@ -58,7 +58,7 @@ const STEPS: Step[] = [
   {
     id: "budget",
     type: "radio",
-    // Absorbed the old "are you ready to invest" step — the budget band is the
+    // Absorbed the old "are you ready to invest" step, the budget band is the
     // harder money signal and asking both was redundant.
     q: "What's your weekly budget for your athlete's development?",
     sub: "Our program runs from $130/week ongoing, plus a $199 starting assessment.",
@@ -114,7 +114,7 @@ export function SpeedSystemForm() {
   }, [step, started, current]);
 
   // Fire Meta Pixel on success. Sends the standard Lead event plus, for
-  // qualified leads only, a QualifiedLead custom event — this page never
+  // qualified leads only, a QualifiedLead custom event, this page never
   // changes URL on success, so a URL-rule custom conversion is impossible and
   // the qualification has to travel on the event itself.
   useEffect(() => {
@@ -122,9 +122,9 @@ export function SpeedSystemForm() {
     fireLeadPixel(qualification.current, { content_category: "apply" });
   }, [status]);
 
-  const set = (v: string) => setAnswers((a) => ({ ...a, [current.id]: v }));
+  const set = (v: string) => setAnswers((a) => ({...a, [current.id]: v }));
   /** The contact step writes several keys, so it can't use `set`. */
-  const setField = (k: string, v: string) => setAnswers((a) => ({ ...a, [k]: v }));
+  const setField = (k: string, v: string) => setAnswers((a) => ({...a, [k]: v }));
 
   const contactReady =
     (answers.name ?? "").trim().length > 1 &&
@@ -145,7 +145,7 @@ export function SpeedSystemForm() {
   };
 
   const pick = (v: string) => {
-    setAnswers((a) => ({ ...a, [current.id]: v }));
+    setAnswers((a) => ({...a, [current.id]: v }));
     setTimeout(() => setStep((s) => s + 1), 220);
   };
 
@@ -161,7 +161,7 @@ export function SpeedSystemForm() {
     // still marked qualified.
     // Every signal the qualifier understands must be passed. This previously
     // sent only suburb/sport/invest, so classifyAge, classifyLevel,
-    // classifyBudget and classifyCommit never ran on a website lead — age,
+    // classifyBudget and classifyCommit never ran on a website lead, age,
     // level, budget and commitment were silently ignored in the tier.
     const result = qualifyLead({
       suburb: a.suburb,
@@ -188,8 +188,8 @@ export function SpeedSystemForm() {
       utm.fbclid ? `fbclid: ${utm.fbclid}` : "",
       `Qualified: ${result.tier.toUpperCase()} (${result.reasons.join("; ")})`,
     ]
-      .filter(Boolean)
-      .join(" | ");
+     .filter(Boolean)
+     .join(" | ");
 
     try {
       if (supabase) {
@@ -440,7 +440,7 @@ export function SpeedSystemForm() {
             <a href="mailto:info@ambitionsportsperformance.com" className="underline">
               info@ambitionsportsperformance.com
             </a>
-            .
+           .
           </p>
         )}
       </div>

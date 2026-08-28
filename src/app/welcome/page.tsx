@@ -15,7 +15,7 @@ export default function WelcomePage() {
     const sp = new URLSearchParams(window.location.search);
     const tier = sp.get("tier") as LeadTier | null;
 
-    // No tier means this page wasn't reached by completing a form — a direct
+    // No tier means this page wasn't reached by completing a form, a direct
     // visit, a bookmark, or a back-button. It previously degraded to "review"
     // and fired anyway, which reported conversions that never happened AND
     // mislabelled real qualified leads as review.
@@ -29,7 +29,7 @@ export default function WelcomePage() {
       if (sessionStorage.getItem(key)) return;
       sessionStorage.setItem(key, "1");
     } catch {
-      // Storage blocked — firing a possible duplicate beats losing a real
+      // Storage blocked, firing a possible duplicate beats losing a real
       // conversion, so fall through.
     }
 
