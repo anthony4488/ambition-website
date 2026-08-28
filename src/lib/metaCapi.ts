@@ -57,7 +57,14 @@ export const LEAD_STAGE_EVENT = {
 export type LeadStage = keyof typeof LEAD_STAGE_EVENT;
 
 export type CapiEvent = {
-  eventName: "Purchase" | "Lead" | "InitiateCheckout" | (typeof LEAD_STAGE_EVENT)[LeadStage];
+  eventName:
+    | "Purchase"
+    | "Lead"
+    | "InitiateCheckout"
+    // The $3,500 to $4,000 enrolment. Kept separate from Purchase so a report
+    // buyer and a programme buyer are not the same signal to the optimiser.
+    | "ProgrammeStart"
+    | (typeof LEAD_STAGE_EVENT)[LeadStage];
   /** Must match the browser pixel's eventID when both fire, or Meta double-counts. */
   eventId: string;
   email?: string | null;

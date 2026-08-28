@@ -68,6 +68,7 @@ export default function FalconPage() {
           <div className="mx-auto mt-9 max-w-md">
             <BuyButton
               href={BUY}
+              product="assessment_online"
               className="group inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-accent px-8 py-5 text-base font-extrabold uppercase tracking-[0.08em] text-white transition-all hover:bg-orange-500 hover:shadow-xl hover:shadow-accent/25"
             >
               Get my breakdown, {PRICE}
@@ -222,6 +223,7 @@ export default function FalconPage() {
           <div className="mt-8">
             <BuyButton
               href={BUY}
+              product="assessment_online"
               className="group inline-flex items-center justify-center gap-2.5 rounded-full bg-accent px-8 py-5 text-base font-extrabold uppercase tracking-[0.08em] text-white transition-all hover:bg-orange-500"
             >
               Get my breakdown, {PRICE}

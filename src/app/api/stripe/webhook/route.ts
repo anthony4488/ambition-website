@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { eventNameForProduct, loadAttribution } from "@/lib/checkoutAttribution";
 import crypto from "crypto";
 import { sendSms, normaliseAu } from "@/lib/nurture";
 import { sendTelegramMessage, escapeHtml } from "@/lib/telegram";
@@ -133,6 +134,15 @@ export async function POST(req: NextRequest) {
   }
   const currency = (s.currency || ASSESSMENT_CURRENCY).toUpperCase();
 
+  // What the buyer's browser knew on the way to Stripe. /api/checkout stashed
+  // it against the client_reference_id token, because this request comes from
+  // Stripe and carries no cookies, no IP and no user agent of its own. Without
+  // it Meta scored Purchase 3.2 out of 10 on match quality against 8.7 for Lead.
+  const attr = await loadAttribution(ref);
+  // One event name, one meaning. A $200 report and a $3,500 programme are
+  // different buyers, so they must not train the optimiser as the same event.
+  const eventName = eventNameForProduct(attr?.product);
+
   // Stripe's event id is stable across retries, reuse it as the dedup key so a
   // redelivery can't double-count the Purchase in Meta.
   const eventId = ev.id || s.id || `stripe_${Date.now()}`;
@@ -152,13 +162,17 @@ export async function POST(req: NextRequest) {
     capi = { ok: false, detail: "skipped. Stripe test payment, no META_CAPI_TEST_CODE set" };
   } else {
     capi = await sendCapiEvent({
-      eventName: "Purchase",
+      eventName,
       eventId,
       email,
       phone,
       leadId: leadgenId,
       value,
       currency,
+      fbp: attr?.fbp,
+      fbc: attr?.fbc,
+      clientIp: attr?.clientIp,
+      userAgent: attr?.userAgent,
       actionSource: "website",
       eventSourceUrl: process.env.NEXT_PUBLIC_SITE_URL
         ? `${process.env.NEXT_PUBLIC_SITE_URL}/apply`
@@ -225,7 +239,8 @@ export async function POST(req: NextRequest) {
       `💵 $${value ?? "?"} ${currency}`,
       "",
       leadgenId ? `🎯 Meta lead ${escapeHtml(leadgenId)}` : "🎯 No leadgen_id, attribution will fall back to email/phone",
-      `📡 CAPI Purchase: ${capi.ok ? "✅ sent" : `❌ ${escapeHtml(capi.detail)}`}`,
+      `📡 CAPI ${eventName}: ${capi.ok ? "✅ sent" : `❌ ${escapeHtml(capi.detail)}`}` +
+      `${attr ? "" : " · no browser match keys"}`,
       `💬 Confirmation SMS: ${smsOk ? "✅" : "❌"}`,
       "",
       "👉 Text them to book the time.",
