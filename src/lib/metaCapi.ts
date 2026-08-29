@@ -73,8 +73,12 @@ export type CapiEvent = {
   leadId?: string | null;
   value?: number;
   currency?: string;
-  /** Where the conversion happened. Stripe-hosted checkout counts as "website". */
-  actionSource?: "website" | "system_generated";
+  /**
+   * Where the conversion happened. Stripe-hosted checkout counts as "website".
+   * A bank transfer logged by hand is "other": it did not happen on the site,
+   * and claiming it did costs match quality rather than helping it.
+   */
+  actionSource?: "website" | "system_generated" | "other" | "physical_store";
   eventSourceUrl?: string;
   clientIp?: string | null;
   userAgent?: string | null;

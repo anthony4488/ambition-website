@@ -3,6 +3,7 @@ import { sendSms } from "@/lib/nurture";
 import { sendTelegramMessage, answerCallbackQuery } from "@/lib/telegram";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { sendAssessmentLink, parseClientRef } from "@/lib/booking";
+import { parsePaidCommand, recordManualPayment } from "@/lib/manualPayment";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -92,6 +93,36 @@ export async function POST(req: NextRequest) {
   const text = msg?.text;
   const chatId = String(msg?.chat?.id ?? "");
   const allowed = process.env.TELEGRAM_CHAT_ID;
+
+  // `/paid <email|phone> <amount> [product]`
+  //
+  // Most programme money arrives by bank transfer, and a bank feed has no email
+  // on it, so Meta could never match those buyers. The pixel was therefore
+  // trained on card payers only. This is the human step that closes that gap,
+  // and it doubles as the first structured record of who paid what.
+  if (text?.trim().toLowerCase().startsWith("/paid")) {
+    if (allowed && chatId !== String(allowed)) return Response.json({ ok: true });
+
+    const parsed = parsePaidCommand(text);
+    if ("error" in parsed) {
+      await sendTelegramMessage(`⚠️ ${parsed.error}`);
+      return Response.json({ ok: true });
+    }
+
+    const r = await recordManualPayment(parsed);
+    const money = `$${parsed.amount.toLocaleString("en-AU")}`;
+    await sendTelegramMessage(
+      [
+        r.ok ? `✅ Logged ${money}` : `⚠️ Logged ${money}, but Meta rejected it`,
+        `👤 ${parsed.identifier} (matched on ${r.matchedOn})`,
+        `📡 ${r.eventName}: ${r.capi.ok ? "sent" : r.capi.detail ?? "failed"}`,
+        r.logged ? "" : "🗄 Not saved to the payments table, run the SQL",
+      ]
+        .filter(Boolean)
+        .join("\n"),
+    );
+    return Response.json({ ok: true });
+  }
 
   // Only a reply, from the authorised chat, to one of our forwarded SMS alerts.
   if (!quoted || !text || (allowed && chatId !== String(allowed))) {
