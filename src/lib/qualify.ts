@@ -169,6 +169,15 @@ export function classifyArea(suburb?: string): { fit: AreaFit; matched: string |
   const out = matches(s, OUT_OF_AREA_MARKERS) ?? matches(s, OUT_OF_CATCHMENT);
   if (out) return { fit: "out_of_area", matched: out };
 
+  // "Elsewhere in Sydney" on the Meta form is an explicit "I'm in the city but
+  // not in one of your catchments". It must land in review, not in_area: the
+  // city-level fallback below would otherwise read the word "sydney" and score
+  // it as fully in-catchment, firing QualifiedLead for someone an hour away.
+  // Checked before the marker list because the option text carries no suburb.
+  if (matches(s, ["elsewhere in sydney", "elsewhere"])) {
+    return { fit: "unknown", matched: null };
+  }
+
   const inArea = matches(s, SYDNEY_MARKERS);
   if (inArea) return { fit: "in_area", matched: inArea };
 

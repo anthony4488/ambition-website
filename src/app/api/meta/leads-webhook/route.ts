@@ -47,11 +47,25 @@ type WebhookBody = { entry?: WebhookEntry[] };
 
 // Pull the common fields out of Facebook's field_data array (handles full_name
 // or first/last, email, and phone under a few possible key names).
+// Meta derives field_data[].name from the question text, lowercased with the
+// spaces turned into underscores ("How old is your athlete?" arrives as
+// "how_old_is_your_athlete"). The patterns below used to be written with
+// spaces, so every multi-word one ("how old", "what level", "where are you",
+// "how long") could never match anything and those answers were silently
+// dropped. Flattening both sides to spaced words makes either spelling work.
+const flattenKey = (s: unknown): string =>
+  String(s ?? "")
+    .toLowerCase()
+    .replace(/[_-]+/g, " ")
+    .replace(/[^a-z0-9+\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
 function pickFields(fd: FieldDatum[]) {
   const get = (...keys: string[]) => {
     for (const f of fd) {
-      const n = (f.name || "").toLowerCase();
-      if (keys.some((k) => n === k || n.includes(k))) return f.values?.[0];
+      const n = flattenKey(f.name);
+      if (keys.some((k) => n === k || n.includes(flattenKey(k)))) return f.values?.[0];
     }
     return undefined;
   };
@@ -64,13 +78,42 @@ function pickFields(fd: FieldDatum[]) {
     phone: get("phone_number", "phone"),
     sport: get("sport"),
     // Live Meta form answers, these are the real LTV filters.
-    suburb: get("suburb", "where are you", "city", "postcode", "location"),
+    //
+    // "venue" comes first on the area lookup: the rebuilt form asks which venue
+    // the athlete can get to instead of asking for a suburb in free text, which
+    // is what let joke answers ("Canberra") through in the first place. A venue
+    // name is already an in-catchment marker, so classifyArea reads it directly.
+    suburb: get(
+      "venue",
+      "which venue",
+      "get to",
+      "suburb",
+      "where are you",
+      "city",
+      "postcode",
+      "location",
+    ),
     ageBand: get("how old", "age"),
-    budget: get("budget", "weekly budget"),
-    commitLength: get("how long", "commit"),
-    level: get("what level", "level does"),
-    goal: get("goal"),
+    // Deliberately not a bare "week": a later question like "how many sessions
+    // per week" would match it and be read as the budget answer.
+    budget: get("weekly budget", "budget"),
+    commitLength: get("how long", "commit", "prepared to commit"),
+    level: get("what level", "level does", "level", "play at"),
+    goal: get("goal", "what is your goal"),
   };
+}
+
+/**
+ * Every field key Meta actually sent, as "key=value" pairs.
+ *
+ * Recorded on the lead row so a mapping miss is visible in the data instead of
+ * showing up as a silent "Sport not provided" on every lead. When the form
+ * changes, the next lead through says exactly what the new keys are.
+ */
+function rawFieldSummary(fd: FieldDatum[]): string {
+  return fd
+    .map((f) => `${f.name ?? "?"}=${(f.values?.[0] ?? "").slice(0, 40)}`)
+    .join(" | ");
 }
 
 async function fetchLead(leadgenId: string) {
@@ -80,7 +123,7 @@ async function fetchLead(leadgenId: string) {
   const res = await fetch(url);
   const j = (await res.json()) as { field_data?: FieldDatum[] };
   if (!res.ok || !j.field_data) return null;
-  return pickFields(j.field_data);
+  return { ...pickFields(j.field_data), raw: rawFieldSummary(j.field_data) };
 }
 
 // POST, receives leadgen events, fetches each lead, then mirrors the website
@@ -138,7 +181,7 @@ export async function POST(req: NextRequest) {
             leadgen_id: String(leadgenId),
             lead_tier: q.tier,
             source: "fb-lead",
-            notes: `Source: Facebook Lead Form | ${q.reasons.join("; ")}`,
+            notes: `Source: Facebook Lead Form | ${q.reasons.join("; ")} | fields: ${lead.raw}`,
           });
         } catch {
           /* ignore insert errors */
