@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Figure } from "@/components/Figure";
-import { PaymentPlans } from "@/components/PaymentPlans";
 import { BuyButton } from "@/components/BuyButton";
 
 // Online sprint assessment, $200. Most ad traffic lands on the Meta instant
@@ -74,7 +73,6 @@ export default function FalconPage() {
               Get my breakdown, {PRICE}
               <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
             </BuyButton>
-            <PaymentPlans tone="dark" className="mt-4" />
           </div>
         </div>
       </section>
@@ -229,7 +227,6 @@ export default function FalconPage() {
               Get my breakdown, {PRICE}
               <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
             </BuyButton>
-            <PaymentPlans tone="dark" className="mt-4" />
           </div>
           <p className="mt-8 text-xs text-gray-500">
             In Sydney and want to train in person?{" "}

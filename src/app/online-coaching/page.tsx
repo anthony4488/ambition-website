@@ -4,7 +4,6 @@ import Link from "next/link";
 import { Section } from "@/components/Section";
 import { FadeIn } from "@/components/FadeIn";
 import { EnquiryForm } from "@/components/EnquiryForm";
-import { PaymentPlans } from "@/components/PaymentPlans";
 import { Figure } from "@/components/Figure";
 import { Check, ArrowRight, PlayCircle, ShieldCheck } from "lucide-react";
 
@@ -132,7 +131,6 @@ export default function OnlineCoachingPage() {
                 See The Proof
               </Link>
             </div>
-            <PaymentPlans tone="dark" className="mt-5 !items-start" />
           </FadeIn>
         </div>
       </section>

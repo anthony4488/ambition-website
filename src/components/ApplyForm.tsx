@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { Check, Loader2 } from "lucide-react";
 import { fireLeadPixel, qualifyLead, type QualifyResult } from "@/lib/qualify";
 import { trackFormComplete, trackFormStart } from "@/lib/formTelemetry";
-import { PaymentPlans } from "@/components/PaymentPlans";
 
 // Single-screen application form for /apply.
 //
@@ -467,7 +466,6 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
       <p className="mt-4 text-center text-[14px] leading-relaxed text-gray-500">
         Every application is read by a coach. We reply within 24 hours.
       </p>
-      <PaymentPlans className="mt-2" />
     </form>
   );
 }
