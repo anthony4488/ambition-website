@@ -11,9 +11,15 @@ export const metadata: Metadata = {
   description: "From 17 km/h to 38 km/h. We identify limiting factors and solve them one by one. Laser timing, 240fps video, data-driven speed development.",
 };
 
+// Added Arncliffe and Homebush 2026-08-31. The apply form has offered both as
+// selectable locations for a while (see ApplyForm LOCATIONS) while this public
+// list still showed only two parks, so anyone checking the site before applying
+// could not see that we train near them.
 const locations = [
   { name: "Georges Hall", address: "Crest Soccer Fields, Georges Hall NSW 2198", sessions: "Mon-Fri: 3:30-8:45 PM, Sat-Sun: 10:20 AM-3:35 PM" },
   { name: "Strathfield Park", address: "Strathfield Park, Inner West Sydney", sessions: "Mon-Fri: 3:30-8:45 PM, Sat-Sun: 10:20 AM-3:35 PM" },
+  { name: "Riverine Park", address: "Riverine Park, Arncliffe NSW 2205", sessions: "Mon-Fri: 3:30-8:45 PM, Sat-Sun: 10:20 AM-3:35 PM" },
+  { name: "Bressington Park", address: "Bressington Park, Homebush NSW 2140", sessions: "Mon-Fri: 3:30-8:45 PM, Sat-Sun: 10:20 AM-3:35 PM" },
   { name: "Online", address: "Worldwide", sessions: "Flexible scheduling" },
 ];
 

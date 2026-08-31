@@ -80,12 +80,26 @@ const SYDNEY_MARKERS = [
   "georges hall", "bankstown", "chester hill", "sefton", "yagoona", "birrong",
   "condell park", "padstow", "revesby", "panania", "east hills", "milperra",
   "picnic point", "lansdowne", "villawood", "regents park", "potts hill",
-  // Arncliffe venue. The application offers Arncliffe as one of three
-  // locations, but the suburb was never in this list, so anyone picking it
-  // scored "Suburb not recognised" and parked in review. Only the venue itself
-  // is listed, its surrounding catchment has not been defined the way
-  // Strathfield's and Georges Hall's have.
-  "arncliffe",
+  // Arncliffe venue, Riverine Park. Confirmed as a standing location 2026-08-31.
+  //
+  // Previously ONLY the word "arncliffe" was here, with a note that the
+  // surrounding catchment had never been defined. That meant every St George
+  // suburb within a few minutes of the venue scored "Suburb not recognised" and
+  // parked in review: Rockdale, Kogarah, Banksia, Bexley, Wolli Creek, Turrella,
+  // Bardwell Park, Brighton-Le-Sands and the rest. Those are serviceable leads
+  // being held back, which is the mirror image of the 2026-08-08 problem where
+  // unserviceable ones were being scored as qualified.
+  //
+  // All of the below are inside the same "roughly a 20 minute drive" rule the
+  // other two venues use.
+  "arncliffe", "wolli creek", "turrella", "banksia", "rockdale", "kyeemagh",
+  "bardwell park", "bardwell valley", "bexley", "bexley north", "kogarah",
+  "carlton", "allawah", "hurstville", "beverley park", "brighton le sands",
+  "brighton-le-sands", "monterey", "ramsgate", "sans souci", "sandringham",
+  "dolls point", "st george",
+  // Inner south, a similar distance to Arncliffe as Strathfield's ring is to
+  // Strathfield. Flag if these turn out to churn.
+  "tempe", "sydenham", "st peters", "mascot", "botany", "eastlakes", "wolli",
   // Canterbury
   "canterbury", "campsie", "belmore", "lakemba", "wiley park", "punchbowl",
   "greenacre", "roselands", "belfield", "clemton park", "hurlstone park",

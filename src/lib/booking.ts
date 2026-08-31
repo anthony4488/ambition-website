@@ -83,7 +83,7 @@ export async function sendAssessmentLink(lead: {
   const body =
     `${firstName(lead.name)}. Anthony from Ambition. ` +
     `Here's the link to lock in your speed assessment: ${link} ` +
-    `Once it's paid I'll text you to book the time. Georges Hall or Strathfield.`;
+    `Once it's paid I'll text you to book the time. Georges Hall, Strathfield, Arncliffe or Homebush.`;
 
   const res = await sendSms(lead.phone, body);
 
