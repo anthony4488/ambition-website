@@ -40,6 +40,21 @@ const FOR_YOU = [
   "You train hard, you are not injured, and you are not getting faster",
 ];
 
+// The symptom stack. These are the things an adult actually FEELS, in the order they
+// tend to say them, taken from what real clients have said rather than invented. The
+// page previously argued the mechanism without ever naming the experience, which is
+// what makes someone stop and read. Note that almost none of them require the reader
+// to have ever run: a tight back and 4pm stiffness are true of a man who never has.
+const SYMPTOMS = [
+  "Your lower back is tight most days and never fully lets go",
+  "Your hamstring has gone before, or you are quietly waiting for it to",
+  "You do not run at a hundred percent any more, and you stopped noticing when that changed",
+  "Stiff getting out of the car. Stiff standing up from the desk at four in the afternoon",
+  "You warm up longer than you used to and it does not make much difference",
+  "You feel like you are working much harder than you are actually moving",
+  "You are strong. You can lift. None of it shows up when you move",
+];
+
 const STEPS = [
   { n: "01", t: "You film it", d: "One run on your phone. Side on, 20 to 40 metres. No equipment, no appointment, no travel." },
   { n: "02", t: "You send it", d: "Straight through on WhatsApp. That's when the 48 hours starts." },
@@ -59,7 +74,10 @@ const PROOF = [
   "An international with a €1.5M transfer",
   "More than 1,000 athletes measured",
   "84 athletes broken down frame by frame",
-  "23 years coaching, 8 years playing in Europe",
+  // CORRECTED 2026-08-31. The old line read "23 years coaching", which is wrong:
+  // Anthony is 32. It is 11 years running the coaching programme and 23 years
+  // chasing this himself since he was nine.
+  "11 years coaching, 23 years chasing it myself",
 ];
 
 export default function FalconPage() {
@@ -71,14 +89,18 @@ export default function FalconPage() {
           <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-accent">
             Online sprint assessment · Ages 30 to 60 · {PRICE}
           </p>
+          {/* THE LOCKED HEADLINE. This exact line must also open the ads: the page and
+              the ad have to carry the same sentence, and Andromeda reads it for targeting.
+              It replaced "You didn't get slow because you got older", which assumed the
+              reader had once been fast and therefore read out every man who never was. */}
           <h1 className="mt-4 text-[36px] font-extrabold leading-[1.05] tracking-tight text-white sm:text-6xl">
-            You didn&apos;t get slow because you got older.<br />
-            <span className="text-accent">You got slow because nobody ever fixed how you run.</span>
+            You don&apos;t want to be fitter.<br />
+            <span className="text-accent">You want to be an athlete, and look like one.</span>
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-gray-300 sm:text-lg">
-            Film one run on your phone. It gets analysed at 240 frames a second and the full
-            breakdown comes back within 48 hours. Anywhere in the world, nothing in person, no
-            appointment, no travel.
+            Whether you were quick once and lost it, or you have never known what your own top
+            speed is. Film one run on your phone, and the full breakdown comes back within 48
+            hours. Anywhere in the world, nothing in person, no appointment, no travel.
           </p>
           <div className="mx-auto mt-9 max-w-md">
             <BuyButton
@@ -89,6 +111,40 @@ export default function FalconPage() {
               Get my breakdown, {PRICE}
               <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
             </BuyButton>
+          </div>
+        </div>
+      </section>
+
+      {/* The symptom stack sits FIRST, before the argument, because recognition comes
+          before persuasion. He has a body full of symptoms and no diagnosis, and the
+          last line is the product: nobody has ever told him why. */}
+      <section className="border-b border-gray-200 bg-white py-16 sm:py-24">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-accent">See how many of these you have</p>
+          <h2 className="mt-3 text-3xl font-extrabold leading-tight tracking-tight text-gray-900 sm:text-4xl">
+            You have been told this is just what happens now.
+          </h2>
+          <ul className="mt-8 space-y-0">
+            {SYMPTOMS.map((s) => (
+              <li key={s} className="flex items-start gap-4 border-b border-gray-100 py-4 text-[16px] leading-relaxed text-gray-700">
+                <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                {s}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-8 space-y-4 text-[16px] leading-relaxed text-gray-600">
+            <p className="font-semibold text-gray-900">
+              And nobody has ever been able to tell you why.
+            </p>
+            <p>
+              You have been given the same three answers your whole life. Stretch more. Warm up
+              properly. You are getting older. So you assume it is age and you get on with it,
+              because what else is there.
+            </p>
+            <p>
+              Here is the part nobody tells you: those are not seven problems. That is one
+              problem, and it is visible on film in about two seconds.
+            </p>
           </div>
         </div>
       </section>
@@ -115,9 +171,13 @@ export default function FalconPage() {
               trainable at 30, at 45 and at 60.
             </p>
             <p>
-              I have assessed a 46 year old who bounded further than his age standard and still could
-              not convert any of it into speed. The engine was there the whole time. He had lost
-              access to it, which is a completely different problem, and a fixable one.
+              {/* Pete's FIGURES are flagged as inflated in the ads ledger, so the old
+                  "bounded further than his age standard" claim is gone. His mechanism and
+                  his own words are not in question, so the story stands without a number. */}
+              A 46 year old came to me and said one thing: I just want to run. He had lifted for
+              years and told me he was strong but thought he needed more work. His legs were never
+              the problem. The engine was there the whole time, and he had lost access to it, which
+              is a completely different problem and a fixable one.
             </p>
             <p className="font-semibold text-gray-900">
               Before you accept that this is just what happens, find out what is actually happening.
