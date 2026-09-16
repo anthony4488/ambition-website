@@ -1,0 +1,109 @@
+/* Editorial styling, scoped to /falcon.
+ *
+ * Deliberately the SAME design language as the post-purchase filming guide at
+ * assessment.ambitionsportsperformance.com/your-assessment. Ad, landing page,
+ * filming guide and report all reading as one company is what actually looks
+ * expensive. The previous version of this page was generic SaaS: pill buttons,
+ * blurred glows, alternating white and near-black. That reads as a template.
+ *
+ * Nothing here leaks: every rule is under .falcon-root. */
+
+.falcon-root {
+  --ink: #0e0e0c;
+  --ink-soft: #2a2825;
+  --mute: #6b6862;
+  --hairline: rgba(14, 14, 12, 0.14);
+  --hairline-soft: rgba(14, 14, 12, 0.07);
+  --bone: #f4efe6;
+  --cream: #faf6ec;
+  --paper: #efe9dd;
+  --night: #0a0908;
+  --accent: #ff6a1f;
+  --accent-deep: #e35613;
+
+  font-family: var(--font-fdisplay-body), ui-sans-serif, system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--bone);
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.falcon-root * {
+  box-sizing: border-box;
+}
+
+.f-display {
+  font-family: var(--font-fdisplay), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: 0.005em;
+  line-height: 0.86;
+}
+
+.f-serif {
+  font-family: var(--font-fserif), ui-serif, Georgia, serif;
+  font-style: italic;
+}
+
+.f-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Barely-there paper grain. Adds depth without announcing itself. */
+.f-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.045;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+.f-grain-light {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='9'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+@keyframes f-rise {
+  0% { opacity: 0; transform: translateY(14px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.f-rise > * {
+  opacity: 0;
+  animation: f-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+.f-rise > *:nth-child(1) { animation-delay: 0.05s; }
+.f-rise > *:nth-child(2) { animation-delay: 0.15s; }
+.f-rise > *:nth-child(3) { animation-delay: 0.25s; }
+.f-rise > *:nth-child(4) { animation-delay: 0.35s; }
+.f-rise > *:nth-child(5) { animation-delay: 0.45s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .f-rise > * { opacity: 1; animation: none; }
+}
+
+/* The CTA. A rectangular block, not a pill. Same shape as the upload button on
+   the filming guide, so the buyer meets the same button twice. */
+.f-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  width: 100%;
+  background: var(--accent);
+  color: var(--night);
+  padding: 1.5rem;
+  text-align: left;
+  transition: background-color 0.3s ease;
+}
+.f-cta:hover { background: var(--accent-deep); }
+@media (min-width: 640px) {
+  .f-cta { width: auto; padding: 1.75rem 2rem; }
+}
