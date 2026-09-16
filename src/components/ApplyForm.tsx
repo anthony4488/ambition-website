@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { Check, Loader2 } from "lucide-react";
 import { fireLeadPixel, qualifyLead, type QualifyResult } from "@/lib/qualify";
 import { trackFormComplete, trackFormStart } from "@/lib/formTelemetry";
@@ -257,13 +258,42 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
           <Check size={30} className="text-accent" strokeWidth={2.5} />
         </div>
         <h2 className="text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">
-          Application received.
+          Got it{v.athleteName.trim() ? `, ${v.athleteName.trim().split(/\s+/)[0]}` : ""}.
         </h2>
-        <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-gray-600">
-          A coach reads every application. If {v.athleteName.trim() || "your athlete"} is a fit,
-          we&apos;ll call or text within 24 hours to talk through the assessment.
+        {/* Confirmed, not conditional. The old copy said a coach would call "if"
+            the athlete was a fit, "within 24 hours", and never showed the number,
+            so an unknown Sydney mobile ringing 30 minutes later was not the call
+            anyone was waiting for. */}
+        <p className="mx-auto mt-3 max-w-sm text-[15px] leading-relaxed text-gray-700">
+          Anthony reads every application himself and will call you{" "}
+          <strong className="font-semibold text-gray-900">today, usually within the hour.</strong>
         </p>
-        <p className="mt-6 text-xs italic text-gray-400">Keep your phone close.</p>
+
+        <p className="mt-6 text-xs font-semibold uppercase tracking-[0.14em] text-gray-400">
+          He&apos;ll be calling from
+        </p>
+        <a
+          href="tel:+61450205033"
+          className="mt-1 block text-2xl font-extrabold tracking-tight text-accent sm:text-3xl"
+        >
+          0450 205 033
+        </a>
+        <p className="mx-auto mt-2 max-w-xs text-sm text-gray-600">
+          Save it now so you know it&apos;s him and not a number you don&apos;t recognise.
+        </p>
+
+        <p className="mx-auto mt-6 max-w-sm text-sm leading-relaxed text-gray-600">
+          It takes about ten minutes and it isn&apos;t a sales call. If the assessment
+          isn&apos;t worth doing for {v.athleteName.trim() || "your athlete"}, he&apos;ll say so
+          on the phone.
+        </p>
+
+        <Link
+          href="/success-stories"
+          className="mt-6 inline-block rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-800 transition-colors hover:border-accent hover:text-accent"
+        >
+          While you wait: what we measure, and what happens after
+        </Link>
       </div>
     );
   }

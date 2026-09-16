@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { enrollNurture } from "@/lib/enrollNurture";
 import { leadButtons } from "@/lib/leadStatus";
+import { sendApplicationReceived } from "@/lib/applicationEmail";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { sendCapiEvent, splitName } from "@/lib/metaCapi";
 
@@ -170,6 +171,18 @@ export async function POST(req: NextRequest) {
     } catch {
       /* non-fatal: Telegram + email below still deliver the lead */
     }
+  }
+
+  // 0b) The one email the applicant actually needs: who is calling, from which
+  // number, and roughly when. Kept separate from the nurture so it ships without
+  // reopening the SMS question. Fire and forget, a mail failure must not cost
+  // us the lead.
+  if (str(b.source) === "apply") {
+    void sendApplicationReceived({
+      name: str(b.name),
+      email: str(b.email),
+      athleteName: str(b.athlete_name),
+    });
   }
 
   // 1) Auto-nurture enrollment (fires touch 0 email + SMS)
