@@ -4,6 +4,7 @@ import { sendTelegramMessage, answerCallbackQuery } from "@/lib/telegram";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { sendAssessmentLink, parseClientRef } from "@/lib/booking";
 import { parsePaidCommand, recordManualPayment } from "@/lib/manualPayment";
+import { markLead } from "@/lib/leadStatus";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -85,6 +86,30 @@ export async function POST(req: NextRequest) {
       return Response.json({ ok: true });
     }
     await handleSendLink(cb);
+    return Response.json({ ok: true });
+  }
+
+  // A tap on Spoke / No answer / Booked on a lead alert. callback_data is
+  // "lead:<action>:<row id>". This is the only thing that has ever written to
+  // status, contacted_at or booked_at, so pick-up rate and booking rate become
+  // readable from the table instead of from memory.
+  if (cb?.data?.startsWith("lead:")) {
+    const cbChat = String(cb.message?.chat?.id ?? "");
+    const allowedChat = process.env.TELEGRAM_CHAT_ID;
+    if (allowedChat && cbChat !== String(allowedChat)) {
+      return Response.json({ ok: true });
+    }
+    const [, action, ...rest] = cb.data.split(":");
+    const id = rest.join(":");
+    if (action !== "contacted" && action !== "noanswer" && action !== "booked") {
+      await answerCallbackQuery(cb.id ?? "", "Unknown action");
+      return Response.json({ ok: true });
+    }
+    const r = await markLead(id, action);
+    await answerCallbackQuery(
+      cb.id ?? "",
+      r.ok ? `${r.name ?? "Lead"} · ${r.label}` : `Not saved: ${r.detail}`,
+    );
     return Response.json({ ok: true });
   }
 

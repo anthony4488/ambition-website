@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
 import { enrollNurture } from "@/lib/enrollNurture";
+import { leadButtons } from "@/lib/leadStatus";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { sendCapiEvent, splitName } from "@/lib/metaCapi";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -88,11 +90,15 @@ export async function POST(req: NextRequest) {
   // bundle, which is the single biggest JS cost on a page whose whole job is
   // to load fast on mobile. Gated on source so EnquiryForm, which still
   // inserts from the client, doesn't write a duplicate row.
+  // Captured from the insert so the Telegram alert can carry call-outcome
+  // buttons that write back to this exact row.
+  let leadRowId: string | null = null;
+
   if (str(b.source) === "apply") {
     const utmIn = b.utm && typeof b.utm === "object" ? (b.utm as Record<string, string>) : {};
     const reasonList = Array.isArray(b.qualify_reasons) ? (b.qualify_reasons as unknown[]).map(String) : [];
     const notes = [
-      `Program: ${str(b.program) ?? "SPEED COACHING"} ($130-160/wk + $199 assessment)`,
+      `Program: ${str(b.program) ?? "SPEED COACHING"} ($100/wk, 10wk block + $200 assessment)`,
       `Athlete: ${str(b.athlete_name) ?? "n/a"}`,
       // The website form now sends a banded `age`; Meta lead forms always did.
       // `dob` is still read first for any older payload still in flight.
@@ -103,19 +109,64 @@ export async function POST(req: NextRequest) {
       `Email: ${str(b.email) ?? "n/a"}`,
       str(b.goal) ? `Wants to change: ${str(b.goal)}` : "",
       "Consent: YES",
+      // utm_content is {{adset.name}} on every ad, i.e. WHICH RING produced this
+      // lead. It was captured client-side and then dropped here, which is why
+      // ring attribution has never been possible from the lead record.
+      utmIn.utm_content ? `Ring: ${utmIn.utm_content}` : "",
+      utmIn.utm_term ? `Ad: ${utmIn.utm_term}` : "",
       utmIn.utm_source ? `UTM: ${utmIn.utm_source} / ${utmIn.utm_medium ?? ""} / ${utmIn.utm_campaign ?? ""}` : "",
       utmIn.fbclid ? `fbclid: ${utmIn.fbclid}` : "",
       `Qualified: ${String(b.tier ?? "unknown").toUpperCase()}${reasonList.length ? ` (${reasonList.join("; ")})` : ""}`,
     ].filter(Boolean).join(" | ");
 
+    // Tell Meta what this lead actually WAS, not just that a form was sent.
+    // The browser already fires Lead + QualifiedLead, but browser-only events
+    // are lost to ad blockers and ITP, and cannot send hashed email/phone. This
+    // server copy carries both, and shares the browser's event_id so Meta
+    // dedupes the pair rather than double-counting. Fire and forget: a Meta
+    // outage must never cost us the lead itself.
+    {
+      const tier = String(b.tier ?? "unknown");
+      const eventId = str(b.event_id) || ("lead_" + Date.now());
+      const shared = {
+        eventId,
+        email: str(b.email) ?? null,
+        phone: str(b.phone) ?? null,
+        clientIp: req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null,
+        userAgent: req.headers.get("user-agent"),
+        fbp: req.cookies.get("_fbp")?.value ?? null,
+        fbc: req.cookies.get("_fbc")?.value ?? null,
+        customData: { lead_tier: tier },
+        ...splitName(str(b.name)),
+        country: "au",
+        externalId: str(b.email) ?? str(b.phone) ?? null,
+      };
+      void sendCapiEvent({ ...shared, eventName: "Lead" });
+      if (tier === "qualified") void sendCapiEvent({ ...shared, eventName: "QualifiedLead" });
+    }
+
     try {
       const admin = getSupabaseAdmin();
-      await admin.from("assessment_leads").insert({
-        name: str(b.name),
-        phone: str(b.phone),
-        source: "apply",
-        notes,
-      });
+      const { data: row } = await admin
+        .from("assessment_leads")
+        .insert({
+          name: str(b.name),
+          phone: str(b.phone),
+          // Stored as its own column, not just inside `notes`, so the Stripe
+          // webhook can match a payment back to this lead and carry its tier
+          // onto the Purchase event. Phone alone matched too unreliably.
+          email: str(b.email) ?? null,
+          source: "apply",
+          // The qualifier runs on every submit and returns a tier, which was
+          // then dropped. Every September lead has a null lead_tier for that
+          // reason, so the widened qualifier could never be checked against
+          // who actually bought.
+          lead_tier: String(b.tier ?? "unknown"),
+          notes,
+        })
+        .select("id")
+        .single();
+      leadRowId = row?.id ? String(row.id) : null;
     } catch {
       /* non-fatal: Telegram + email below still deliver the lead */
     }
@@ -157,6 +208,8 @@ export async function POST(req: NextRequest) {
     ["Budget", b.budget],
     ["Tier", b.tier],
     ["Source", b.source],
+    ["Ring / ad set", utmObj.utm_content],
+    ["Ad", utmObj.utm_term],
     ["Campaign", utmObj.utm_campaign],
     ["Ad source", utmObj.utm_source],
   ];
@@ -199,12 +252,24 @@ export async function POST(req: NextRequest) {
   if (b.why_now) lines.push("", `🔥 <b>Why now:</b> ${esc(b.why_now)}`);
   if (utm.utm_source || utm.utm_campaign || utm.fbclid)
     lines.push("", `📣 ${esc(utm.utm_source ?? "ad")}${utm.utm_campaign ? " / " + esc(utm.utm_campaign) : ""}${utm.fbclid ? " · fbclid" : ""}`);
+  // Which ring produced this lead, on the alert itself so it is visible without
+  // opening anything. utm_content is the ad set name, utm_term the ad name.
+  if (utm.utm_content)
+    lines.push(`<b>Ring:</b> ${esc(utm.utm_content)}${utm.utm_term ? " / " + esc(utm.utm_term) : ""}`);
 
   try {
     const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chat_id: chatId, text: lines.join("\n"), parse_mode: "HTML", disable_web_page_preview: true }),
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: lines.join("\n"),
+        parse_mode: "HTML",
+        disable_web_page_preview: true,
+        // Spoke / No answer / Booked. One tap records the call outcome against
+        // this row while the phone is already in his hand.
+        ...(leadRowId ? { reply_markup: { inline_keyboard: leadButtons(leadRowId) } } : {}),
+      }),
     });
     const j = await res.json();
     if (!j.ok) throw new Error(j.description || "telegram send failed");
