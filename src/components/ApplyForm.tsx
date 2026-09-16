@@ -41,17 +41,19 @@ const LOCATIONS = ["Georges Hall", "Arncliffe", "Homebush"] as const;
 
 // Football is the core sport, so it leads. The rest are the ones that actually
 // turn up in applications; anything else picks "Other" and lands in review.
-const SPORTS = ["Football", "Rugby", "AFL", "Basketball", "Athletics", "Other"] as const;
+const SPORTS = ["Football", "Rugby League", "Rugby Union", "AFL", "Basketball",
+  "Athletics", "Other"] as const;
 
 // The label is what a parent reads; the value is the exact band string
 // `classifyAge` in lib/qualify already understands. Keeping the two separate
 // means the form can read naturally without touching the qualifier's bands.
 const AGE_BANDS = [
-  { label: "10 or under", value: "under 10" },
+  { label: "Under 8", value: "under 8" },
+  { label: "8–10", value: "8-10" },
   { label: "11–12", value: "11-12" },
   { label: "13–14", value: "13-15" },
   { label: "15–17", value: "15-17" },
-  { label: "18+", value: "17+" },
+  { label: "18+", value: "18+" },
 ] as const;
 
 // Optional, and deliberately phrased the way a parent describes the problem
@@ -190,7 +192,14 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
     });
 
     const utm = tracking.current;
+    // One id for the browser pixel and the server-side CAPI copy of the same
+    // submission. Without it Meta counts the pair as two separate Leads.
+    const eventId =
+      typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+        ? crypto.randomUUID()
+        : "lead_" + Date.now() + "_" + Math.random().toString(36).slice(2);
     const payload = {
+      event_id: eventId,
       name: v.parentName.trim(),
       email: v.email.trim(),
       phone: v.phone.trim(),
@@ -236,7 +245,7 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
     }
 
     // Pixel fires only here, never on load, never on a validation failure.
-    fireLeadPixel(result, { content_name: "Application Complete", placement });
+    fireLeadPixel(result, { content_name: "Application Complete", placement }, eventId);
     trackFormComplete("apply", { source: "apply", placement, qualified: result.tier === "qualified" });
     setStatus("success");
   }

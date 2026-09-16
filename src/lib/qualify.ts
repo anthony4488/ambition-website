@@ -157,8 +157,19 @@ const OUT_OF_AREA_MARKERS = [
 
 // Football is the core. Confirmed 2026-08-08, revisited 2026-08-25: other
 // sports are no longer rejected, they reach review and get judged by hand.
+// Widened 2026-09-06. The form has always offered Rugby, AFL, Basketball and
+// Athletics, and the qualifier then binned every one of them as "other" - the
+// site invited them and then marked them unqualified. The method is sprint
+// mechanics and is sport-agnostic (a Paralympic long jumper and a US track
+// state champion are both on the success-stories page), so the whole competitive
+// 13-17 pool is in scope, not just footballers.
 const CORE_SPORTS = [
   "football", "soccer", "futsal",
+  "rugby", "league", "union", "nrl",
+  "afl", "aussie rules",
+  "basketball", "nbl",
+  "athletics", "track", "sprinting", "sprints", "sprinter",
+  "netball",
   "npl", "ifa", "academy",          // level words parents type instead of the sport
 ];
 
@@ -271,12 +282,17 @@ const normNum = (s: unknown): string =>
 export function classifyAge(band?: string): "in" | "edge" | "out" | "unknown" {
   const s = normNum(band);
   if (!s) return "unknown";
-  // Below the band the methodology assumes. Worth a look, not a rejection.
+  // The one hard age floor. Below 8 the programme does not take them.
+  if (s.includes("under 8")) return "out";
+  // 8 to 17 is the real intake. Roughly half the athletes assessed since
+  // August 2026 were under 13, so these can no longer be demoted to review.
+  if (s.includes("8-10") || s.includes("11-12") || s.includes("11-13")) return "in";
+  // Legacy bands that straddle the under-8 floor, so still worth a human look.
   if (s.includes("under 10") || s.includes("under 13") || s.includes("under 14")) return "edge";
-  if (s.includes("11-12")) return "edge";
-  if (s.includes("11-13")) return "edge";   // straddles it
-  // 13 and up, including seniors and professionals.
-  if (s.includes("13-15") || s.includes("15-17") || s.includes("17+") || s.includes("18+")) return "in";
+  // Adults are out of the 13-17 segment the ads sell to. Not rejected, just
+  // never promoted to qualified, so Meta stops hunting for them.
+  if (s.includes("18+")) return "edge";
+  if (s.includes("13-15") || s.includes("15-17") || s.includes("17+")) return "in";
   return "unknown";
 }
 
@@ -303,7 +319,8 @@ export function ageBandFromDob(dob?: string): string | undefined {
   // Guard against typos (a mistyped year giving a 300-year-old athlete).
   if (age < 3 || age > 60) return undefined;
 
-  if (age < 11) return "under 10";
+  if (age < 8) return "under 8";
+  if (age < 11) return "8-10";
   if (age < 13) return "11-12";
   if (age < 15) return "13-15";
   if (age < 18) return "15-17";
@@ -324,7 +341,7 @@ const WEBSITE_LEVEL: Record<string, "in" | "out" | "unknown"> = {
   "club academy": "in",
   // Genuine athletes, but not the band this programme is built around, review,
   // never auto-reject.
-  "school representative": "unknown",
+  "school representative": "in",
   "school or social": "out",
   "other": "unknown",
 };
@@ -336,7 +353,10 @@ export function classifyLevel(level?: string): "in" | "out" | "unknown" {
   // Exact website options first: "School representative" contains
   // "representative" and would otherwise score as high as NPL.
   if (s in WEBSITE_LEVEL) return WEBSITE_LEVEL[s];
-  if (s.includes("local") || s.includes("association")) return "out";
+  // Local and association club are real intake, confirmed 2026-09-13. They
+  // were rejected outright until then, which binned competitive juniors
+  // whose only crime was not being at an academy yet.
+  if (s.includes("local") || s.includes("association")) return "in";
   if (s.includes("representative") || s.includes("academy") || s.includes("npl") ||
       s.includes("state") || s.includes("div")) return "in";
   return "unknown";
@@ -411,9 +431,14 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
   const bud = classifyBudget(input.budget);
   const com = classifyCommit(input.commitLength);
 
-  // Age can no longer disqualify. classifyAge never returns "out", seniors and
-  // professionals are in scope now, and young athletes get looked at rather
-  // than binned.
+  // Age disqualifies in exactly one case: under 8. Everything from 8 to 17 is
+  // real intake, seniors are in scope, and the legacy straddling bands get
+  // looked at rather than binned.
+  if (age === "out") {
+    tier = "unqualified";
+    reasons.push("Under 8, below the programme's age floor");
+  }
+
   if (age === "edge" && tier === "qualified") {
     tier = "review";
     reasons.push("Younger than the methodology assumes, worth a look");
@@ -421,7 +446,7 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
 
   if (lvl === "out") {
     tier = "unqualified";
-    reasons.push("Local/association club, not NPL, IFA or academy");
+    reasons.push("School or social football, not a competitive pathway");
   }
 
   if (bud === "under") {
@@ -438,8 +463,9 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
     reasons.push("Goal is general fitness, not the pathway");
   }
 
-  // Football only, a rugby or AFL lead must never promote to qualified, no
-  // matter how well it scores on age, level and budget.
+  // Any competitive sport in CORE_SPORTS now qualifies. Kept as a gate so a
+  // blank or unrecognised sport still cannot promote to qualified on age and
+  // level alone.
   const sportOk = sport.fit === "core";
 
   if (tier !== "unqualified") {
@@ -484,7 +510,12 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
  * event is what a Meta custom conversion should be built on, since neither form
  * produces a distinct success URL to write a URL rule against.
  */
-export function fireLeadPixel(result: QualifyResult, extra: Record<string, unknown> = {}): void {
+export function fireLeadPixel(
+  result: QualifyResult,
+  extra: Record<string, unknown> = {},
+  /** Shared with the server-side CAPI copy so Meta dedupes the pair. */
+  eventId?: string,
+): void {
   if (typeof window === "undefined") return;
   const fbq = (window as unknown as { fbq?: (...a: unknown[]) => void }).fbq;
   if (typeof fbq !== "function") return;
@@ -497,6 +528,8 @@ export function fireLeadPixel(result: QualifyResult, extra: Record<string, unkno
    ...extra,
   };
 
-  fbq("track", "Lead", params);
-  if (result.tier === "qualified") fbq("trackCustom", "QualifiedLead", params);
+  // Meta dedupes on (event_name, event_id), so the same id is correct on both.
+  const opts = eventId ? { eventID: eventId } : undefined;
+  fbq("track", "Lead", params, opts);
+  if (result.tier === "qualified") fbq("trackCustom", "QualifiedLead", params, opts);
 }

@@ -184,6 +184,8 @@ export function SpeedSystemForm() {
       `Weekly budget: ${a.budget}`,
       `Suburb: ${a.suburb}`,
       "Consent: YES",
+      utm.utm_content ? `Ring: ${utm.utm_content}` : "",
+      utm.utm_term ? `Ad: ${utm.utm_term}` : "",
       utm.utm_source ? `UTM: ${utm.utm_source} / ${utm.utm_medium ?? ""} / ${utm.utm_campaign ?? ""}` : "",
       utm.fbclid ? `fbclid: ${utm.fbclid}` : "",
       `Qualified: ${result.tier.toUpperCase()} (${result.reasons.join("; ")})`,
