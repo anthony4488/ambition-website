@@ -29,6 +29,18 @@ const hashEmail = (e?: string | null) => {
   return v ? sha256(v) : undefined;
 };
 
+/** Name: lowercase, letters only. Meta strips punctuation before hashing. */
+const hashName = (n?: string | null) => {
+  const v = (n ?? "").trim().toLowerCase().replace(/[^a-zÀ-ɏ]/g, "");
+  return v ? sha256(v) : undefined;
+};
+
+/** Two-letter ISO country, lowercase. */
+const hashCountry = (c?: string | null) => {
+  const v = (c ?? "").trim().toLowerCase();
+  return /^[a-z]{2}$/.test(v) ? sha256(v) : undefined;
+};
+
 /** Phone: digits only, country code included, no + or spaces. AU defaults to 61. */
 const hashPhone = (p?: string | null) => {
   let v = (p ?? "").replace(/[^\d]/g, "");
@@ -64,6 +76,10 @@ export type CapiEvent = {
     // The $3,500 to $4,000 enrolment. Kept separate from Purchase so a report
     // buyer and a programme buyer are not the same signal to the optimiser.
     | "ProgrammeStart"
+    // The custom event the browser pixel already fires for a green lead.
+    // Same name here so the CAPI copy dedupes against it instead of
+    // creating a second, differently-named event.
+    | "QualifiedLead"
     | (typeof LEAD_STAGE_EVENT)[LeadStage];
   /** Must match the browser pixel's eventID when both fire, or Meta double-counts. */
   eventId: string;
@@ -84,7 +100,28 @@ export type CapiEvent = {
   userAgent?: string | null;
   fbc?: string | null;
   fbp?: string | null;
+  /** Extra custom_data fields, e.g. { lead_tier: "qualified" }. */
+  customData?: Record<string, unknown>;
+  /**
+   * Match-quality inputs. Meta scores an event on how many strong identifiers
+   * it carries, so a name we already hold and do not send is a pure loss.
+   * Purchase scored 3.2/10 against Lead's 8.7 largely because of this.
+   */
+  firstName?: string | null;
+  lastName?: string | null;
+  /** Two-letter ISO, e.g. "au". */
+  country?: string | null;
+  /** Stable id for this person, hashed before sending. */
+  externalId?: string | null;
 };
+
+/** Splits "Rob Simo" into first and last. A single word gives a first name only. */
+export function splitName(full?: string | null): { firstName?: string; lastName?: string } {
+  const parts = (full ?? "").trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return {};
+  if (parts.length === 1) return { firstName: parts[0] };
+  return { firstName: parts[0], lastName: parts[parts.length - 1] };
+}
 
 /**
  * Fire a single server-side event. Never throws, a Meta outage must not roll
@@ -108,6 +145,13 @@ export async function sendCapiEvent(ev: CapiEvent): Promise<{ ok: boolean; detai
   if (ev.userAgent) user_data.client_user_agent = ev.userAgent;
   if (ev.fbc) user_data.fbc = ev.fbc;
   if (ev.fbp) user_data.fbp = ev.fbp;
+  const fn = hashName(ev.firstName);
+  const ln = hashName(ev.lastName);
+  const co = hashCountry(ev.country);
+  if (fn) user_data.fn = [fn];
+  if (ln) user_data.ln = [ln];
+  if (co) user_data.country = [co];
+  if (ev.externalId) user_data.external_id = [sha256(String(ev.externalId).trim().toLowerCase())];
 
   const event: Record<string, unknown> = {
     event_name: ev.eventName,
@@ -117,9 +161,12 @@ export async function sendCapiEvent(ev: CapiEvent): Promise<{ ok: boolean; detai
     user_data,
   };
   if (ev.eventSourceUrl) event.event_source_url = ev.eventSourceUrl;
+  const custom: Record<string, unknown> = { ...(ev.customData ?? {}) };
   if (typeof ev.value === "number") {
-    event.custom_data = { currency: ev.currency ?? "AUD", value: ev.value };
+    custom.currency = ev.currency ?? "AUD";
+    custom.value = ev.value;
   }
+  if (Object.keys(custom).length > 0) event.custom_data = custom;
 
   const payload: Record<string, unknown> = { data: [event] };
   // Set META_CAPI_TEST_CODE while validating in Events Manager → Test Events.

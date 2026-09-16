@@ -4,9 +4,55 @@ import crypto from "crypto";
 import { sendSms, normaliseAu } from "@/lib/nurture";
 import { sendTelegramMessage, escapeHtml } from "@/lib/telegram";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
-import { sendCapiEvent, sendLeadStage } from "@/lib/metaCapi";
+import { sendCapiEvent, sendLeadStage, splitName } from "@/lib/metaCapi";
 import { parseClientRef, ASSESSMENT_CURRENCY } from "@/lib/booking";
 import { stopNurtureByPhone } from "@/lib/enrollNurture";
+
+/**
+ * The tier this buyer's lead was scored at, so Purchase carries the same
+ * qualification the Lead event already does. Without it a $199 from an
+ * 8-year-old's parent and a $199 from an NPL 15-year-old train the optimiser
+ * as the same signal, and Meta goes looking for whichever is cheaper.
+ *
+ * Two storage shapes to read: Meta lead-form leads have a `lead_tier` column,
+ * website applications keep it inside `notes` as "Qualified: QUALIFIED".
+ *
+ * Never throws. An unknown tier is acceptable; a lookup that blocks a booking
+ * that has already been paid for is not.
+ */
+async function lookupLeadTier(opts: {
+  leadgenId?: string | null;
+  email?: string | null;
+  phone?: string | null;
+}): Promise<string> {
+  const phoneAu = opts.phone ? normaliseAu(opts.phone) : null;
+  const attempts: [string, string | null | undefined][] = [
+    ["leadgen_id", opts.leadgenId],
+    ["email", opts.email],
+    ["phone", opts.phone],
+    ["phone", phoneAu && phoneAu !== opts.phone ? phoneAu : null],
+  ];
+  try {
+    const sb = getSupabaseAdmin();
+    for (const [col, val] of attempts) {
+      if (!val) continue;
+      const { data } = await sb
+        .from("assessment_leads")
+        .select("lead_tier, notes")
+        .eq(col, val)
+        .order("created_at", { ascending: false })
+        .limit(1);
+      const row = data?.[0] as { lead_tier?: string | null; notes?: string | null } | undefined;
+      if (!row) continue;
+      if (row.lead_tier) return row.lead_tier;
+      const m = /Qualified:\s*([A-Za-z]+)/.exec(row.notes ?? "");
+      if (m) return m[1].toLowerCase();
+    }
+  } catch {
+    /* non-fatal */
+  }
+  return "unknown";
+}
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -147,6 +193,10 @@ export async function POST(req: NextRequest) {
   // redelivery can't double-count the Purchase in Meta.
   const eventId = ev.id || s.id || `stripe_${Date.now()}`;
 
+  // Match the Purchase signal to the lead qualifier, so the optimiser learns
+  // WHICH buyers are the ones worth finding, not just that money arrived.
+  const leadTier = await lookupLeadTier({ leadgenId, email, phone });
+
   // 1. META CAPI PURCHASE, the whole point of this route.
   //
   // A Stripe TEST payment must never reach live optimisation data. Meta would
@@ -169,6 +219,12 @@ export async function POST(req: NextRequest) {
       leadId: leadgenId,
       value,
       currency,
+      customData: { lead_tier: leadTier },
+      // Name and country were already in hand and were being thrown away. Meta
+      // scores match quality on identifier count, so sending them is free lift.
+      ...splitName(name),
+      country: "au",
+      externalId: email ?? phone ?? leadgenId ?? null,
       fbp: attr?.fbp,
       fbc: attr?.fbc,
       clientIp: attr?.clientIp,
