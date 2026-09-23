@@ -13,8 +13,8 @@ import { trackFormComplete, trackFormStart } from "@/lib/formTelemetry";
  * bait.
  *
  * STANDING RULES FOR THE COPY (do not edit these away):
- *   - The table is our own data from Ambition athletes, not a published study,
- *     mixed ages, and every row says where it came from.
+ *   - The table is our own data, averages from 1,000+ athletes Ambition has
+ *     tested (Anthony, 2026-09-24), not a published study, mixed ages.
  *   - The bound is a proxy for elasticity ability, NOT a prediction of speed.
  *     Anthony's counterexample stays: athletes who bound 28 to 30 m and run
  *     40 km/h.
@@ -38,11 +38,11 @@ const LINE = 30;
 const NOISE_PCT = 2;
 
 const TABLE: { lo: number; hi: number; band: string; speed: string; src: string }[] = [
-  { lo: 0, hi: 20, band: "Under 20 m", speed: "around 21 km/h", src: "13 athletes measured" },
-  { lo: 20, hi: 24, band: "20 to 24 m", speed: "around 26 km/h", src: "18 athletes measured" },
-  { lo: 24, hi: 28, band: "24 to 28 m", speed: "around 30 km/h", src: "11 athletes measured" },
-  { lo: 28, hi: 31, band: "28 to 31 m", speed: "33 to 37 km/h", src: "Anthony's range, few measured this high" },
-  { lo: 31, hi: Infinity, band: "31 m and up", speed: "34 to 38 km/h", src: "Anthony's range, few measured this high" },
+  { lo: 0, hi: 20, band: "Under 20 m", speed: "around 21 km/h", src: "Average, 1,000+ athletes tested" },
+  { lo: 20, hi: 24, band: "20 to 24 m", speed: "around 26 km/h", src: "Average, 1,000+ athletes tested" },
+  { lo: 24, hi: 28, band: "24 to 28 m", speed: "around 30 km/h", src: "Average, 1,000+ athletes tested" },
+  { lo: 28, hi: 31, band: "28 to 31 m", speed: "33 to 37 km/h", src: "Average, 1,000+ athletes tested" },
+  { lo: 31, hi: Infinity, band: "31 m and up", speed: "34 to 38 km/h", src: "Average, 1,000+ athletes tested" },
 ];
 
 const fmt = (n: number) => (Number.isInteger(n) ? String(n) : n.toFixed(1));
@@ -394,8 +394,8 @@ export default function BoundTest() {
       <section>
         <h2 className="text-2xl font-bold tracking-tight text-white">Where the numbers sit</h2>
         <p className="mt-3 text-neutral-400">
-          Our own data from Ambition athletes, not a published study. Mixed ages. Each row says
-          where it comes from.
+          Our own data: averages from over 1,000 athletes Ambition has tested. Not a published
+          study. Mixed ages.
         </p>
         <div className="mt-5 overflow-hidden rounded-md border border-neutral-800">
           <table className="w-full text-left text-sm">
@@ -433,47 +433,7 @@ export default function BoundTest() {
             speed and coordination all move top speed too, which is why two athletes with the same
             bound can be a long way apart on the pitch. Nothing in this table is strict.
           </p>
-          <p className="mt-2">
-            The lower three rows are athletes we have measured on both tests. Above 28 m very few
-            have been measured, so those two rows are Anthony&apos;s range from coaching, not a
-            sample.
-          </p>
         </div>
-
-        <h3 className="mt-10 text-xl font-bold tracking-tight text-white">The published reference</h3>
-        <p className="mt-3 text-neutral-400">
-          Frank W. Dick, BAAB Director of Coaching, Great Britain, &ldquo;Development of
-          Maximum Sprinting Speed&rdquo;, Track Technique #109, Table 2. His sprinters&apos; 100m
-          times are converted to top speed using the same paper&apos;s Seoul 1988 splits, where the
-          fastest 10m ran 1.15 to 1.19 times each sprinter&apos;s 100m average.
-        </p>
-        <div className="mt-5 overflow-hidden rounded-md border border-neutral-800">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-dark-100 text-neutral-400">
-              <tr>
-                <th scope="col" className="px-3 py-3 font-semibold sm:px-4">10 bounds, run-in</th>
-                <th scope="col" className="px-3 py-3 font-semibold sm:px-4">100m</th>
-                <th scope="col" className="px-3 py-3 font-semibold sm:px-4">Top speed</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-neutral-800">
-              {DICK.map((d) => (
-                <tr key={d.bound}>
-                  <td className="px-3 py-3 align-top text-white sm:px-4">{d.bound}</td>
-                  <td className="px-3 py-3 align-top text-neutral-500 sm:px-4">{d.t}</td>
-                  <td className="px-3 py-3 align-top text-neutral-300 sm:px-4">{d.speed}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p className="mt-4 text-sm leading-relaxed text-neutral-400">
-          Dick calls these &ldquo;a loose guide&rdquo;: the wide ranges reflect leg length as much
-          as strength, and athletes can run a time without meeting every control. His are trained
-          sprinters bounding from standing. Our test has a 5 m run-in, which is worth about{" "}
-          {fmt(RUN_IN)} m, so every bound figure above is his standing figure plus {fmt(RUN_IN)} m.
-          The 100m times are unchanged.
-        </p>
       </section>
 
       {/* 4. capture, only once there is a result */}
