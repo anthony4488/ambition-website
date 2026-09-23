@@ -45,6 +45,56 @@ const TABLE: { lo: number; hi: number; band: string; speed: string; src: string 
   { lo: 31, hi: Infinity, band: "31 m and up", speed: "34 to 38 km/h", src: "Anthony's range, few measured this high" },
 ];
 
+const fmt = (n: number) => (Number.isInteger(n) ? String(n) : n.toFixed(1));
+
+/**
+ * Published reference: Frank W. Dick, "Development of Maximum Sprinting Speed",
+ * Track Technique #109, Table 2 "Bounding controls". His rows link 10 bounds FROM
+ * STANDING to a 100m target time; he calls them "a loose guide".
+ *
+ * 100m time -> top speed uses the same paper's Seoul 1988 splits: every finalist's
+ * fastest 10m was 1.152 to 1.195 x their 100m average speed. Lo uses the slow end
+ * of the time and the low ratio, hi the fast end and the high ratio.
+ *
+ * RUN-IN: our test has a 5 m run-in, his are from standing. Anthony's correction
+ * (2026-09-24): a run-in adds 3.5 m, so every bound figure below is Dick's
+ * standing figure + RUN_IN. The 100m times and speeds are untouched.
+ *
+ * His rows overlap by up to 10 m, so one bound sits in several. The calculator
+ * reads along the row MIDPOINTS (bound mid -> speed mid) and interpolates.
+ */
+const RUN_IN = 3.5;
+const DICK_STANDING: { lo: number; hi: number; t: string; speed: string; vMid: number }[] = [
+  { lo: 29.5, hi: 39.5, t: "10.20 to 10.65 s", speed: "39 to 42 km/h", vMid: 40.5 },
+  { lo: 27, hi: 37, t: "10.70 to 11.10 s", speed: "37 to 40 km/h", vMid: 38.8 },
+  { lo: 25, hi: 35, t: "11.20 to 11.70 s", speed: "35 to 38 km/h", vMid: 36.9 },
+  { lo: 23, hi: 33, t: "11.80 to 12.20 s", speed: "34 to 36 km/h", vMid: 35.2 },
+  { lo: 21, hi: 31, t: "12.30 to 12.70 s", speed: "33 to 35 km/h", vMid: 33.8 },
+  { lo: 19, hi: 29, t: "12.80 to 13.20 s", speed: "31 to 34 km/h", vMid: 32.5 },
+];
+const DICK = DICK_STANDING.map((d) => ({
+  ...d,
+  bound: `${fmt(d.lo + RUN_IN)} to ${fmt(d.hi + RUN_IN)} m`,
+  bMid: (d.lo + d.hi) / 2 + RUN_IN,
+}));
+const DICK_MIN = DICK_STANDING[DICK_STANDING.length - 1].lo + RUN_IN;
+
+/** Dick's sprinters, read along the row midpoints. Null below his table. */
+function dickSpeed(b: number): string | null {
+  if (b < DICK_MIN) return null;
+  const top = DICK[0], bottom = DICK[DICK.length - 1];
+  if (b >= top.bMid) return "39 km/h or more";
+  if (b <= bottom.bMid) return "34 km/h or less";
+  for (let i = 0; i < DICK.length - 1; i++) {
+    const hi = DICK[i], lo = DICK[i + 1];
+    if (b <= hi.bMid && b >= lo.bMid) {
+      const v = lo.vMid + ((b - lo.bMid) / (hi.bMid - lo.bMid)) * (hi.vMid - lo.vMid);
+      return `around ${Math.round(v - 1)} to ${Math.round(v + 1)} km/h`;
+    }
+  }
+  return null;
+}
+
 const SPORTS = ["Football", "Rugby League", "Rugby Union", "AFL", "Basketball", "Athletics", "Other"] as const;
 
 const TRACKED = [
@@ -58,7 +108,6 @@ const parseMetres = (s: string) => {
   return Number.isFinite(n) ? n : NaN;
 };
 
-const fmt = (n: number) => (Number.isInteger(n) ? String(n) : n.toFixed(1));
 
 type Verdict = { title: string; body: string };
 
@@ -158,7 +207,7 @@ export default function BoundTest() {
         ? `You bounded ${fmt(f)} m: ${f === LINE ? "right on" : `${fmt(gap)} m over`} the 30 m line.`
         : `You bounded ${fmt(f)} m: ${fmt(gap)} m under the 30 m line.`;
     const dropPct = l !== null ? ((f - l) / f) * 100 : null;
-    return { row, headline, dropPct, verdict: verdict(f, l) };
+    return { row, headline, dropPct, dick: dickSpeed(f), verdict: verdict(f, l) };
   }, [freshOk, f, l]);
 
   const set = <K extends keyof Form>(k: K, v: Form[K]) => {
@@ -316,6 +365,20 @@ export default function BoundTest() {
                 </>
               )}
             </p>
+            <p className="text-neutral-300">
+              {result.dick ? (
+                <>
+                  Against a published table (Frank Dick, Track Technique), trained sprinters who
+                  bounded {fmt(f)} m with a run-in ran{" "}
+                  <b className="text-white">{result.dick}</b>.
+                </>
+              ) : (
+                <>
+                  Frank Dick&apos;s published sprinter table starts at {fmt(DICK_MIN)} m with a run-in,
+                  so {fmt(f)} m sits below it. That is normal for younger athletes.
+                </>
+              )}
+            </p>
             <div className="rounded-md border border-accent/50 bg-black p-5">
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">
                 What this points at
@@ -376,6 +439,41 @@ export default function BoundTest() {
             sample.
           </p>
         </div>
+
+        <h3 className="mt-10 text-xl font-bold tracking-tight text-white">The published reference</h3>
+        <p className="mt-3 text-neutral-400">
+          Frank W. Dick, BAAB Director of Coaching, Great Britain, &ldquo;Development of
+          Maximum Sprinting Speed&rdquo;, Track Technique #109, Table 2. His sprinters&apos; 100m
+          times are converted to top speed using the same paper&apos;s Seoul 1988 splits, where the
+          fastest 10m ran 1.15 to 1.19 times each sprinter&apos;s 100m average.
+        </p>
+        <div className="mt-5 overflow-hidden rounded-md border border-neutral-800">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-dark-100 text-neutral-400">
+              <tr>
+                <th scope="col" className="px-3 py-3 font-semibold sm:px-4">10 bounds, run-in</th>
+                <th scope="col" className="px-3 py-3 font-semibold sm:px-4">100m</th>
+                <th scope="col" className="px-3 py-3 font-semibold sm:px-4">Top speed</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-neutral-800">
+              {DICK.map((d) => (
+                <tr key={d.bound}>
+                  <td className="px-3 py-3 align-top text-white sm:px-4">{d.bound}</td>
+                  <td className="px-3 py-3 align-top text-neutral-500 sm:px-4">{d.t}</td>
+                  <td className="px-3 py-3 align-top text-neutral-300 sm:px-4">{d.speed}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-4 text-sm leading-relaxed text-neutral-400">
+          Dick calls these &ldquo;a loose guide&rdquo;: the wide ranges reflect leg length as much
+          as strength, and athletes can run a time without meeting every control. His are trained
+          sprinters bounding from standing. Our test has a 5 m run-in, which is worth about{" "}
+          {fmt(RUN_IN)} m, so every bound figure above is his standing figure plus {fmt(RUN_IN)} m.
+          The 100m times are unchanged.
+        </p>
       </section>
 
       {/* 4. capture, only once there is a result */}
