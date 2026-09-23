@@ -73,9 +73,12 @@ export async function POST(req: NextRequest) {
   // Outside this range is a typo (or centimetres), not a result.
   if (bound === null || bound < 5 || bound > 45)
     return Response.json({ ok: false, error: "invalid bound" }, { status: 400 });
-  if (age === null || age < 5 || age > 90)
+  // Two stages (Anthony 2026-09-24: "email and name, then they access it").
+  //   gate:    name + email unlock the result. This is the lead: row, Telegram, CAPI.
+  //   details: the optional follow-up form UPDATES that row, never inserts a second.
+  if (str(b.stage) === "details") return details(b, { name, email, phone, age, sport, bound, lateOk: late, topSpeed });
+  if (age !== null && (age < 5 || age > 90))
     return Response.json({ ok: false, error: "invalid age" }, { status: 400 });
-  if (!sport) return Response.json({ ok: false, error: "invalid sport" }, { status: 400 });
 
   const lateOk = late !== null && late >= 5 && late <= 45 ? late : null;
   const speedOk = topSpeed !== null && topSpeed >= 5 && topSpeed <= 50 ? topSpeed : null;
@@ -91,8 +94,8 @@ export async function POST(req: NextRequest) {
     `Band: ${band}`,
     lateOk !== null ? `End of week bound: ${lateOk.toFixed(1)} m (${dropText})` : "",
     speedOk !== null ? `Top speed: ${speedOk.toFixed(1)} km/h (their own figure)` : "Top speed: not given",
-    `Age: ${age}`,
-    `Sport: ${sport}`,
+    `Age: ${age ?? "not given"}`,
+    `Sport: ${sport || "not given"}`,
     `Email: ${email}`,
     utm.utm_source ? `UTM: ${utm.utm_source} / ${utm.utm_medium ?? ""} / ${utm.utm_campaign ?? ""}` : "",
     utm.utm_content ? `Content: ${utm.utm_content}` : "",
@@ -155,7 +158,7 @@ export async function POST(req: NextRequest) {
     `👤 <b>${e(name)}</b>`,
     `📞 ${phone ? e(phone) : "no phone given"}`,
     `✉️ ${e(email)}`,
-    `🏅 ${e(sport)} · 🎂 ${age}`,
+    sport || age !== null ? `🏅 ${e(sport || "sport not given")} · 🎂 ${age ?? "age not given"}` : "",
     speedOk !== null ? `⚡ Top speed: ${speedOk.toFixed(1)} km/h (their figure)` : "⚡ Top speed: not given",
     lateOk !== null ? `📉 End of week: ${lateOk.toFixed(1)} m (${dropText})` : "",
     utm.utm_source ? `📣 ${e(utm.utm_source)}${utm.utm_campaign ? " / " + e(utm.utm_campaign) : ""}` : "",
@@ -177,5 +180,65 @@ export async function POST(req: NextRequest) {
 
   // The lead only exists if at least one of the two landed.
   const delivered = db === "written" || sent;
-  return Response.json({ ok: delivered, db, telegram }, { status: delivered ? 200 : 502 });
+  return Response.json({ ok: delivered, db, telegram, id: rowId }, { status: delivered ? 200 : 502 });
+}
+
+type Details = {
+  name: string;
+  email: string;
+  phone: string;
+  age: number | null;
+  sport: string;
+  bound: number;
+  lateOk: number | null;
+  topSpeed: number | null;
+};
+
+// The optional form under the result. It adds to the lead the gate already
+// created, so the row id must come back with the SAME email: an id on its own
+// would let anyone rewrite any lead's notes.
+async function details(b: Record<string, unknown>, d: Details) {
+  const id = str(b.row_id);
+  if (d.age !== null && (d.age < 5 || d.age > 90))
+    return Response.json({ ok: false, error: "invalid age" }, { status: 400 });
+  const speedOk = d.topSpeed !== null && d.topSpeed >= 5 && d.topSpeed <= 50 ? d.topSpeed : null;
+  const extra = [
+    "Details added",
+    d.age !== null ? `Age: ${d.age}` : "",
+    d.sport ? `Sport: ${d.sport}` : "",
+    speedOk !== null ? `Top speed: ${speedOk.toFixed(1)} km/h (their own figure)` : "",
+    d.phone ? `Phone: ${d.phone}` : "",
+  ].filter(Boolean).join(" | ");
+
+  let db = "not configured";
+  if (id) {
+    try {
+      const admin = getSupabaseAdmin();
+      const { data: row } = await admin
+        .from("assessment_leads")
+        .select("id, email, notes")
+        .eq("id", id)
+        .maybeSingle();
+      if (row && String(row.email).toLowerCase() === d.email.toLowerCase()) {
+        const patch: Record<string, string> = { notes: `${row.notes ?? ""} | ${extra}` };
+        if (d.phone) patch.phone = d.phone;
+        const { error } = await admin.from("assessment_leads").update(patch).eq("id", id);
+        db = error ? `failed: ${error.message}` : "updated";
+      } else db = "no matching row";
+    } catch (err) {
+      db = err instanceof Error && /not configured/.test(err.message) ? "not configured" : "failed";
+    }
+  }
+
+  const e = escapeHtml;
+  const text = [
+    `📝 <b>10-BOUND DETAILS: ${e(d.name)}</b> (${d.bound.toFixed(1)} m)`,
+    d.phone ? `📞 ${e(d.phone)}` : "",
+    d.sport || d.age !== null ? `🏅 ${e(d.sport || "sport not given")} · 🎂 ${d.age ?? "age not given"}` : "",
+    speedOk !== null ? `⚡ Top speed: ${speedOk.toFixed(1)} km/h (their figure)` : "",
+    db === "updated" ? "" : `<i>Supabase: ${e(db)}</i>`,
+  ].filter(Boolean).join("\n");
+  const sent = await sendTelegramMessage(text);
+  const ok = db === "updated" || sent;
+  return Response.json({ ok, db }, { status: ok ? 200 : 502 });
 }

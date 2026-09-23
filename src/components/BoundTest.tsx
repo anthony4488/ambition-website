@@ -7,10 +7,9 @@ import { trackFormComplete, trackFormStart } from "@/lib/formTelemetry";
  * The 10-bound test. Lead magnet for the elasticity YouTube video, which ends
  * on "Free. Link in the description."
  *
- * THE RULE: the answer is given before anything is asked for. The result, the
- * table and the disclaimer are all ungated. The form only comes after, and only
- * offers to send the number to Anthony. Gating the result would make "free" a
- * bait.
+ * THE GATE (Anthony 2026-09-24, "we have to collect emails"): the steps and the
+ * table stay open, the RESULT needs a name and an email. That submission is the
+ * lead. The form under the result is optional and adds to the same row.
  *
  * STANDING RULES FOR THE COPY (do not edit these away):
  *   - The table is our own data, averages from 1,000+ athletes Ambition has
@@ -178,6 +177,10 @@ export default function BoundTest() {
   const [form, setForm] = useState<Form>(EMPTY);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
+  // Name + email unlock the result (Anthony 2026-09-24). The gate IS the lead.
+  const [unlocked, setUnlocked] = useState(false);
+  const [rowId, setRowId] = useState<string | null>(null);
+  const [gate, setGate] = useState<"idle" | "sending" | "error">("idle");
   const started = useRef(false);
   const tracking = useRef<Record<string, string>>({});
 
@@ -219,34 +222,75 @@ export default function BoundTest() {
     setError(null);
   };
 
-  async function submit(e: React.FormEvent) {
+  async function unlock(e: React.FormEvent) {
     e.preventDefault();
-    if (!result || status === "sending") return;
-
-    const age = parseInt(form.age, 10);
-    const speed = form.topSpeed.trim() === "" ? null : parseMetres(form.topSpeed);
+    if (!result || gate === "sending") return;
     if (form.name.trim().length < 2) return setError("Please enter your name.");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email.trim())) return setError("Please enter a valid email.");
-    if (form.phone.trim() && form.phone.replace(/\D/g, "").length < 8) return setError("That phone number looks short.");
-    if (!Number.isFinite(age) || age < 5 || age > 90) return setError("Please enter the athlete's age.");
-    if (!form.sport) return setError("Please pick a sport.");
-    if (speed !== null && (!Number.isFinite(speed) || speed < 5 || speed > 50))
-      return setError("Top speed should be in km/h, for example 28.5.");
 
-    setStatus("sending");
+    setGate("sending");
     // One id for the browser pixel and the server CAPI copy so Meta dedupes the pair.
     const eventId =
       typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
         ? crypto.randomUUID()
         : "bound_" + Date.now() + "_" + Math.random().toString(36).slice(2);
 
+    let body: { ok?: boolean; id?: string | null } = {};
+    try {
+      const res = await fetch("/api/bound-test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          stage: "gate",
+          event_id: eventId,
+          name: form.name.trim(),
+          email: form.email.trim(),
+          bound: f,
+          late: l,
+          utm: tracking.current,
+        }),
+      });
+      body = await res.json().catch(() => ({}));
+      if (!res.ok) body.ok = false;
+    } catch {
+      /* handled below */
+    }
+    if (!body.ok) return setGate("error");
+
+    // Pixel only on a delivered submission. Never for a TEST row.
+    if (!/^test/i.test(form.name.trim())) {
+      const fbq = (window as unknown as { fbq?: (...a: unknown[]) => void }).fbq;
+      if (typeof fbq === "function")
+        fbq("track", "Lead", { content_name: "10-Bound Test", lead_source: "bound-test" }, { eventID: eventId });
+    }
+    trackFormComplete("bound-test", { bound: f });
+    setRowId(body.id ?? null);
+    setUnlocked(true);
+    setGate("idle");
+  }
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!result || status === "sending") return;
+
+    const age = form.age.trim() === "" ? null : parseInt(form.age, 10);
+    const speed = form.topSpeed.trim() === "" ? null : parseMetres(form.topSpeed);
+    if (form.phone.trim() && form.phone.replace(/\D/g, "").length < 8) return setError("That phone number looks short.");
+    if (age !== null && (!Number.isFinite(age) || age < 5 || age > 90)) return setError("That age does not look right.");
+    if (speed !== null && (!Number.isFinite(speed) || speed < 5 || speed > 50))
+      return setError("Top speed should be in km/h, for example 28.5.");
+    if (!form.phone.trim() && age === null && !form.sport && speed === null)
+      return setError("Add at least one thing for Anthony to go on.");
+
+    setStatus("sending");
     let ok = false;
     try {
       const res = await fetch("/api/bound-test", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          event_id: eventId,
+          stage: "details",
+          row_id: rowId,
           name: form.name.trim(),
           email: form.email.trim(),
           phone: form.phone.trim(),
@@ -255,7 +299,6 @@ export default function BoundTest() {
           bound: f,
           late: l,
           top_speed: speed,
-          utm: tracking.current,
         }),
       });
       ok = res.ok;
@@ -263,14 +306,6 @@ export default function BoundTest() {
       /* handled below */
     }
     if (!ok) return setStatus("error");
-
-    // Pixel only on a delivered submission. Never for a TEST row.
-    if (!/^test\b/i.test(form.name.trim())) {
-      const fbq = (window as unknown as { fbq?: (...a: unknown[]) => void }).fbq;
-      if (typeof fbq === "function")
-        fbq("track", "Lead", { content_name: "10-Bound Test", lead_source: "bound-test" }, { eventID: eventId });
-    }
-    trackFormComplete("bound-test", { bound: f });
     setStatus("done");
   }
 
@@ -347,7 +382,37 @@ export default function BoundTest() {
           </label>
         </div>
 
-        {result && (
+        {result && !unlocked && (
+          <form onSubmit={unlock} noValidate className="mt-8 rounded-md border border-accent/50 bg-black p-5 sm:p-6" aria-live="polite">
+            <p className="text-xl font-bold tracking-tight text-white">Your result is ready</p>
+            <p className="mt-2 text-neutral-400">
+              Enter your name and email to see where {fmt(f)} m sits and what it points at.
+            </p>
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              <label className="block">
+                <span className={label}>Your name</span>
+                <input className={input} value={form.name} onChange={(e) => set("name", e.target.value)} autoComplete="name" />
+              </label>
+              <label className="block">
+                <span className={label}>Email</span>
+                <input className={input} type="email" value={form.email} onChange={(e) => set("email", e.target.value)} autoComplete="email" />
+              </label>
+            </div>
+            {error && <p className="mt-4 text-sm font-semibold text-accent">{error}</p>}
+            {gate === "error" && (
+              <p className="mt-4 text-sm text-neutral-400">That did not go through. Press the button again.</p>
+            )}
+            <button
+              type="submit"
+              disabled={gate === "sending"}
+              className="mt-5 w-full rounded-md bg-accent px-6 py-4 text-base font-bold text-black transition-opacity disabled:opacity-50 sm:w-auto"
+            >
+              {gate === "sending" ? "Loading" : "Show my result"}
+            </button>
+          </form>
+        )}
+
+        {result && unlocked && (
           <div className="mt-8 space-y-6" aria-live="polite">
             <p className="text-2xl font-bold leading-snug tracking-tight text-white sm:text-3xl">
               {result.headline}
@@ -408,7 +473,7 @@ export default function BoundTest() {
             </thead>
             <tbody className="divide-y divide-neutral-800">
               {TABLE.map((t) => {
-                const here = result?.row === t;
+                const here = unlocked && result?.row === t;
                 return (
                   <tr key={t.band} className={here ? "bg-accent/10" : ""}>
                     <td className={"px-3 py-3 align-top sm:px-4 " + (here ? "font-bold text-accent" : "text-white")}>
@@ -437,11 +502,11 @@ export default function BoundTest() {
       </section>
 
       {/* 4. capture, only once there is a result */}
-      {result && (
+      {result && unlocked && (
         <section className="rounded-lg border border-neutral-800 p-5 sm:p-8">
           {status === "done" ? (
             <div>
-              <p className="text-xl font-bold text-white">Got it. Your {fmt(f)} m is with Anthony.</p>
+              <p className="text-xl font-bold text-white">Got it. That is with Anthony now.</p>
               <p className="mt-2 text-neutral-400">
                 It also goes into the data this table is built from. Test again in a few weeks and
                 send the new number through.
@@ -449,21 +514,13 @@ export default function BoundTest() {
             </div>
           ) : (
             <form onSubmit={submit} noValidate>
-              <h2 className="text-2xl font-bold tracking-tight text-white">Send your number to Anthony</h2>
+              <h2 className="text-2xl font-bold tracking-tight text-white">Want Anthony to look at it?</h2>
               <p className="mt-2 text-neutral-400">
-                Your {fmt(f)} m goes straight to him, and into the data behind the table. Athlete or
-                parent, fill it in for the athlete.
+                Your {fmt(f)} m is already with him. Add a bit more and he can tell you what it means
+                for you. Athlete or parent, fill it in for the athlete. All of it is optional.
               </p>
 
               <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                <label className="block">
-                  <span className={label}>Your name</span>
-                  <input className={input} value={form.name} onChange={(e) => set("name", e.target.value)} autoComplete="name" />
-                </label>
-                <label className="block">
-                  <span className={label}>Email</span>
-                  <input className={input} type="email" value={form.email} onChange={(e) => set("email", e.target.value)} autoComplete="email" />
-                </label>
                 <label className="block">
                   <span className={label}>
                     Phone <span className="font-normal text-neutral-500">optional</span>
@@ -471,13 +528,15 @@ export default function BoundTest() {
                   <input className={input} type="tel" value={form.phone} onChange={(e) => set("phone", e.target.value)} autoComplete="tel" />
                 </label>
                 <label className="block">
-                  <span className={label}>Athlete&apos;s age</span>
+                  <span className={label}>
+                    Athlete&apos;s age <span className="font-normal text-neutral-500">optional</span>
+                  </span>
                   <input className={input} inputMode="numeric" value={form.age} onChange={(e) => set("age", e.target.value.replace(/\D/g, "").slice(0, 2))} placeholder="e.g. 15" />
                 </label>
               </div>
 
               <div className="mt-5" role="group" aria-labelledby="bt-sport">
-                <span id="bt-sport" className={label}>Sport</span>
+                <span id="bt-sport" className={label}>Sport <span className="font-normal text-neutral-500">optional</span></span>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {SPORTS.map((s) => (
                     <button
@@ -518,7 +577,7 @@ export default function BoundTest() {
                 disabled={status === "sending"}
                 className="mt-6 w-full rounded-md bg-accent px-6 py-4 text-base font-bold text-black transition-opacity disabled:opacity-50 sm:w-auto"
               >
-                {status === "sending" ? "Sending" : `Send my ${fmt(f)} m`}
+                {status === "sending" ? "Sending" : "Send to Anthony"}
               </button>
             </form>
           )}
