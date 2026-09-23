@@ -130,7 +130,7 @@ export async function POST(req: NextRequest) {
       .insert({
         name,
         email,
-        phone: phone || null,
+        phone: phone || "", // column is NOT NULL; phone is optional on this form
         source: "bound-test",
         lead_tier: "unknown",
         notes,
