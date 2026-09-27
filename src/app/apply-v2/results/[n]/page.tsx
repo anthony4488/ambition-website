@@ -158,30 +158,52 @@ export function generateStaticParams() {
   return RESULTS.map((_, i) => ({ n: String(i + 1) }));
 }
 
+/** "Name: result" titles split into a name line and one big result line. */
+function splitTitle(r: Result): { name: string; result: string } {
+  if (r.toCamera) return { name: "In their own words", result: r.title };
+  const c = r.title.indexOf(": ");
+  if (c > 0) return { name: r.title.slice(0, c), result: r.title.slice(c + 2) };
+  const k = r.title.indexOf(", ");
+  if (k > 0) return { name: r.title.slice(0, k), result: r.title.slice(k + 2) };
+  return { name: "Player result", result: r.title };
+}
+
+const pad = (n: number) => String(n).padStart(2, "0");
+
 export default function ResultPage({ params }: { params: { n: string } }) {
   const idx = Number(params.n) - 1;
   const r = RESULTS[idx];
   if (!r) notFound();
-  const next = ((idx + 1) % RESULTS.length) + 1;
+  const total = RESULTS.length;
+  const next = ((idx + 1) % total) + 1;
+  const prev = ((idx - 1 + total) % total) + 1;
+  const { name, result } = splitTitle(r);
 
   return (
     <main className="min-h-screen bg-white text-gray-900">
+      {/* Same top bar as the landing page, with a thin progress line under it. */}
       <div className="bg-[#2D2D2D] px-4 py-4 text-center text-[15px] font-medium text-white sm:text-lg">
         Sydney, in person <span className="mx-2 text-white/40">·</span> Georges Hall, Arncliffe, Homebush
       </div>
+      <div className="h-1 w-full bg-gray-100" aria-hidden>
+        <div className="h-full bg-accent" style={{ width: `${((idx + 1) / total) * 100}%` }} />
+      </div>
 
-      <section className="mx-auto max-w-[1100px] px-4 pb-8 pt-8 text-center sm:pt-12">
-        <p className="text-[15px] font-bold uppercase tracking-[0.14em] text-accent sm:text-xl">
-          Player results · {idx + 1} of {RESULTS.length}
-        </p>
-        <h1 className="mx-auto mt-3 max-w-4xl text-[28px] font-extrabold uppercase leading-[1.1] tracking-tight text-[#2F2F2F] [text-wrap:balance] sm:text-5xl">
-          {r.title}
+      <section className="mx-auto max-w-[1100px] px-4 pb-10 pt-8 text-center sm:pt-12">
+        <div className="flex items-center justify-center gap-3 text-[13px] font-bold uppercase tracking-[0.18em] sm:text-sm">
+          <span className="text-gray-400">Player results</span>
+          <span className="h-1 w-1 rounded-full bg-gray-300" aria-hidden />
+          <span className="tabular-nums text-gray-400">{pad(idx + 1)} / {pad(total)}</span>
+        </div>
+        <p className="mt-5 text-[15px] font-bold uppercase tracking-[0.14em] text-accent sm:text-xl">{name}</p>
+        <h1 className="mx-auto mt-2 max-w-4xl text-[30px] font-extrabold uppercase leading-[1.06] tracking-tight text-[#2F2F2F] [text-wrap:balance] sm:text-5xl lg:text-[56px]">
+          {result}
         </h1>
 
         <div
           className={
-            "relative mx-auto mt-7 w-full overflow-hidden rounded-md bg-black " +
-            (r.vertical ? "aspect-[9/16] max-w-sm" : "aspect-video")
+            "relative mx-auto mt-8 w-full overflow-hidden rounded-xl bg-black shadow-[0_24px_60px_-20px_rgba(0,0,0,0.45)] ring-1 ring-black/5 " +
+            (r.vertical ? "aspect-[9/16] max-w-[380px]" : "aspect-video")
           }
         >
           {r.youtubeId ? (
@@ -208,34 +230,74 @@ export default function ResultPage({ params }: { params: { n: string } }) {
         </div>
       </section>
 
-      <section className="px-4 pb-6">
-        <blockquote className="mx-auto max-w-3xl border-l-4 border-accent bg-gray-50 px-6 py-5 text-left text-lg leading-relaxed text-gray-800">
-          {r.toCamera ? <>&ldquo;{r.quote}&rdquo;</> : r.quote}
-        </blockquote>
+      <section className="px-4 pb-10">
+        <figure className="mx-auto max-w-3xl text-center">
+          {r.toCamera && (
+            <span aria-hidden className="block font-serif text-7xl leading-[0.6] text-accent/80">&ldquo;</span>
+          )}
+          <blockquote
+            className={
+              "mx-auto mt-3 [text-wrap:pretty] " +
+              (r.toCamera
+                ? "text-xl leading-relaxed text-gray-800 sm:text-2xl sm:leading-relaxed"
+                : "text-lg leading-relaxed text-gray-700 sm:text-xl")
+            }
+          >
+            {r.quote}
+          </blockquote>
+          {r.toCamera && (
+            <figcaption className="mt-4 text-sm font-semibold uppercase tracking-[0.14em] text-gray-400">
+              Ambition player, on camera
+            </figcaption>
+          )}
+        </figure>
+
+        {r.link && (
+          <div className="mt-7 text-center">
+            <a
+              href={r.link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border-2 border-accent px-6 py-3 text-base font-bold text-accent transition-colors hover:bg-accent hover:text-white"
+            >
+              {r.link.label} <span aria-hidden>↗</span>
+            </a>
+          </div>
+        )}
       </section>
 
-      {r.link && (
-        <p className="px-4 pb-2 text-center">
-          <a href={r.link.href} target="_blank" rel="noopener noreferrer" className="text-lg font-semibold text-accent underline underline-offset-4 hover:text-accent-dark">
-            {r.link.label} ↗
-          </a>
+      {/* Same near-black strip as the landing page opt-in, so every result ends on
+          the one action this whole funnel exists for. */}
+      <section className="bg-[#211B17] px-4 py-10 text-center">
+        <p className="mx-auto max-w-2xl text-2xl font-extrabold leading-snug text-white [text-wrap:balance] sm:text-3xl">
+          Find out what&apos;s holding your player back.
         </p>
-      )}
-
-      <section className="flex flex-col items-center gap-4 px-4 pb-16 pt-6">
-        <Link
-          href="/apply-v2#start"
-          className="w-full max-w-md rounded-[15px] bg-accent px-8 py-4 text-center text-lg font-bold text-white transition-colors hover:bg-accent-dark"
-        >
-          Apply for an assessment
-        </Link>
-        <Link
-          href={`/apply-v2/results/${next}`}
-          className="w-full max-w-md rounded-md border-2 border-[#2D2D2D] px-8 py-3.5 text-center text-lg font-semibold text-[#2D2D2D] transition-colors hover:bg-[#2D2D2D] hover:text-white"
-        >
-          See another result
+        <p className="mx-auto mt-2 max-w-xl text-[15px] text-white/60">
+          Players 13 and over, already in an NPL, IFA or academy squad.
+        </p>
+        <div className="mx-auto mt-7 flex max-w-md flex-col gap-3">
+          <Link
+            href="/apply-v2#start"
+            className="h-[56px] rounded-[15px] bg-accent text-lg font-bold leading-[56px] text-white transition-colors hover:bg-accent-dark"
+          >
+            Apply for an assessment
+          </Link>
+          <Link
+            href={`/apply-v2/results/${next}`}
+            className="h-[52px] rounded-[15px] border border-white/25 text-lg font-semibold leading-[50px] text-white transition-colors hover:border-white hover:bg-white/5"
+          >
+            See another result →
+          </Link>
+        </div>
+        <Link href={`/apply-v2/results/${prev}`} className="mt-5 inline-block text-sm font-semibold text-white/40 hover:text-white/70">
+          ← Previous result
         </Link>
       </section>
+
+      <footer className="px-4 py-6 text-center text-xs leading-relaxed text-gray-400">
+        Results shown are not typical. They are the best results from our most driven athletes, over months and
+        years of work. All testimonials are real.
+      </footer>
     </main>
   );
 }
