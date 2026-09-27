@@ -15,19 +15,20 @@ export function CurvedArrow({
   shape?: "down" | "right" | "loop";
   className?: string;
 }) {
+  // One smooth arc each, arrowheads computed from the curve's end tangent so the
+  // tip always points the way the line is travelling (Anthony: "cleaner").
+  // "loop" is kept as a name but now draws the same clean downward arc.
+  const down = { body: "M12 6 C 52 18, 58 72, 34 104", head: "M44.1 99.7 L34 104 L35.3 93.1" };
   const d = {
-    // A gentle S that ends pointing straight down.
-    down: { body: "M10 6 C 46 10, 58 40, 34 62 S 30 92, 44 110", head: "M32 100 L44 111 L50 96" },
-    // A long arc that sweeps left to right, ending pointing right.
-    right: { body: "M6 46 C 30 6, 86 4, 118 34", head: "M104 32 L119 35 L112 20" },
-    // A small loop before it heads down: the classic "look here" scribble.
-    loop: { body: "M8 10 C 40 0, 60 24, 40 34 C 22 42, 24 18, 46 20 C 70 22, 66 70, 52 104", head: "M44 94 L52 105 L60 93" },
+    down,
+    loop: down,
+    right: { body: "M6 44 C 34 8, 86 6, 116 36", head: "M113.2 25.4 L116 36 L105.4 33.2" },
   }[shape];
   const box = shape === "right" ? "0 0 124 56" : "0 0 72 116";
   return (
-    <svg viewBox={box} fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" aria-hidden className={className}>
-      <path d={d.body} />
-      <path d={d.head} />
+    <svg viewBox={box} fill="none" stroke="currentColor" strokeWidth={2.25} strokeLinecap="round" strokeLinejoin="round" aria-hidden className={className}>
+      <path d={d.body} vectorEffect="non-scaling-stroke" />
+      <path d={d.head} vectorEffect="non-scaling-stroke" />
     </svg>
   );
 }
