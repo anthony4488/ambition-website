@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
     const utmIn = b.utm && typeof b.utm === "object" ? (b.utm as Record<string, string>) : {};
     const reasonList = Array.isArray(b.qualify_reasons) ? (b.qualify_reasons as unknown[]).map(String) : [];
     const notes = [
-      `Program: ${str(b.program) ?? "SPEED COACHING"} ($100/wk, 10wk block + $200 assessment)`,
+      `Program: ${str(b.program) ?? "SPEED COACHING"} ($100/wk, 10wk block + $250 assessment)`,
       `Athlete: ${str(b.athlete_name) ?? "n/a"}`,
       // The website form now sends a banded `age`; Meta lead forms always did.
       // `dob` is still read first for any older payload still in flight.
@@ -109,6 +109,8 @@ export async function POST(req: NextRequest) {
       `Location: ${str(b.location) ?? "n/a"}`,
       `Email: ${str(b.email) ?? "n/a"}`,
       str(b.goal) ? `Wants to change: ${str(b.goal)}` : "",
+      // Answers only the /apply-v2 application asks (friction questions).
+      str(b.extra) ? str(b.extra) : "",
       "Consent: YES",
       // utm_content is {{adset.name}} on every ad, i.e. WHICH RING produced this
       // lead. It was captured client-side and then dropped here, which is why
@@ -142,8 +144,15 @@ export async function POST(req: NextRequest) {
         country: "au",
         externalId: str(b.email) ?? str(b.phone) ?? null,
       };
-      void sendCapiEvent({ ...shared, eventName: "Lead" });
-      if (tier === "qualified") void sendCapiEvent({ ...shared, eventName: "QualifiedLead" });
+      // Mirrors fireLeadPixel exactly, including the 2026-09-18 rule that an
+      // explicit reject never sends a standard Lead. If these two ever drift,
+      // Meta sees a browser event with no server twin and dedupe breaks.
+      if (tier === "unqualified") {
+        void sendCapiEvent({ ...shared, eventName: "AmbitionDisqualifiedLead" });
+      } else {
+        void sendCapiEvent({ ...shared, eventName: "Lead" });
+        if (tier === "qualified") void sendCapiEvent({ ...shared, eventName: "QualifiedLead" });
+      }
     }
 
     try {
@@ -263,6 +272,8 @@ export async function POST(req: NextRequest) {
   if (b.budget || b.commit) lines.push(`💵 ${esc(b.budget)} · ⏳ ${esc(b.commit)}`);
   if (b.goal) lines.push("", `🎯 Wants to change: ${esc(b.goal)}`);
   if (b.why_now) lines.push("", `🔥 <b>Why now:</b> ${esc(b.why_now)}`);
+  // /apply-v2 friction answers: held back, watched the VSL, will commit, parent on the call.
+  if (b.extra) lines.push("", `📝 ${esc(b.extra)}`);
   if (utm.utm_source || utm.utm_campaign || utm.fbclid)
     lines.push("", `📣 ${esc(utm.utm_source ?? "ad")}${utm.utm_campaign ? " / " + esc(utm.utm_campaign) : ""}${utm.fbclid ? " · fbclid" : ""}`);
   // Which ring produced this lead, on the alert itself so it is visible without

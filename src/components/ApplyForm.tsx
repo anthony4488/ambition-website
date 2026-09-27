@@ -25,33 +25,86 @@ import { trackFormComplete, trackFormStart } from "@/lib/formTelemetry";
 // Highest first. The ladder runs all the way to professional and Olympic
 // because the system is already used at that level, capping the select at NPL
 // told a senior athlete this wasn't for them before they reached the button.
-const LEVELS = [
-  "Professional",
-  "Semi-professional",
-  "National / Olympic representative",
-  "State representative",
-  "NPL",
-  "IFA",
-  "Club academy",
-  "School representative",
-  "School or social",
-  "Other",
-] as const;
+// Competitions, not adjectives. A generic ladder ("elite / rep / social") is
+// guessable and everyone picks the top rung; a parent at a community club will
+// usually pick the honest option when the real competitions are named, because
+// the honest one is the only one their kid is actually in.
+//
+// Added 2026-09-18 after a lead arrived claiming "NPL" with a community club in
+// the club field, and nothing compared the two answers. Keyed by sport, because
+// "NPL" is meaningless to a rugby or athletics parent.
+//
+// ⚠️ The football list is Anthony's own ground and is right. The other sports
+// are researched, not confirmed by him. Have him check them before this ships.
+export const LEVELS_BY_SPORT: Record<string, readonly string[]> = {
+  "Football": [
+    "A-League / professional",
+    "NPL 1, 2 or 3",
+    "NPL Youth / club academy",
+    "IFA / district representative",
+    "Community or local club",
+    "School only",
+  ],
+  "Rugby League": [
+    "NRL pathway / contracted",
+    "SG Ball or Harold Matthews",
+    "Junior representative",
+    "Community or local club",
+    "School only",
+  ],
+  "Rugby Union": [
+    "Super Rugby / professional",
+    "State pathway / academy",
+    "Representative (GPS, CAS, ISA)",
+    "Community or local club",
+    "School only",
+  ],
+  "AFL": [
+    "AFL or AFLW listed",
+    "Coates Talent League",
+    "State academy",
+    "Community or local club",
+    "School only",
+  ],
+  "Basketball": [
+    "NBL or WNBL",
+    "NBL1",
+    "State representative",
+    "Association / domestic",
+    "School only",
+  ],
+  "Athletics": [
+    "National representative",
+    "State representative",
+    "Club or Little Athletics",
+    "School only",
+  ],
+  "Other": [
+    "Professional",
+    "National representative",
+    "State representative",
+    "Community or local club",
+    "School only",
+  ],
+};
 
-const LOCATIONS = ["Georges Hall", "Arncliffe", "Homebush"] as const;
+export const levelsFor = (sport: string): readonly string[] =>
+  LEVELS_BY_SPORT[sport] ?? LEVELS_BY_SPORT["Other"];
+
+export const LOCATIONS = ["Georges Hall", "Arncliffe", "Homebush"] as const;
 
 // Football is the core sport, so it leads. The rest are the ones that actually
 // turn up in applications; anything else picks "Other" and lands in review.
-const SPORTS = ["Football", "Rugby League", "Rugby Union", "AFL", "Basketball",
+export const SPORTS = ["Football", "Rugby League", "Rugby Union", "AFL", "Basketball",
   "Athletics", "Other"] as const;
 
 // The label is what a parent reads; the value is the exact band string
 // `classifyAge` in lib/qualify already understands. Keeping the two separate
 // means the form can read naturally without touching the qualifier's bands.
-const AGE_BANDS = [
-  { label: "Under 8", value: "under 8" },
-  { label: "8–10", value: "8-10" },
-  { label: "11–12", value: "11-12" },
+export const AGE_BANDS = [
+  // One under-13 option since 2026-09-24: the F2F floor is 13 and the finer
+  // bands below it only existed to be told apart, which no longer matters.
+  { label: "Under 13", value: "under 13" },
   { label: "13–14", value: "13-15" },
   { label: "15–17", value: "15-17" },
   { label: "18+", value: "18+" },
@@ -59,7 +112,7 @@ const AGE_BANDS = [
 
 // Optional, and deliberately phrased the way a parent describes the problem
 // rather than the way a coach would. "Not sure yet" is a real answer here, // not knowing what is wrong is the reason most of them are applying.
-const GOALS = [
+export const GOALS = [
   "Slow off the mark",
   "No top-end speed",
   "Struggles to turn and change direction",
@@ -121,7 +174,8 @@ function validate(v: Values): Errors {
   const e: Errors = {};
   if (!v.sport) e.sport = "Please pick their sport.";
   if (!v.ageBand) e.ageBand = "Please pick their age.";
-  if (!v.level) e.level = "Please pick a playing level.";
+  // Only askable once a sport is chosen, since the options depend on it.
+  if (v.sport && !v.level) e.level = "Please pick the competition they play in.";
   // Online applicants have no Sydney location to give.
   if (!programOf(v.program).remote && !v.location) e.location = "Please pick the closest location.";
   if (v.parentName.trim().length < 2) e.parentName = "Please enter your name.";
@@ -366,7 +420,17 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
           <span id={`spl-${placement}`} className={label}>Their sport</span>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {SPORTS.map((s) => (
-              <Chip key={s} selected={v.sport === s} onSelect={() => set("sport", s)}>{s}</Chip>
+              <Chip
+                key={s}
+                selected={v.sport === s}
+                onSelect={() => {
+                  // Changing sport changes the whole competition list, so any
+                  // level already picked belongs to a sport they are no longer
+                  // in. Carrying it over is how "NPL" ends up on a basketballer.
+                  if (s !== v.sport) set("level", "");
+                  set("sport", s);
+                }}
+              >{s}</Chip>
             ))}
           </div>
           {errors.sport && <p className={errText}>{errors.sport}</p>}
@@ -388,15 +452,22 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
           )}
         </div>
 
-        <div ref={anchor("level")} role="group" aria-labelledby={`lvl-${placement}`}>
-          <span id={`lvl-${placement}`} className={label}>Current playing level</span>
-          <div className="grid grid-cols-2 gap-2">
-            {LEVELS.map((l) => (
-              <Chip key={l} selected={v.level === l} onSelect={() => set("level", l)}>{l}</Chip>
-            ))}
+        {/* Competitions, and only the ones that exist in the sport they picked.
+            Hidden until a sport is chosen, because the list is meaningless
+            without one and an empty grid reads as a broken form. */}
+        {v.sport && (
+          <div ref={anchor("level")} role="group" aria-labelledby={`lvl-${placement}`}>
+            <span id={`lvl-${placement}`} className={label}>
+              What does {v.athleteName.trim().split(/\s+/)[0] || "your athlete"} actually play in?
+            </span>
+            <div className="grid grid-cols-2 gap-2">
+              {levelsFor(v.sport).map((l) => (
+                <Chip key={l} selected={v.level === l} onSelect={() => set("level", l)}>{l}</Chip>
+              ))}
+            </div>
+            {errors.level && <p className={errText}>{errors.level}</p>}
           </div>
-          {errors.level && <p className={errText}>{errors.level}</p>}
-        </div>
+        )}
 
         {/* Only in-person programs have a location to pick. */}
         {!programOf(v.program).remote && (
