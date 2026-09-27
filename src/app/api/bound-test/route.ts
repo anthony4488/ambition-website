@@ -107,7 +107,8 @@ export async function POST(req: NextRequest) {
   // Fire and forget: a Meta outage must never cost the lead.
   if (!isTest) {
     void sendCapiEvent({
-      eventName: "Lead",
+      // Must match the browser's trackCustom name so the pair dedupes.
+      eventName: "BoundTestLead",
       eventId,
       email,
       phone: phone || null,

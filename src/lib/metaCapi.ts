@@ -80,6 +80,8 @@ export type CapiEvent = {
     // Same name here so the CAPI copy dedupes against it instead of
     // creating a second, differently-named event.
     | "QualifiedLead"
+    // The free 10-bound test. Custom so it never trains the Lead optimiser.
+    | "BoundTestLead"
     | (typeof LEAD_STAGE_EVENT)[LeadStage];
   /** Must match the browser pixel's eventID when both fire, or Meta double-counts. */
   eventId: string;
@@ -206,7 +208,7 @@ export async function sendCapiEvent(ev: CapiEvent): Promise<{ ok: boolean; detai
 export async function sendLeadStage(opts: {
   leadId?: string | null;
   stage: LeadStage;
-  /** Optional deal value, e.g. 199 when the assessment is paid. */
+  /** Optional deal value, e.g. 250 when the assessment is paid. */
   value?: number;
   currency?: string;
 }): Promise<{ ok: boolean; detail?: string }> {

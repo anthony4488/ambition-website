@@ -261,7 +261,9 @@ export default function BoundTest() {
     if (!/^test/i.test(form.name.trim())) {
       const fbq = (window as unknown as { fbq?: (...a: unknown[]) => void }).fbq;
       if (typeof fbq === "function")
-        fbq("track", "Lead", { content_name: "10-Bound Test", lead_source: "bound-test" }, { eventID: eventId });
+        // Custom, never the standard Lead: the F2F ad set optimises on Lead, and a
+        // free test at any age must not teach Meta who a buyer is (2026-09-27).
+        fbq("trackCustom", "BoundTestLead", { content_name: "10-Bound Test", lead_source: "bound-test" }, { eventID: eventId });
     }
     trackFormComplete("bound-test", { bound: f });
     setRowId(body.id ?? null);
