@@ -149,6 +149,10 @@ export async function POST(req: NextRequest) {
       // Meta sees a browser event with no server twin and dedupe breaks.
       if (tier === "unqualified") {
         void sendCapiEvent({ ...shared, eventName: "AmbitionDisqualifiedLead" });
+      } else if (str(b.capi_event) === "OnlineApplication") {
+        // /athlete-v2: adults worldwide. Never the standard Lead the Sydney ad set
+        // optimises on. Name matches the browser's trackCustom so the pair dedupes.
+        void sendCapiEvent({ ...shared, eventName: "OnlineApplication" });
       } else {
         void sendCapiEvent({ ...shared, eventName: "Lead" });
         if (tier === "qualified") void sendCapiEvent({ ...shared, eventName: "QualifiedLead" });

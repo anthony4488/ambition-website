@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { FunnelLogo } from "@/components/haynes/Logo";
 
 // Haynes' confirmation page, rebuilt: name the person who will contact them,
 // tell them to answer, no calendar, then short videos that answer what every
@@ -25,8 +26,9 @@ export default function ThankYou({ searchParams }: { searchParams: { name?: stri
 
   return (
     <main className="min-h-screen bg-white text-gray-900">
-      <section className="mx-auto max-w-3xl px-4 pb-10 pt-12 text-center sm:pt-16">
-        <h1 className="text-[32px] font-extrabold leading-tight tracking-tight text-[#2F2F2F] [text-wrap:balance] sm:text-5xl">
+      <section className="mx-auto max-w-3xl px-4 pb-10 pt-8 text-center sm:pt-10">
+        <FunnelLogo />
+        <h1 className="mt-6 text-[32px] font-extrabold leading-tight tracking-tight text-[#2F2F2F] [text-wrap:balance] sm:text-5xl">
           {first ? `${first}, ` : ""}Anthony will call you today.
         </h1>
         <div className="mx-auto mt-6 max-w-2xl space-y-4 text-left text-[17px] leading-relaxed text-gray-700">

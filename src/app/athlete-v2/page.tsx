@@ -12,11 +12,14 @@ import { FunnelLogo } from "@/components/haynes/Logo";
 // like his, not like ours."
 //
 // Preview route. Swap it into /apply only after Anthony signs off.
+//
+// ONLINE COPY (athlete-v2), 2026-09-28: the same page for athletes 24+, any
+// sport, anywhere. Filmed on a phone, so nothing here mentions timing gates.
 
 export const metadata: Metadata = {
   title: "Apply, Ambition Sports Performance",
   description:
-    "For Sydney players 13 and over already in an NPL, IFA or academy squad. Watch the video, then apply.",
+    "For athletes 24 and over, any sport, anywhere. Five tests filmed on your phone. Watch the video, then apply.",
   robots: { index: false },
 };
 
@@ -25,11 +28,11 @@ export const metadata: Metadata = {
 const VSL_EMBED_URL = "";
 const STAND_IN = "/breakdown-topspeed.mp4";
 
-export default function ApplyV2() {
+export default function AthleteV2() {
   return (
     <main className="min-h-screen bg-white text-gray-900">
       <div className="bg-[#2D2D2D] px-4 py-4 text-center text-[15px] font-medium text-white sm:text-lg">
-        Sydney, in person <span className="mx-2 text-white/40">·</span> Georges Hall, Arncliffe, Homebush
+        Online <span className="mx-2 text-white/40">·</span> Anywhere in the world
       </div>
 
       <section className="mx-auto max-w-[1100px] px-4 pb-10 pt-6 text-center sm:pt-8">
@@ -38,7 +41,7 @@ export default function ApplyV2() {
           Ambition Sports Performance presents...
         </p>
         <h1 className="mx-auto mt-3 max-w-4xl text-[30px] font-extrabold uppercase leading-[1.08] tracking-tight text-[#2F2F2F] [text-wrap:balance] sm:text-5xl lg:text-[58px]">
-          How Sydney&apos;s NPL, IFA and academy players get to the level above their squad
+          How athletes over 24 find the one number keeping them below the next level
         </h1>
 
         {/* Hand-drawn pointer: watch first. */}
@@ -69,8 +72,8 @@ export default function ApplyV2() {
 
       <section className="mx-auto max-w-[1100px] px-4 pb-6 text-center">
         <p className="mx-auto max-w-3xl text-xl font-bold leading-snug text-accent sm:text-[28px]">
-          Enter your name and email to open the application. Players 13 and over, already in an NPL,
-          IFA or academy squad. Every application is read, and not every one is accepted.
+          Enter your name and email to open the application. Athletes 24 and over, any sport, anywhere
+          in the world. Every application is read, and not every one is accepted.
         </p>
       </section>
 
@@ -79,7 +82,7 @@ export default function ApplyV2() {
         <CurvedArrow shape="loop" className="h-16 w-10 -scale-x-100 sm:h-20 sm:w-12" />
         <Note className="-rotate-3 text-3xl sm:text-4xl">start here</Note>
       </div>
-      <OptinStrip formId="apply-v2" next="/apply-v2/application" />
+      <OptinStrip formId="athlete-v2" next="/athlete-v2/application" />
 
       {/* The disclaimer IS the qualifier (Haynes pattern). Anthony 2026-09-28: "aggressive,
           direct... who this is for, what we guarantee and what we don't, what the person needs
@@ -95,7 +98,7 @@ export default function ApplyV2() {
             </p>
             <p>
               We don&apos;t do free chats, we don&apos;t compete on price, and we don&apos;t chase anyone. We
-              read every application and we turn families away. Everything below is here to save both of us
+              read every application and we turn athletes away. Everything below is here to save both of us
               the time.
             </p>
           </div>
@@ -103,26 +106,27 @@ export default function ApplyV2() {
           <div className="space-y-3">
             <p className="text-lg font-bold text-gray-900">The reality about speed</p>
             <p>
-              Our elite standard for a 15 year old is 32 km/h. Running 35 km/h and above is professional
-              territory, and almost nobody who ever plays the game gets there. The players on these pages are
-              the best results out of more than 1,000 athletes we have measured: the most driven players, who
-              turned up every week for years. They are not typical, and we don&apos;t present them as typical.
+              Running 35 km/h and above is professional territory, and almost nobody who ever plays the game gets
+              there. The athletes on these pages are the best results out of more than 1,000 we have measured: the
+              most driven ones, who did the work for months and years. They are not typical, and we don&apos;t
+              present them as typical.
             </p>
             <p>
-              The typical result is this: across 40 athletes re-tested on the same timing gates, the average
-              gain was 8.3% over 10 metres and 10.4% at top speed. Not 30%. Some gained less. Anyone who
-              promises you 30% hasn&apos;t measured anybody.
+              The typical result is this: across 40 athletes re-tested on the same timing gates, the average gain
+              was 8.3% over 10 metres and 10.4% at top speed. Not 30%. Some gained less. At your level, 8% is the
+              difference between arriving first and watching it happen. Anyone who promises you 30% hasn&apos;t
+              measured anybody.
             </p>
           </div>
 
           <div className="space-y-3">
             <p className="text-lg font-bold text-gray-900">What we guarantee</p>
             <ul className="list-disc space-y-1.5 pl-5">
-              <li>Every number measured, on electronic timing gates and 240 frames per second film. Never guessed.</li>
-              <li>Your player&apos;s numbers set against their age group and the level above it.</li>
-              <li>The limiter costing them the most, named on their own footage.</li>
-              <li>Three priorities in the order to work them, each with a 12 month target.</li>
-              <li>A straight answer if the programme isn&apos;t worth doing for your player, even if that loses us the sale.</li>
+              <li>Five tests, measured from your own slow motion footage. Never guessed.</li>
+              <li>Every number set against the standard for your level and the level above it.</li>
+              <li>A written report and a 15 minute voiceover on your own footage, in 5 to 7 business days.</li>
+              <li>The limiter costing you the most, named in a sentence, and three priorities with a 12 month target on each.</li>
+              <li>A straight answer if the programme isn&apos;t worth doing for you, even if that loses us the sale.</li>
             </ul>
           </div>
 
@@ -130,35 +134,35 @@ export default function ApplyV2() {
             <p className="text-lg font-bold text-gray-900">What we don&apos;t guarantee</p>
             <ul className="list-disc space-y-1.5 pl-5">
               <li>Any particular speed. Not 35 km/h, not 30 km/h, not any number.</li>
-              <li>A trial, a contract, a squad selection or a minute of game time.</li>
-              <li>Results for a player who misses sessions or skips the work between them.</li>
-              <li>Results in weeks. This is a two year build, not a six week one.</li>
+              <li>A contract, a trial, a selection or a minute of game time.</li>
+              <li>Results if you skip the sessions or the work between them.</li>
+              <li>Results in weeks. The programme is 30 weeks for a reason.</li>
             </ul>
-            <p>Your player&apos;s result is decided by your player. We can&apos;t do the work for them.</p>
+            <p>Your result is decided by you. We can&apos;t do the work for you.</p>
           </div>
 
           <div className="space-y-3">
             <p className="text-lg font-bold text-gray-900">What you need to bring</p>
             <ul className="list-disc space-y-1.5 pl-5">
-              <li>A player 13 or over, already in an NPL, IFA or academy squad, or the same level in their sport.</li>
-              <li>A player who wants this themselves. If it&apos;s only your idea, it won&apos;t work.</li>
-              <li>Ten week blocks, face to face every week, and the work done in between.</li>
-              <li>A realistic budget: the programme after the assessment runs $100 to $200 a week.</li>
-              <li>Parents who answer the phone, turn up when they say they will, and give straight answers.</li>
+              <li>You&apos;re 24 or over, still training or competing, and paying for your own coaching.</li>
+              <li>A phone that films in slow motion, a patch of grass or a track, and about an hour.</li>
+              <li>If the assessment shows it&apos;s worth it: 30 weeks, coached over WhatsApp around your job.</li>
+              <li>A realistic budget: the programme after the assessment is $4,000 USD, paid in two halves.</li>
+              <li>Straight answers about where you are, and replies when we message you.</li>
             </ul>
           </div>
 
           <div className="space-y-3">
             <p className="text-lg font-bold text-gray-900">Don&apos;t apply if</p>
             <ul className="list-disc space-y-1.5 pl-5">
-              <li>your player is under 13, or not yet in a squad. Start with the free 10-bound test instead.</li>
-              <li>you want a quick fix before trials in three weeks.</li>
-              <li>you&apos;re comparing us with the cheapest session in Sydney.</li>
+              <li>you&apos;re under 24. Start with the free 10-bound test instead.</li>
+              <li>you want a quick fix before a trial in three weeks.</li>
+              <li>you&apos;re comparing us with the cheapest program online.</li>
               <li>you want a guarantee before you commit.</li>
               <li>you&apos;re &ldquo;just looking&rdquo;.</li>
             </ul>
             <p className="font-semibold text-gray-900">
-              If that reads as harsh, good. The families who get the most from this read it and apply anyway.
+              If that reads as harsh, good. The athletes who get the most from this read it and apply anyway.
             </p>
           </div>
         </div>
@@ -167,10 +171,10 @@ export default function ApplyV2() {
       <section className="px-4 py-12 text-center">
         <p className="text-2xl font-bold text-[#2D2D2D] sm:text-3xl">Want to see the reports first?</p>
         <Link
-          href="/apply-v2/results/1"
+          href="/athlete-v2/results/1"
           className="mt-5 inline-block rounded-md bg-accent px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-accent-dark"
         >
-          See player results
+          See athlete results
         </Link>
       </section>
 

@@ -29,7 +29,7 @@ const GATE_YES = "Yes";
 const GATE_NO = "Not yet";
 const player = (a: Answers) => a.athleteName?.trim() || "your player";
 
-const STEPS: Step[] = [
+const STEPS_F2F: Step[] = [
   {
     key: "gate", kind: "choice",
     q: () => "Is your player 13 or over, and already in an NPL, IFA or academy squad (or the same level in their sport)?",
@@ -104,6 +104,68 @@ const STEPS: Step[] = [
   },
 ];
 
+// Online: athletes 24+ who pay for their own training, any sport, anywhere.
+// The athlete IS the applicant, so every question is in the second person.
+const STEPS_ONLINE: Step[] = [
+  {
+    key: "gate", kind: "choice",
+    q: () => "Are you 24 or over, still training or competing, and paying for your own coaching?",
+    hint: "The online programme is built for adult athletes who are already good and want the level above.",
+    options: () => [GATE_YES, GATE_NO],
+  },
+  { key: "name", kind: "text", q: () => "What's your name?", placeholder: "Your name" },
+  { key: "email", kind: "email", q: () => "Which email should we use?", placeholder: "you@example.com" },
+  { key: "ageBand", kind: "choice", q: () => "How old are you?", options: () => ["24-29", "30-39", "40+"] },
+  { key: "sport", kind: "choice", q: () => "What's your sport?", options: () => SPORTS },
+  {
+    key: "level", kind: "choice",
+    q: () => "What level do you play or compete at now?",
+    options: () => ["Professional", "Semi-professional", "Amateur, competitive", "Social or recreational", "I train but don't compete"],
+  },
+  { key: "country", kind: "text", q: () => "Which country are you in?", placeholder: "Country" },
+  {
+    key: "goal", kind: "choice",
+    q: () => "What would you most like to change in how you move?",
+    options: () => ["Faster off the mark", "More top speed", "Sharper change of direction", "Stay injury free", "Not sure yet, that's why I'm here"],
+  },
+  {
+    key: "heldBack", kind: "long",
+    q: () => "What has held you back so far? Be specific.",
+    placeholder: "Injuries, time, coaching, not knowing what to work on...",
+  },
+  {
+    key: "whyNow", kind: "long",
+    q: () => "Why now? What has changed?",
+    placeholder: "A new season, a trial, a plateau you can't get past...",
+  },
+  {
+    key: "filming", kind: "choice",
+    q: () => "The assessment is five tests filmed on your phone in slow motion, about an hour on grass or a track. When could you film them?",
+    options: () => ["This week", "Within a month", "Not sure"],
+  },
+  {
+    key: "watched", kind: "choice",
+    q: () => "Did you watch the video on the last page all the way through?",
+    options: () => ["Yes, all of it", "Some of it", "Not yet"],
+  },
+  {
+    key: "commit", kind: "choice",
+    q: () => "If the assessment shows it's worth doing, the programme is 30 weeks, coached over WhatsApp around your job. Could you commit to that?",
+    options: () => ["Yes", "Need to think it through", "No"],
+  },
+  {
+    key: "start", kind: "choice",
+    q: () => "When do you want to start?",
+    options: () => ["This week", "Within a month", "Later this year", "Just looking for now"],
+  },
+  {
+    key: "phone", kind: "tel",
+    q: () => "What's your best WhatsApp number, with country code?",
+    hint: "The coaching runs on WhatsApp, so this is where you'll hear from Anthony.",
+    placeholder: "+1 555 123 4567",
+  },
+];
+
 const ageValueOf = (label: string) => AGE_BANDS.find((b) => b.label === label)?.value ?? label;
 
 function valid(step: Step, v: string): string | null {
@@ -117,7 +179,16 @@ function valid(step: Step, v: string): string | null {
   return t.length >= 2 ? null : "Please fill this in.";
 }
 
-export function Application({ formId, thankYou }: { formId: string; thankYou: string }) {
+export function Application({
+  formId,
+  thankYou,
+  variant = "f2f",
+}: {
+  formId: string;
+  thankYou: string;
+  variant?: "f2f" | "online";
+}) {
+  const online = variant === "online";
   const router = useRouter();
   const [a, setA] = useState<Answers>({});
   const [i, setI] = useState(0);
@@ -137,7 +208,7 @@ export function Application({ formId, thankYou }: { formId: string; thankYou: st
     }
   }, []);
 
-  const steps = STEPS.filter((s) => !skip.includes(s.key));
+  const steps = (online ? STEPS_ONLINE : STEPS_F2F).filter((s) => !skip.includes(s.key));
   const step = steps[i];
   const total = steps.length;
 
@@ -166,6 +237,7 @@ export function Application({ formId, thankYou }: { formId: string; thankYou: st
 
   async function submit(v: Answers) {
     setStatus("sending");
+    if (online) return submitOnline(v);
     let result: QualifyResult = qualifyLead({
       suburb: v.location,
       sport: v.sport,
@@ -244,14 +316,75 @@ export function Application({ formId, thankYou }: { formId: string; thankYou: st
     router.push(`${thankYou}?name=${encodeURIComponent((v.name ?? "").split(/\s+/)[0])}`);
   }
 
+  // Online applications are adults, worldwide. They must never fire the standard
+  // Lead the Sydney ad set optimises on, so they get their own event, browser and
+  // server sharing one id. The Sydney qualifier doesn't apply to them: tier is
+  // "review", and Anthony reads the answers.
+  async function submitOnline(v: Answers) {
+    const eventId =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : "lead_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+    const extra = [
+      `Country: ${v.country}`,
+      `Start: ${v.start}`,
+      `Film the tests: ${v.filming}`,
+      `Commit to 30 weeks: ${v.commit}`,
+      `Why now: ${v.whyNow}`,
+      `Held back: ${v.heldBack}`,
+      `Watched VSL: ${v.watched}`,
+      "Page: /athlete-v2 (Haynes layout, online)",
+    ].join(" | ");
+    const payload = {
+      event_id: eventId,
+      capi_event: "OnlineApplication",
+      name: v.name?.trim(),
+      email: v.email?.trim(),
+      phone: v.phone?.trim(),
+      athlete_name: v.name?.trim(),
+      age: v.ageBand,
+      program: "Speed, online",
+      level: v.level,
+      location: `Online: ${v.country?.trim()}`,
+      goal: v.goal,
+      sport: v.sport,
+      consent: true,
+      source: "apply",
+      placement: formId,
+      utm: utm.current,
+      qualified: false,
+      tier: "review",
+      qualify_reasons: ["online applicant, read the answers"],
+      extra,
+    };
+    let ok = false;
+    try {
+      const res = await fetch("/api/notify-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      ok = res.ok;
+    } catch {
+      /* handled below */
+    }
+    if (!ok) return setStatus("error");
+    const fbq = (window as unknown as { fbq?: (...x: unknown[]) => void }).fbq;
+    if (typeof fbq === "function") {
+      fbq("trackCustom", "OnlineApplication", { content_name: "Online Application", placement: formId }, { eventID: eventId });
+    }
+    trackFormComplete(formId, { online: true });
+    router.push(`${thankYou}?name=${encodeURIComponent((v.name ?? "").split(/\s+/)[0])}`);
+  }
+
   if (status === "gated") {
     return (
       <div className="mx-auto max-w-xl text-center">
         <h2 className="text-2xl font-extrabold text-gray-900 sm:text-3xl">Thanks{a.name ? `, ${a.name.split(/\s+/)[0]}` : ""}.</h2>
         <p className="mt-4 text-lg leading-relaxed text-gray-700">
-          This programme is for players 13 and over who are already in a squad, so it isn&apos;t the right
-          fit yet. Start with the free 10-bound test instead. It takes five minutes on any patch of grass
-          and shows you where your player stands.
+          {online
+            ? "The online programme is for athletes 24 and over who are still training and paying for their own coaching, so it isn't the right fit yet. Start with the free 10-bound test instead. It takes five minutes on any patch of grass and shows you where you stand."
+            : "This programme is for players 13 and over who are already in a squad, so it isn't the right fit yet. Start with the free 10-bound test instead. It takes five minutes on any patch of grass and shows you where your player stands."}
         </p>
         <Link href="/bound-test" className="mt-7 inline-block rounded-[15px] bg-accent px-8 py-4 text-lg font-bold text-white hover:bg-accent-dark">
           Take the free 10-bound test
@@ -347,7 +480,9 @@ export function Application({ formId, thankYou }: { formId: string; thankYou: st
       </div>
 
       <p className="mt-10 border-t border-gray-200 pt-5 text-center text-[14px] text-gray-500">
-        Expected programme price after the assessment: $100 to $200 a week.
+        {online
+          ? "Expected programme price after the assessment: $4,000 USD for 30 weeks, paid in two halves."
+          : "Expected programme price after the assessment: $100 to $200 a week."}
       </p>
     </div>
   );

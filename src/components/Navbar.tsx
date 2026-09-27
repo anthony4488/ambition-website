@@ -36,7 +36,7 @@ export function Navbar() {
   }, [pathname]);
 
   // /apply-v2 is the Haynes funnel: no nav at all, by design.
-  if (LANDING.includes(pathname) || pathname.startsWith("/apply-v2")) return null; // focused landing pages: logo only, no nav
+  if (LANDING.includes(pathname) || pathname.startsWith("/apply-v2") || pathname.startsWith("/athlete-v2")) return null; // focused landing pages: logo only, no nav
 
   return (
     <nav

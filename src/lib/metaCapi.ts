@@ -82,6 +82,8 @@ export type CapiEvent = {
     | "QualifiedLead"
     // The free 10-bound test. Custom so it never trains the Lead optimiser.
     | "BoundTestLead"
+    // /athlete-v2 online application. Custom so it never trains the Sydney Lead optimiser.
+    | "OnlineApplication"
     | (typeof LEAD_STAGE_EVENT)[LeadStage];
   /** Must match the browser pixel's eventID when both fire, or Meta double-counts. */
   eventId: string;

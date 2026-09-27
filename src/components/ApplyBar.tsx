@@ -20,7 +20,7 @@ const HIDDEN_EXACT = ["/contact", "/apply", "/welcome", "/agreement", "/privacy"
   // Falcon is a paid checkout funnel, a $250 assessment bar competing with a
   // $175 buy button costs more than it earns.
   "/falcon", "/falcon/sent"];
-const HIDDEN_PREFIX = ["/admin", "/apply-v2"];
+const HIDDEN_PREFIX = ["/admin", "/apply-v2", "/athlete-v2"];
 
 const DISMISS_KEY = "asp_apply_bar_dismissed";
 
