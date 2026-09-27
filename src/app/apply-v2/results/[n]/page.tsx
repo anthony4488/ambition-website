@@ -170,6 +170,24 @@ function splitTitle(r: Result): { name: string; result: string } {
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
+/** Thin line chevron. Hairline stroke on purpose: navigation, not a button. */
+function Chevron({ dir, className = "" }: { dir: "left" | "right"; className?: string }) {
+  return (
+    <svg viewBox="0 0 24 48" fill="none" stroke="currentColor" strokeWidth={1.25} strokeLinecap="round" strokeLinejoin="round" aria-hidden className={className}>
+      <path d={dir === "left" ? "M18 4 6 24l12 20" : "M6 4l12 20L6 44"} />
+    </svg>
+  );
+}
+
+/** Thin long arrow for the text buttons. */
+function Arrow({ dir, className = "" }: { dir: "left" | "right"; className?: string }) {
+  return (
+    <svg viewBox="0 0 28 12" fill="none" stroke="currentColor" strokeWidth={1.25} strokeLinecap="round" strokeLinejoin="round" aria-hidden className={className}>
+      <path d={dir === "left" ? "M27 6H1m5-5L1 6l5 5" : "M1 6h26m-5-5 5 5-5 5"} />
+    </svg>
+  );
+}
+
 export default function ResultPage({ params }: { params: { n: string } }) {
   const idx = Number(params.n) - 1;
   const r = RESULTS[idx];
@@ -190,19 +208,35 @@ export default function ResultPage({ params }: { params: { n: string } }) {
       </div>
 
       <section className="mx-auto max-w-[1100px] px-4 pb-10 pt-8 text-center sm:pt-12">
-        <div className="flex items-center justify-center gap-3 text-[13px] font-bold uppercase tracking-[0.18em] sm:text-sm">
+        <div className="flex items-center justify-center gap-4 text-[13px] font-bold uppercase tracking-[0.18em] sm:text-sm">
+          <Link href={`/apply-v2/results/${prev}`} aria-label="Previous result" className="text-gray-300 transition-colors hover:text-accent">
+            <Chevron dir="left" className="h-7 w-3.5" />
+          </Link>
           <span className="text-gray-400">Player results</span>
           <span className="h-1 w-1 rounded-full bg-gray-300" aria-hidden />
           <span className="tabular-nums text-gray-400">{pad(idx + 1)} / {pad(total)}</span>
+          <Link href={`/apply-v2/results/${next}`} aria-label="Next result" className="text-gray-300 transition-colors hover:text-accent">
+            <Chevron dir="right" className="h-7 w-3.5" />
+          </Link>
         </div>
         <p className="mt-5 text-[15px] font-bold uppercase tracking-[0.14em] text-accent sm:text-xl">{name}</p>
         <h1 className="mx-auto mt-2 max-w-4xl text-[30px] font-extrabold uppercase leading-[1.06] tracking-tight text-[#2F2F2F] [text-wrap:balance] sm:text-5xl lg:text-[56px]">
           {result}
         </h1>
 
+        {/* Thin chevrons either side of the video on wide screens. */}
+        <div className="relative mx-auto mt-8 lg:px-20">
+          <Link href={`/apply-v2/results/${prev}`} aria-label="Previous result"
+            className="absolute left-0 top-1/2 hidden -translate-y-1/2 p-3 text-gray-400 transition-colors hover:text-accent lg:block">
+            <Chevron dir="left" className="h-16 w-8" />
+          </Link>
+          <Link href={`/apply-v2/results/${next}`} aria-label="Next result"
+            className="absolute right-0 top-1/2 hidden -translate-y-1/2 p-3 text-gray-400 transition-colors hover:text-accent lg:block">
+            <Chevron dir="right" className="h-16 w-8" />
+          </Link>
         <div
           className={
-            "relative mx-auto mt-8 w-full overflow-hidden rounded-xl bg-black shadow-[0_24px_60px_-20px_rgba(0,0,0,0.45)] ring-1 ring-black/5 " +
+            "relative mx-auto w-full overflow-hidden rounded-xl bg-black shadow-[0_24px_60px_-20px_rgba(0,0,0,0.45)] ring-1 ring-black/5 " +
             (r.vertical ? "aspect-[9/16] max-w-[380px]" : "aspect-video")
           }
         >
@@ -227,6 +261,7 @@ export default function ResultPage({ params }: { params: { n: string } }) {
           ) : (
             <video src={r.mp4} controls playsInline preload="metadata" className="absolute inset-0 h-full w-full object-contain" />
           )}
+        </div>
         </div>
       </section>
 
@@ -286,11 +321,11 @@ export default function ResultPage({ params }: { params: { n: string } }) {
             href={`/apply-v2/results/${next}`}
             className="h-[52px] rounded-[15px] border border-white/25 text-lg font-semibold leading-[50px] text-white transition-colors hover:border-white hover:bg-white/5"
           >
-            See another result →
+            <span className="inline-flex items-center gap-3">See another result <Arrow dir="right" className="h-3 w-7" /></span>
           </Link>
         </div>
         <Link href={`/apply-v2/results/${prev}`} className="mt-5 inline-block text-sm font-semibold text-white/40 hover:text-white/70">
-          ← Previous result
+          <span className="inline-flex items-center gap-2"><Arrow dir="left" className="h-3 w-6" /> Previous result</span>
         </Link>
       </section>
 
