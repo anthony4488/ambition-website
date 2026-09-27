@@ -129,7 +129,7 @@ export default function ApplyV2() {
       <section className="px-4 py-12 text-center">
         <p className="text-2xl font-bold text-[#2D2D2D] sm:text-3xl">Want to see the reports first?</p>
         <Link
-          href="/success-stories"
+          href="/apply-v2/results/1"
           className="mt-5 inline-block rounded-md bg-accent px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-accent-dark"
         >
           See player results

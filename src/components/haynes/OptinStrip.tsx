@@ -48,7 +48,7 @@ export function OptinStrip({ formId, next }: { formId: string; next: string }) {
     "h-[52px] w-full rounded-[10px] border border-black/20 bg-white px-4 text-[17px] text-gray-900 placeholder-gray-400 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40";
 
   return (
-    <section className="bg-[#211B17] px-4 py-6">
+    <section id="start" className="scroll-mt-4 bg-[#211B17] px-4 py-6">
       <form
         onSubmit={onSubmit}
         noValidate
