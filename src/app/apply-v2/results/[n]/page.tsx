@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { BeforeAfter, CurvedArrow, Note } from "@/components/haynes/Scribble";
 
 // Haynes' testimonial pages (dmmguide.com/ictestimonial1, 2, ...): the same top
 // bar, ONE video, one quote, then "Apply" and "See another testimonial". Proof
@@ -170,6 +171,19 @@ function splitTitle(r: Result): { name: string; result: string } {
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
+/** "28 km/h to 36 km/h, NPL first team" -> started / now / note. Null when there is no journey to draw. */
+function journey(result: string): { before: string; after: string; note?: string } | null {
+  const m = result.match(/^(.+?) to (.+)$/i);
+  if (!m) return null;
+  let after = m[2].replace(/^the /i, "");
+  let note: string | undefined;
+  const comma = after.indexOf(", ");
+  if (comma > 0) { note = after.slice(comma + 2); after = after.slice(0, comma); }
+  const within = after.match(/^(.+?) (in \d.+)$/i);
+  if (within) { after = within[1]; note = within[2]; }
+  return { before: m[1], after, note };
+}
+
 /** Thin line chevron. Hairline stroke on purpose: navigation, not a button. */
 function Chevron({ dir, className = "" }: { dir: "left" | "right"; className?: string }) {
   return (
@@ -220,9 +234,16 @@ export default function ResultPage({ params }: { params: { n: string } }) {
           </Link>
         </div>
         <p className="mt-5 text-[15px] font-bold uppercase tracking-[0.14em] text-accent sm:text-xl">{name}</p>
-        <h1 className="mx-auto mt-2 max-w-4xl text-[30px] font-extrabold uppercase leading-[1.06] tracking-tight text-[#2F2F2F] [text-wrap:balance] sm:text-5xl lg:text-[56px]">
-          {result}
-        </h1>
+        {journey(result) ? (
+          <>
+            <h1 className="sr-only">{r.title}</h1>
+            <BeforeAfter {...journey(result)!} />
+          </>
+        ) : (
+          <h1 className="mx-auto mt-2 max-w-4xl text-[30px] font-extrabold uppercase leading-[1.06] tracking-tight text-[#2F2F2F] [text-wrap:balance] sm:text-5xl lg:text-[56px]">
+            {result}
+          </h1>
+        )}
 
         {/* Thin chevrons either side of the video on wide screens. */}
         <div className="relative mx-auto mt-8 lg:px-20">
@@ -310,7 +331,16 @@ export default function ResultPage({ params }: { params: { n: string } }) {
         <p className="mx-auto mt-2 max-w-xl text-[15px] text-white/60">
           Players 13 and over, already in an NPL, IFA or academy squad.
         </p>
-        <div className="mx-auto mt-7 flex max-w-md flex-col gap-3">
+        <div className="relative mx-auto mt-7 flex max-w-md flex-col gap-3">
+          {/* Hand-drawn pointer at the one button this page exists for. */}
+          <div className="pointer-events-none absolute right-full top-[-18px] mr-2 hidden flex-col items-end text-accent sm:flex" aria-hidden>
+            <Note className="-rotate-6 whitespace-nowrap text-2xl text-white/80">your player&apos;s turn</Note>
+            <CurvedArrow shape="right" className="mt-1 h-10 w-24 rotate-12" />
+          </div>
+          <div className="pointer-events-none -mb-1 flex items-end justify-center gap-1 text-accent sm:hidden" aria-hidden>
+            <Note className="-rotate-3 text-2xl text-white/80">your player&apos;s turn</Note>
+            <CurvedArrow shape="down" className="h-12 w-8" />
+          </div>
           <Link
             href="/apply-v2#start"
             className="h-[56px] rounded-[15px] bg-accent text-lg font-bold leading-[56px] text-white transition-colors hover:bg-accent-dark"

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { OptinStrip } from "@/components/haynes/OptinStrip";
+import { CurvedArrow, Note } from "@/components/haynes/Scribble";
 
 // The Haynes layout, 2026-09-28. Built from his live cold-traffic page
 // (dmmguide.com/inner-circle, captured in ambition-ad-library/HAYNES_LANDING):
@@ -38,7 +39,12 @@ export default function ApplyV2() {
           How Sydney&apos;s NPL, IFA and academy players get to the level above their squad
         </h1>
 
-        <div className="relative mt-7 aspect-video w-full overflow-hidden rounded-md bg-black">
+        {/* Hand-drawn pointer: watch first. */}
+        <div className="mt-6 flex items-end justify-center gap-2 text-accent" aria-hidden>
+          <Note className="-rotate-3 text-3xl sm:text-4xl">watch this first</Note>
+          <CurvedArrow shape="down" className="h-14 w-9 sm:h-16 sm:w-10" />
+        </div>
+        <div className="relative mt-2 aspect-video w-full overflow-hidden rounded-md bg-black">
           {VSL_EMBED_URL ? (
             <iframe
               src={VSL_EMBED_URL}
@@ -66,6 +72,11 @@ export default function ApplyV2() {
         </p>
       </section>
 
+      {/* Hand-drawn pointer into the form. */}
+      <div className="flex items-end justify-center gap-2 pb-2 text-accent" aria-hidden>
+        <CurvedArrow shape="loop" className="h-16 w-10 -scale-x-100 sm:h-20 sm:w-12" />
+        <Note className="-rotate-3 text-3xl sm:text-4xl">start here</Note>
+      </div>
       <OptinStrip formId="apply-v2" next="/apply-v2/application" />
 
       {/* The disclaimer IS the qualifier (Haynes pattern). Anthony 2026-09-28: "aggressive,
