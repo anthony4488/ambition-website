@@ -55,9 +55,30 @@ const STEPS: Step[] = [
   { key: "location", kind: "choice", q: () => "Which location is closest to you?", options: () => LOCATIONS },
   { key: "goal", kind: "choice", q: (a) => `What would you most like to change in how ${player(a)} moves?`, options: () => GOALS },
   {
+    key: "trainingLoad", kind: "choice",
+    q: (a) => `How many times a week does ${player(a)} train with their team now?`,
+    options: () => ["1-2", "3", "4 or more"],
+  },
+  {
+    key: "whose", kind: "choice",
+    q: (a) => `Whose idea is this: ${player(a)}'s, or yours?`,
+    hint: "Be honest. If the player doesn't want it, it won't work.",
+    options: (a) => [`${player(a)} asked for it`, "We both want it", "Mostly mine"],
+  },
+  {
     key: "heldBack", kind: "long",
     q: (a) => `What has held ${player(a)} back so far? Be specific.`,
     placeholder: "Injuries, coaches, time, not knowing what to work on...",
+  },
+  {
+    key: "whyNow", kind: "long",
+    q: () => "Why now? What has changed this season?",
+    placeholder: "A trial coming up, dropped to the bench, moved up an age group...",
+  },
+  {
+    key: "start", kind: "choice",
+    q: (a) => `If ${player(a)} is accepted, when would you want to start?`,
+    options: () => ["This week", "Within a month", "Later this year", "Just looking for now"],
   },
   {
     key: "watched", kind: "choice",
@@ -91,7 +112,8 @@ function valid(step: Step, v: string): string | null {
   if ("optional" in step && step.optional) return null;
   if (step.kind === "email") return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(t) ? null : "Please enter a valid email address.";
   if (step.kind === "tel") return t.replace(/\D/g, "").length >= 8 ? null : "Please enter a contact number.";
-  if (step.kind === "long") return t.length >= 10 ? null : "A sentence or two, please. It shapes the call.";
+  // Friction on purpose: a one-word answer here is the weakest applicant signal we get.
+  if (step.kind === "long") return t.length >= 25 ? null : "A proper sentence or two, please. It shapes the call.";
   return t.length >= 2 ? null : "Please fill this in.";
 }
 
@@ -153,8 +175,15 @@ export function Application({ formId, thankYou }: { formId: string; thankYou: st
     });
     // A family that won't commit to a block is never a QualifiedLead, so Meta
     // is never told to find more of them. They still get the call.
-    if (result.tier === "qualified" && v.commit === "No") {
-      result = { ...result, tier: "review", reasons: [...result.reasons, "won't commit to a 10 week block"] };
+    // Same for the weak-intent answers Anthony wants filtered: not the player's
+    // idea, or only looking. Strong applications are the point, not volume.
+    const weak = [
+      v.commit === "No" && "won't commit to a 10 week block",
+      v.whose === "Mostly mine" && "parent's idea, not the player's",
+      v.start === "Just looking for now" && "just looking",
+    ].filter(Boolean) as string[];
+    if (result.tier === "qualified" && weak.length) {
+      result = { ...result, tier: "review", reasons: [...result.reasons, ...weak] };
     }
 
     const eventId =
@@ -163,6 +192,10 @@ export function Application({ formId, thankYou }: { formId: string; thankYou: st
         : "lead_" + Date.now() + "_" + Math.random().toString(36).slice(2);
 
     const extra = [
+      `Trains: ${v.trainingLoad}/wk`,
+      `Whose idea: ${v.whose}`,
+      `Start: ${v.start}`,
+      `Why now: ${v.whyNow}`,
       `Held back: ${v.heldBack}`,
       `Watched VSL: ${v.watched}`,
       `Commit to a block: ${v.commit}`,

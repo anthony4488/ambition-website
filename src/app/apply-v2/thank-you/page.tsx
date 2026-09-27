@@ -44,6 +44,16 @@ export default function ThankYou({ searchParams }: { searchParams: { name?: stri
             The call takes about ten minutes and it isn&apos;t a sales pitch. If the assessment isn&apos;t
             worth doing for your player, he&apos;ll tell you on the phone.
           </p>
+          <p>
+            This isn&apos;t something you just book. The players in these groups train alongside each other,
+            and the level stays high because of who is in the room. So we look for families who answer when we
+            call, turn up when they say they will, and give straight answers about where their player is. That
+            matters more to us than how quickly you want to start.
+          </p>
+          <p>
+            Before he calls, watch the short videos below. They answer the questions every family asks, so the
+            call can be about your player instead.
+          </p>
         </div>
       </section>
 
