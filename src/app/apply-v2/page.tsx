@@ -68,59 +68,84 @@ export default function ApplyV2() {
 
       <OptinStrip formId="apply-v2" next="/apply-v2/application" />
 
-      {/* Haynes' disclaimer block doubles as the qualifier: it tells the wrong
-          people, plainly, not to apply. Anthony 2026-09-28: longer, and built to
-          get strong applications, not more of them. Wording follows beat 09 of
-          F2F_VSL_HIGH_LEVEL.md so the page and the video say the same thing. */}
+      {/* The disclaimer IS the qualifier (Haynes pattern). Anthony 2026-09-28: "aggressive,
+          direct... who this is for, what we guarantee and what we don't, what the person needs
+          to have. I don't want tyre kickers." Numbers are ours: U15 elite top speed 32 km/h
+          (benchmark tiers), 1,000+ athletes measured, 40 re-tested at +8.3% / +10.4%.
+          No population percentage for 35 km/h is printed: we have no source for one. */}
       <section className="bg-gray-100 px-4 py-12">
-        <div className="mx-auto max-w-3xl space-y-8 text-[16px] leading-relaxed text-[#474747]">
+        <div className="mx-auto max-w-3xl space-y-9 text-[16px] leading-relaxed text-[#474747]">
           <div className="space-y-3">
-            <p className="text-lg font-bold text-gray-900">Who this is for</p>
-            <p>
-              Players 13 and over who are already in an NPL, IFA or academy squad, or the same level in their
-              sport. They can play. That was settled a long time ago. What isn&apos;t settled is whether
-              they&apos;ll get there first when the level above them asks the question.
+            <p className="text-[13px] font-bold uppercase tracking-[0.16em] text-accent">Read this before you apply</p>
+            <p className="text-2xl font-extrabold leading-tight text-gray-900 sm:text-3xl">
+              If you&apos;re here to kick tyres, close this page now.
             </p>
             <p>
-              Families who want the real numbers, will act on them, and understand that this is a two year
-              build, not a six week one. Most of the players we coach have been with us for two years or more.
-              That is where the change comes from.
+              We don&apos;t do free chats, we don&apos;t compete on price, and we don&apos;t chase anyone. We
+              read every application and we turn families away. Everything below is here to save both of us
+              the time.
             </p>
           </div>
 
           <div className="space-y-3">
-            <p className="text-lg font-bold text-gray-900">Who this is not for</p>
+            <p className="text-lg font-bold text-gray-900">The reality about speed</p>
             <p>
-              If your player is under 13, it isn&apos;t for them yet. They&apos;re better served playing as much
-              as they can, and we&apos;d rather tell you that now than take the booking.
+              Our elite standard for a 15 year old is 32 km/h. Running 35 km/h and above is professional
+              territory, and almost nobody who ever plays the game gets there. The players on these pages are
+              the best results out of more than 1,000 athletes we have measured: the most driven players, who
+              turned up every week for years. They are not typical, and we don&apos;t present them as typical.
             </p>
             <p>
-              If they aren&apos;t in an NPL, IFA or academy squad, this isn&apos;t the one. Speed isn&apos;t the
-              only thing in their way yet, and the report would tell you something you&apos;re not in a position
-              to act on.
-            </p>
-            <p>
-              If you want a quick fix before trials in three weeks, it isn&apos;t that either. If the player
-              doesn&apos;t want this themselves, it won&apos;t work, however much you want it for them. And if
-              you&apos;re shopping for the cheapest session in Sydney, we&apos;re not it.
-            </p>
-            <p>
-              We read every application and we do turn families away. Groups are
-              small, and every session stays high level because of who is in it.
+              The typical result is this: across 40 athletes re-tested on the same timing gates, the average
+              gain was 8.3% over 10 metres and 10.4% at top speed. Not 30%. Some gained less. Anyone who
+              promises you 30% hasn&apos;t measured anybody.
             </p>
           </div>
 
           <div className="space-y-3">
-            <p className="text-lg font-bold text-gray-900">What to expect, honestly</p>
-            <p>
-              Across the 40 athletes we have re-tested on the same timing gates, the average gain was 8.3%
-              over 10 metres and 10.4% at top speed. Not 30%. Some improved less than that. If anyone promises
-              you 30%, ask them to show you the before and after.
-            </p>
-            <p>
-              The assessment tells you exactly what is holding your player back. The work after it is done by
-              the player, with us, every week. We make no guarantees about results. We measure, we show you the
-              numbers, and we tell you straight whether the programme is worth doing.
+            <p className="text-lg font-bold text-gray-900">What we guarantee</p>
+            <ul className="list-disc space-y-1.5 pl-5">
+              <li>Every number measured, on electronic timing gates and 240 frames per second film. Never guessed.</li>
+              <li>Your player&apos;s numbers set against their age group and the level above it.</li>
+              <li>The limiter costing them the most, named on their own footage.</li>
+              <li>Three priorities in the order to work them, each with a 12 month target.</li>
+              <li>A straight answer if the programme isn&apos;t worth doing for your player, even if that loses us the sale.</li>
+            </ul>
+          </div>
+
+          <div className="space-y-3">
+            <p className="text-lg font-bold text-gray-900">What we don&apos;t guarantee</p>
+            <ul className="list-disc space-y-1.5 pl-5">
+              <li>Any particular speed. Not 35 km/h, not 30 km/h, not any number.</li>
+              <li>A trial, a contract, a squad selection or a minute of game time.</li>
+              <li>Results for a player who misses sessions or skips the work between them.</li>
+              <li>Results in weeks. This is a two year build, not a six week one.</li>
+            </ul>
+            <p>Your player&apos;s result is decided by your player. We can&apos;t do the work for them.</p>
+          </div>
+
+          <div className="space-y-3">
+            <p className="text-lg font-bold text-gray-900">What you need to bring</p>
+            <ul className="list-disc space-y-1.5 pl-5">
+              <li>A player 13 or over, already in an NPL, IFA or academy squad, or the same level in their sport.</li>
+              <li>A player who wants this themselves. If it&apos;s only your idea, it won&apos;t work.</li>
+              <li>Ten week blocks, face to face every week, and the work done in between.</li>
+              <li>A realistic budget: the programme after the assessment runs $100 to $200 a week.</li>
+              <li>Parents who answer the phone, turn up when they say they will, and give straight answers.</li>
+            </ul>
+          </div>
+
+          <div className="space-y-3">
+            <p className="text-lg font-bold text-gray-900">Don&apos;t apply if</p>
+            <ul className="list-disc space-y-1.5 pl-5">
+              <li>your player is under 13, or not yet in a squad. Start with the free 10-bound test instead.</li>
+              <li>you want a quick fix before trials in three weeks.</li>
+              <li>you&apos;re comparing us with the cheapest session in Sydney.</li>
+              <li>you want a guarantee before you commit.</li>
+              <li>you&apos;re &ldquo;just looking&rdquo;.</li>
+            </ul>
+            <p className="font-semibold text-gray-900">
+              If that reads as harsh, good. The families who get the most from this read it and apply anyway.
             </p>
           </div>
         </div>
@@ -143,6 +168,17 @@ export default function ApplyV2() {
           <Link href="/terms" className="hover:text-gray-800">Terms &amp; Conditions</Link>
         </p>
         <p className="mt-2">Ambition Sports Performance, Sydney</p>
+        <div className="mx-auto mt-6 max-w-3xl space-y-3 text-left text-xs leading-relaxed text-gray-400">
+          <p>This site is not part of Facebook or Meta, and is not endorsed by Facebook or Meta in any way.</p>
+          <p>
+            <b>Results disclaimer.</b> Results vary, and the results shown are not typical. They showcase what
+            our most driven, most consistent athletes have achieved over months and years of work, and should
+            not be taken as an average or expected result. All testimonials are real. We make no guarantee of
+            any speed, performance, selection, trial, contract or other outcome. An athlete&apos;s result depends
+            on many factors, including their age, training history, attendance, effort, sleep, nutrition and
+            injury history. By applying, you accept that the outcome depends on the athlete doing the work.
+          </p>
+        </div>
       </footer>
     </main>
   );
