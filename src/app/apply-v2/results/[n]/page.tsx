@@ -17,13 +17,35 @@ export const metadata: Metadata = {
 
 const BUNNY = "659523";
 
-type Result = { title: string; quote: string; toCamera?: boolean; mp4?: string; bunnyId?: string; youtubeId?: string };
+type Result = {
+  title: string; quote: string; toCamera?: boolean; mp4?: string; bunnyId?: string; youtubeId?: string;
+  /** Portrait (9:16) footage gets a phone-shaped frame instead of a letterboxed 16:9 one. */
+  vertical?: boolean;
+  link?: { href: string; label: string };
+};
 
-// Order: players talking to camera first (Anthony: those lead), then the best
+// Order: Sean and Jonathan first, then players talking to camera, then the best
 // speed result, then the rest by size of result. Write-ups use only what the
 // /success-stories card already says. Pete is left out (figures flagged as
 // inflated); Dom and "Speed Ab" are too thin to stand alone. Tristan back in (Anthony).
 const RESULTS: Result[] = [
+  // Sean and Jonathan lead (Anthony 2026-09-28). Sean's clip is the first 29.6 s
+  // of `sean ad.MOV` only: the rest says "ensuring results" and "23 year", both
+  // of which contradict the disclaimer on the landing page. Consent on record
+  // 2026-08-07; his report is public at sean-report-deploy.vercel.app.
+  {
+    title: "Sean Dulic: 3rd division to the Bundesliga",
+    mp4: "/sean-story.mp4",
+    vertical: true,
+    quote:
+      "Sean came to us at 1860 Munich in the German third division. A standout season, a German U20s international debut, then a five year deal at TSG Hoffenheim in the Bundesliga. He joined the programme before the transfer, not after.",
+    link: { href: "https://sean-report-deploy.vercel.app", label: "Read Sean's actual assessment report" },
+  },
+  {
+    title: "Jonathan Wong, Paralympic gold medallist",
+    bunnyId: "417d5af6-ffdb-40ab-9d7e-4b013d544d2e",
+    quote: "Olympic and Paralympic athlete from Malaysia.",
+  },
   {
     title: "NPL senior debut",
     toCamera: true,
@@ -56,9 +78,9 @@ const RESULTS: Result[] = [
     quote: "Top speed from the low 20s to 36 km/h, with a 1.60s first 10 metres. Elite acceleration, and his semi-pro breakthrough.",
   },
   {
-    title: "Dylan: 28 km/h to 36 km/h",
+    title: "Dylan: 28 km/h to 36 km/h, NPL first team",
     bunnyId: "9d01d2ff-8af0-4ffe-ae3b-84bd8c85d293",
-    quote: "From 28 to 36 km/h. European trialist in Portugal and an NPL U20s debut for Hills.",
+    quote: "From 28 to 36 km/h. European trialist in Portugal, debuted for Hills' U20s, and now plays first team football in the NPL.",
   },
   {
     title: "Hadi: 30 km/h to 35 km/h in 8 weeks",
@@ -130,11 +152,6 @@ const RESULTS: Result[] = [
     bunnyId: "2a49170c-a185-45e8-a3dc-5e7efcc1f4c0",
     quote: "State champion with 10 Division 1 offers, coached entirely remotely.",
   },
-  {
-    title: "Jonathan Wong, Paralympic gold medallist",
-    bunnyId: "417d5af6-ffdb-40ab-9d7e-4b013d544d2e",
-    quote: "Olympic and Paralympic athlete from Malaysia.",
-  },
 ];
 
 export function generateStaticParams() {
@@ -161,7 +178,12 @@ export default function ResultPage({ params }: { params: { n: string } }) {
           {r.title}
         </h1>
 
-        <div className="relative mx-auto mt-7 aspect-video w-full overflow-hidden rounded-md bg-black">
+        <div
+          className={
+            "relative mx-auto mt-7 w-full overflow-hidden rounded-md bg-black " +
+            (r.vertical ? "aspect-[9/16] max-w-sm" : "aspect-video")
+          }
+        >
           {r.youtubeId ? (
             <iframe
               src={`https://www.youtube-nocookie.com/embed/${r.youtubeId}`}
@@ -191,6 +213,14 @@ export default function ResultPage({ params }: { params: { n: string } }) {
           {r.toCamera ? <>&ldquo;{r.quote}&rdquo;</> : r.quote}
         </blockquote>
       </section>
+
+      {r.link && (
+        <p className="px-4 pb-2 text-center">
+          <a href={r.link.href} target="_blank" rel="noopener noreferrer" className="text-lg font-semibold text-accent underline underline-offset-4 hover:text-accent-dark">
+            {r.link.label} ↗
+          </a>
+        </p>
+      )}
 
       <section className="flex flex-col items-center gap-4 px-4 pb-16 pt-6">
         <Link
