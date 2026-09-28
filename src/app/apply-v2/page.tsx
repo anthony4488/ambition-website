@@ -118,9 +118,9 @@ export default function ApplyV2() {
           <div className="space-y-3">
             <p className="text-lg font-bold text-gray-900">What we guarantee</p>
             <ul className="list-disc space-y-1.5 pl-5">
-              <li>Every number measured, on electronic timing gates and 240 frames per second film. Never guessed.</li>
+              <li>Every number measured, on electronic timing gates and 240 frames per second film. Never guessed, and every test chosen because it tracks real performance.</li>
               <li>Your player&apos;s numbers set against their age group and the level above it.</li>
-              <li>The limiter costing them the most, named on their own footage.</li>
+              <li>The limiter costing them the most, named on their own footage, in a written report plus a 10 to 15 minute voiceover from Anthony.</li>
               <li>Three priorities in the order to work them, each with a 12 month target.</li>
               <li>A straight answer if the programme isn&apos;t worth doing for your player, even if that loses us the sale.</li>
             </ul>
