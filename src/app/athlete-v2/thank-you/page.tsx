@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { BuyButton } from "@/components/BuyButton";
 import { FunnelLogo } from "@/components/haynes/Logo";
 import { CurvedArrow, Note } from "@/components/haynes/Scribble";
+import { Alternatives } from "@/components/haynes/Alternatives";
 
 // Online confirmation. Unlike Sydney (Anthony calls first), the online offer is
 // a direct $250 USD purchase, so the buy button lives here: after the
@@ -76,6 +77,8 @@ export default function OnlineThankYou({ searchParams }: { searchParams: { name?
           ))}
         </ol>
       </section>
+
+      <Alternatives variant="online" />
 
       <section className="bg-gray-50 px-4 py-12">
         <div className="mx-auto max-w-3xl">

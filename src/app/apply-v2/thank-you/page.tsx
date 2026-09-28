@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { FunnelLogo } from "@/components/haynes/Logo";
+import { Alternatives } from "@/components/haynes/Alternatives";
 
 // Haynes' confirmation page, rebuilt: name the person who will contact them,
 // tell them to answer, no calendar, then short videos that answer what every
@@ -58,6 +59,8 @@ export default function ThankYou({ searchParams }: { searchParams: { name?: stri
           </p>
         </div>
       </section>
+
+      <Alternatives variant="f2f" />
 
       <section className="bg-gray-50 px-4 py-12">
         <div className="mx-auto max-w-3xl">
