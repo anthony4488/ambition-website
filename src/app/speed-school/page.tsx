@@ -608,7 +608,7 @@ export default function SpeedSchoolPage() {
             },
             {
               q: "How is this different from other speed coaches in Sydney?",
-              a: "Most coaches teach drills, we diagnose limiters. Every athlete in our system has six speed traits measured against elite benchmarks, retested every block, with the #1 bottleneck named explicitly. If you've ever been told to 'just run faster', that's the gap we close.",
+              a: "Most coaches teach drills, we diagnose limiters. Every athlete in our system has six speed traits measured against elite benchmarks, timed every session, with the #1 bottleneck named explicitly. If you've ever been told to 'just run faster', that's the gap we close.",
             },
             {
               q: "What does it cost?",
@@ -706,7 +706,7 @@ export default function SpeedSchoolPage() {
                   <h3 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight leading-tight">Strict intake. Apply to qualify.</h3>
                   <p className="text-sm text-gray-500 mt-3 leading-relaxed">
                     A 90-second application qualifies you before we book anything.<br />
-                    Sydney athletes only · $199 assessment · serious athletes only.
+                    Sydney athletes only · $250 assessment · serious athletes only.
                   </p>
                   <Link
                     href="/apply"

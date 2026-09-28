@@ -17,7 +17,7 @@ const programs = [
     bullets: [
       "240fps video + electronic timing",
       "0 to 10m · 0 to 20m · 10m fly · ball reactive · 10-bound",
-      "Capped groups · retested every block",
+      "Capped groups · every session timed",
     ],
     href: "/speed-school#apply",
     cta: "Apply For Speed School",
@@ -28,7 +28,7 @@ const programs = [
   {
     eyebrow: "Worldwide · Online",
     name: "Online Coaching",
-    pitch: "The Speed Diagnostic System™ delivered remotely. $200 assessment, optional 30-week program.",
+    pitch: "The Speed Diagnostic System™ delivered remotely. $250 assessment, optional 30-week program.",
     bullets: [
       "5 tests filmed on your phone",
       "8 to 10 page report + 15-min voiceover",
@@ -183,7 +183,7 @@ export default function ContactPage() {
               },
               {
                 q: "What does it actually cost?",
-                a: "The online assessment is $200 and that price is published on the Online Coaching page. In-person pricing is confirmed on the qualification call, once we've checked the program is the right fit. We don't publish it cold because the honest number depends on how often the athlete needs to train, and quoting before we know that helps nobody.",
+                a: "The online assessment is $250 and that price is published on the Online Coaching page. In-person pricing is confirmed on the qualification call, once we've checked the program is the right fit. We don't publish it cold because the honest number depends on how often the athlete needs to train, and quoting before we know that helps nobody.",
               },
               {
                 q: "Why do I have to apply? Why can't I just pay and start?",
@@ -199,11 +199,11 @@ export default function ContactPage() {
               },
               {
                 q: "How is this different from a session that's just cones and drills?",
-                a: "We measure before we prescribe. Every athlete is electronically timed and filmed at 240fps, six speed traits scored against elite benchmarks, and the single biggest limiter named out loud. Then the training attacks that limiter and we retest to prove it moved. If you've ever been told to just run faster, that's the gap we close.",
+                a: "We measure before we prescribe. Every athlete is electronically timed and filmed at 240fps, six speed traits scored against elite benchmarks, and the single biggest limiter named out loud. Then the training attacks that limiter, and every session is timed, so you can see it moving. If you've ever been told to just run faster, that's the gap we close.",
               },
               {
                 q: "What if we do it and nothing changes?",
-                a: "The first session is guaranteed. If the assessment doesn't give you specific numbers, your #1 limiter named explicitly, and a clear training prescription, we refund it in full. After that, every block is retested, so you never have to take our word for whether it's working, the timing gates tell you.",
+                a: "The first session is guaranteed. If the assessment doesn't give you specific numbers, your #1 limiter named explicitly, and a clear training prescription, we refund it in full. After that, every session is timed, so you never have to take our word for whether it's working. Ask any time for the videos and the numbers, in your private WhatsApp group.",
               },
               {
                 q: "We're not in Sydney. Is the online version watered down?",
@@ -215,7 +215,7 @@ export default function ContactPage() {
               },
               {
                 q: "Can we actually afford it?",
-                a: "It isn't cheap and we won't pretend otherwise, this is a serious investment in an athlete's development. Online coaching is paid in two blocks rather than up front, and the $200 assessment is a low-risk way to get the diagnosis first and decide on the program later. If the timing is wrong, say so on the call and we'll tell you what's worth doing in the meantime for free.",
+                a: "It isn't cheap and we won't pretend otherwise, this is a serious investment in an athlete's development. Online coaching is paid in two blocks rather than up front, and the $250 assessment is a low-risk way to get the diagnosis first and decide on the program later. If the timing is wrong, say so on the call and we'll tell you what's worth doing in the meantime for free.",
               },
               {
                 q: "Are your coaches checked and insured?",

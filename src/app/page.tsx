@@ -11,7 +11,7 @@ import { ArrowRight, Play, ChevronDown } from "lucide-react";
 const services = [
   {
     title: "Speed School",
-    description: "Six speed traits, every athlete, measured against elite. Sydney in-person. Capped groups, retested every block.",
+    description: "Six speed traits, every athlete, measured against elite. Sydney in-person. Capped groups, every session timed.",
     href: "/speed-school#apply",
     image: "/speed-school-hero.jpg",
     imagePosition: "object-[50%_35%]",
@@ -20,7 +20,7 @@ const services = [
   },
   {
     title: "Online Coaching",
-    description: "The Speed Diagnostic System™ delivered remotely. $200 assessment, optional 30-week program. Worldwide.",
+    description: "The Speed Diagnostic System™ delivered remotely. $250 assessment, optional 30-week program. Worldwide.",
     href: "/online-coaching#apply",
     image: "/online-coaching-filming.jpg",
     imagePosition: "object-[70%_50%]",
