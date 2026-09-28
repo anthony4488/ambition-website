@@ -158,11 +158,11 @@ const VARIANT = {
   f2f: {
     base: "/apply-v2",
     bar: <>Sydney, in person <span className="mx-2 text-white/40">·</span> Georges Hall, Arncliffe, Homebush</>,
-    cta: "Find out what's holding your player back.",
-    sub: "Players 13 and over, already in an NPL, IFA or academy squad.",
+    cta: "Find out what's holding your athlete back.",
+    sub: "Athletes 13 to 24, on a high-level pathway in any sport.",
     button: "Apply for an assessment",
-    label: "Player results",
-    turn: "your player's turn",
+    label: "Athlete results",
+    turn: "your athlete's turn",
   },
   online: {
     base: "/athlete-v2",

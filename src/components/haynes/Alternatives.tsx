@@ -36,7 +36,7 @@ const COPY = {
       },
     ] as Alt[],
     ours:
-      "We measure first, on the gates and at 240 frames a second, with tests chosen because they track real performance. We name the one thing costing your player the most in a written report and a 10 to 15 minute voiceover on their own footage, build every week around it, and retest on the same gates every 10 to 12 weeks, so you see whether it moved.",
+      "We measure first, on the gates and at 240 frames a second, with tests chosen because they track real performance. We name the one thing costing your player the most in a written report and a 10 to 15 minute voiceover on their own footage, build every week around it, and time every session, so you see whether it's moving. The videos and numbers are yours whenever you ask, in your private WhatsApp group.",
   },
   online: {
     title: "Why not a gym PT, an app, or a program off YouTube?",

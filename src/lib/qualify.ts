@@ -12,6 +12,16 @@
 // confidently lands in "review" so Anthony still sees the lead.
 
 export type LeadTier = "qualified" | "review" | "unqualified";
+/**
+ * How a stated playing level scores.
+ *
+ * "maybe" was added 2026-09-18 and is the important one. Before it, every level
+ * that wasn't "school or social" scored "in", so everything reached qualified.
+ * "maybe" means a real athlete who is not in the band the ads are buying:
+ * Anthony still sees the lead, but it never gets promoted to qualified and so
+ * never teaches Meta to go and find more of them.
+ */
+export type LevelFit = "in" | "maybe" | "out" | "unknown";
 export type AreaFit = "in_area" | "out_of_area" | "unknown";
 export type SportFit = "core" | "other" | "unknown";
 
@@ -265,6 +275,9 @@ const normNum = (s: unknown): string =>
   String(s ?? "").toLowerCase().replace(/[^a-z0-9+\s-]/g, " ").replace(/\s+/g, " ").trim();
 
 /**
+ * ⚠️ SUPERSEDED 2026-09-24 for under-13s: they are now `out` (F2F floor 13).
+ * The history below still explains why adults are never rejected on age.
+ *
  * Age is context, never a veto.
  *
  * This used to enforce a hard 13-17 band, which was right when the offer was
@@ -280,19 +293,30 @@ const normNum = (s: unknown): string =>
  * a closer look. Nothing here can produce `out` on its own any more.
  */
 export function classifyAge(band?: string): "in" | "edge" | "out" | "unknown" {
-  const s = normNum(band);
+  // Some forms send the display label ("8–10", en dash) instead of the value.
+  // "unknown" never downgrades, so an unnormalised dash let an 8-10 year old
+  // through as QUALIFIED on 2026-09-14.
+  const s = normNum(band?.replace(/[‒-―−]/g, "-"));
   if (!s) return "unknown";
-  // The one hard age floor. Below 8 the programme does not take them.
+  // ⚠️ CHANGED 2026-09-24: the F2F floor is now 13. Anthony: "i dont want any
+  // 8 year old for the f2f". 45% of leads 28 Aug-14 Sep were 12 or under, and
+  // every one that scored qualified taught Meta to find more of them. Under 13
+  // is now unqualified, which fires AmbitionDisqualifiedLead instead of Lead.
+  // Telegram still alerts on every tier, so Anthony still sees them.
   if (s.includes("under 8")) return "out";
-  // 8 to 17 is the real intake. Roughly half the athletes assessed since
-  // August 2026 were under 13, so these can no longer be demoted to review.
-  if (s.includes("8-10") || s.includes("11-12") || s.includes("11-13")) return "in";
-  // Legacy bands that straddle the under-8 floor, so still worth a human look.
-  if (s.includes("under 10") || s.includes("under 13") || s.includes("under 14")) return "edge";
-  // Adults are out of the 13-17 segment the ads sell to. Not rejected, just
-  // never promoted to qualified, so Meta stops hunting for them.
+  if (s.includes("8-10") || s.includes("11-12") || s.includes("11-13")) return "out";
+  if (s.includes("10 or under") || s.includes("under 10") || s.includes("under 13")) return "out";
+  // Straddles 13, so a human decides.
+  if (s.includes("under 14")) return "edge";
+  // ⚠️ CHANGED 2026-09-28: the Sydney offer is 13-24 in any sport, aimed at
+  // semi-pro and professional pathways (Anthony: "13-24 years old semi pro to
+  // professional set ups"). 18-24 is now in the band; 25+ belongs to the online
+  // funnel, so it lands in review, never qualified. The legacy "18+" band can't
+  // tell 19 from 40, so it stays edge.
+  if (s.includes("18-24")) return "in";
+  if (s.includes("25+")) return "edge";
   if (s.includes("18+")) return "edge";
-  if (s.includes("13-15") || s.includes("15-17") || s.includes("17+")) return "in";
+  if (s.includes("13-15") || s.includes("13-14") || s.includes("15-17") || s.includes("17+")) return "in";
   return "unknown";
 }
 
@@ -331,7 +355,7 @@ export function ageBandFromDob(dob?: string): string | undefined {
 // Keys are the normNum() form of each option: lowercased, punctuation to
 // spaces, collapsed. "National / Olympic representative" arrives here as
 // "national olympic representative".
-const WEBSITE_LEVEL: Record<string, "in" | "out" | "unknown"> = {
+const WEBSITE_LEVEL: Record<string, LevelFit> = {
   "professional": "in",
   "semi-professional": "in",
   "national olympic representative": "in",
@@ -339,26 +363,52 @@ const WEBSITE_LEVEL: Record<string, "in" | "out" | "unknown"> = {
   "npl": "in",
   "ifa": "in",
   "club academy": "in",
-  // Genuine athletes, but not the band this programme is built around, review,
-  // never auto-reject.
-  "school representative": "in",
+  // Genuine athletes, but not the band this programme is built around, so
+  // review, never auto-reject. CORRECTED 2026-09-18: this was set to "in",
+  // which contradicted the comment directly above it and promoted school
+  // representative straight to qualified.
+  "school representative": "maybe",
   "school or social": "out",
   "other": "unknown",
 };
 
 /** Park football is the churn cohort. Rep/academy and above is the buyer. */
-export function classifyLevel(level?: string): "in" | "out" | "unknown" {
+export function classifyLevel(level?: string): LevelFit {
   const s = normNum(level);
   if (!s) return "unknown";
   // Exact website options first: "School representative" contains
   // "representative" and would otherwise score as high as NPL.
   if (s in WEBSITE_LEVEL) return WEBSITE_LEVEL[s];
-  // Local and association club are real intake, confirmed 2026-09-13. They
-  // were rejected outright until then, which binned competitive juniors
-  // whose only crime was not being at an academy yet.
-  if (s.includes("local") || s.includes("association")) return "in";
+
+  // School with no representative honour is the churn cohort in every sport.
+  if (s.includes("school only")) return "out";
+
+  // Real competitions, checked BEFORE the softer markers so a name that
+  // contains both ("IFA / district representative") resolves as the pathway it
+  // actually is. These are the sport-specific values the apply form now offers,
+  // plus the free-text and Meta-form phrasings already in the wild.
   if (s.includes("representative") || s.includes("academy") || s.includes("npl") ||
-      s.includes("state") || s.includes("div")) return "in";
+      s.includes("state") || s.includes("national") || s.includes("professional") ||
+      s.includes("premier") || s.includes("elite") || s.includes("div") ||
+      s.includes("a-league") || s.includes("a league") || s.includes("nrl") ||
+      s.includes("super rugby") || s.includes("sg ball") || s.includes("harold matthews") ||
+      s.includes("coates") || s.includes("nbl") || s.includes("wnbl") ||
+      s.includes("afl") || s.includes("aflw") || s.includes("pathway") ||
+      s.includes("ifa")) return "in";
+
+  // Local and association club are real intake, confirmed 2026-09-13. They
+  // were rejected outright until then, which binned competitive juniors whose
+  // only crime was not being at an academy yet.
+  //
+  // ⚠️ CHANGED 2026-09-18 from "in" to "maybe". Scoring them "in" was what
+  // opened the gate: on 13 Sep, 18 of 21 leads scored qualified, and review and
+  // disqualified stopped firing entirely. "maybe" keeps Anthony's intent (they
+  // are never rejected, he still sees every one) while stopping Meta being told
+  // they are the win and going to find more of them.
+  if (s.includes("local") || s.includes("association") || s.includes("community") ||
+      s.includes("domestic") || s.includes("social") || s.includes("little athletics") ||
+      s.includes("club")) return "maybe";
+
   return "unknown";
 }
 
@@ -406,7 +456,7 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
   // An explicit "no" on money still disqualifies. Silence does not.
   //
   // The application deliberately stopped asking about money, no budget band,
-  // and the consent box names only the $199 assessment. Treating that silence
+  // and the consent box names only the $250 assessment. Treating that silence
   // as "unconfirmed" capped every website lead at review, which meant tier
   // `qualified` was unreachable and the QualifiedLead pixel event had never
   // fired once. Level and area carry the signal instead.
@@ -431,22 +481,30 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
   const bud = classifyBudget(input.budget);
   const com = classifyCommit(input.commitLength);
 
-  // Age disqualifies in exactly one case: under 8. Everything from 8 to 17 is
-  // real intake, seniors are in scope, and the legacy straddling bands get
-  // looked at rather than binned.
+  // Age disqualifies below 13 (F2F floor since 2026-09-24). Seniors stay in
+  // scope via review, and the straddling legacy band gets a human look.
   if (age === "out") {
     tier = "unqualified";
-    reasons.push("Under 8, below the programme's age floor");
+    reasons.push("Under 13, below the F2F age floor");
   }
 
   if (age === "edge" && tier === "qualified") {
     tier = "review";
-    reasons.push("Younger than the methodology assumes, worth a look");
+    // Wording matters: this shows in the Telegram alert. Under-13s are taken,
+    // they are just outside the 13-17 band the ads are buying.
+    reasons.push("Outside the 13-24 the ads sell to, still worth a look");
   }
 
   if (lvl === "out") {
     tier = "unqualified";
     reasons.push("School or social football, not a competitive pathway");
+  }
+
+  // A real athlete, just not the band the ads are buying. Visible to Anthony,
+  // invisible to the optimiser. Added 2026-09-18.
+  if (lvl === "maybe" && tier === "qualified") {
+    tier = "review";
+    reasons.push("Competitive, but below the level the ads are aimed at");
   }
 
   if (bud === "under") {
@@ -504,11 +562,20 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
 /**
  * Fires the Meta pixel for a completed application.
  *
- * Always sends the standard `Lead` event so the existing pixel history and the
- * campaigns already optimising against it keep working. Additionally sends a
- * `QualifiedLead` custom event ONLY for tier === "qualified", that custom
- * event is what a Meta custom conversion should be built on, since neither form
+ * `Lead` keeps its meaning of "a real application arrived" so the existing
+ * pixel history stays continuous, but as of 2026-09-18 it is NOT sent for
+ * tier === "unqualified". An explicit reject is not a conversion, and firing
+ * one taught the optimiser to go and find more of them.
+ *
+ * `QualifiedLead` fires ONLY for tier === "qualified". That custom event is
+ * what the Meta custom conversion should be built on, since neither form
  * produces a distinct success URL to write a URL rule against.
+ *
+ * ⚠️ The other half of this lives in Ads Manager, not here. Every ad set is
+ * currently `optimization_goal: OFFSITE_CONVERSIONS` with
+ * `promoted_object.custom_event_type: "LEAD"`, so delivery still optimises
+ * toward every application. Point them at the QualifiedLead custom conversion
+ * or this file's tiering never reaches the optimiser.
  */
 export function fireLeadPixel(
   result: QualifyResult,
@@ -530,6 +597,14 @@ export function fireLeadPixel(
 
   // Meta dedupes on (event_name, event_id), so the same id is correct on both.
   const opts = eventId ? { eventID: eventId } : undefined;
+
+  if (result.tier === "unqualified") {
+    // Reporting only. Never a standard event, so it can never be optimised
+    // toward, and Meta is never told this was the outcome we wanted.
+    fbq("trackCustom", "AmbitionDisqualifiedLead", params, opts);
+    return;
+  }
+
   fbq("track", "Lead", params, opts);
   if (result.tier === "qualified") fbq("trackCustom", "QualifiedLead", params, opts);
 }

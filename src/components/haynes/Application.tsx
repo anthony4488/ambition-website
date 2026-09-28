@@ -27,22 +27,22 @@ type Step =
 
 const GATE_YES = "Yes";
 const GATE_NO = "Not yet";
-const player = (a: Answers) => a.athleteName?.trim() || "your player";
+const player = (a: Answers) => a.athleteName?.trim() || "your athlete";
 
 const STEPS_F2F: Step[] = [
   {
     key: "gate", kind: "choice",
-    q: () => "Is your player 13 or over, and already in an NPL, IFA or academy squad (or the same level in their sport)?",
-    hint: "The programme is built for players who are already good and want the level above.",
+    q: () => "Is the athlete between 13 and 24, and on a high-level pathway in their sport: an academy, rep or state league side, semi-pro or professional?",
+    hint: "Football, AFL, rugby league, rugby union, basketball, athletics or any other sport. It's built for athletes who are already good and want the level above.",
     options: () => [GATE_YES, GATE_NO],
   },
   { key: "name", kind: "text", q: () => "What's your name?", placeholder: "Your name" },
   { key: "email", kind: "email", q: () => "Which email should we use?", placeholder: "you@example.com" },
-  { key: "athleteName", kind: "text", q: () => "What's your player's first name?", placeholder: "First name" },
+  { key: "athleteName", kind: "text", q: () => "What's the athlete's first name?", hint: "If you're the athlete, put your own name.", placeholder: "First name" },
   {
     key: "ageBand", kind: "choice",
     q: (a) => `How old is ${player(a)}?`,
-    options: () => AGE_BANDS.filter((b) => b.value !== "under 13").map((b) => b.label),
+    options: () => F2F_AGES.map((b) => b.label),
   },
   { key: "sport", kind: "choice", q: (a) => `What does ${player(a)} play?`, options: () => SPORTS },
   {
@@ -51,7 +51,7 @@ const STEPS_F2F: Step[] = [
     hint: "Pick the competition, not how good they are. We check it on the call.",
     options: (a) => levelsFor(a.sport ?? ""),
   },
-  { key: "club", kind: "text", q: (a) => `Which club is ${player(a)} with?`, placeholder: "Club name" },
+  { key: "club", kind: "text", q: (a) => `Which club, academy or team is ${player(a)} with?`, placeholder: "Club, academy or team" },
   { key: "location", kind: "choice", q: () => "Which location is closest to you?", options: () => LOCATIONS },
   { key: "goal", kind: "choice", q: (a) => `What would you most like to change in how ${player(a)} moves?`, options: () => GOALS },
   {
@@ -88,13 +88,13 @@ const STEPS_F2F: Step[] = [
   },
   {
     key: "commit", kind: "choice",
-    q: (a) => `The programme runs in 10 week blocks, face to face every week. If the assessment shows it's worth doing, can ${player(a)} commit to a full block?`,
+    q: (a) => `The programme is long term: face to face every week, and most athletes stay two years or more. If the assessment shows it's worth doing, can ${player(a)} commit to that?`,
     options: () => ["Yes", "Need to talk it through", "No"],
   },
   {
     key: "parentOnCall", kind: "choice",
     q: () => "Anthony speaks with every family before the assessment. Will a parent be on that call?",
-    options: () => ["Yes", "The player will call on their own (18+)"],
+    options: () => ["Yes", "I'm the athlete (18+), I'll take the call myself"],
   },
   {
     key: "phone", kind: "tel",
@@ -166,7 +166,14 @@ const STEPS_ONLINE: Step[] = [
   },
 ];
 
-const ageValueOf = (label: string) => AGE_BANDS.find((b) => b.label === label)?.value ?? label;
+// Sydney is 13-24 (2026-09-28). Values are the bands classifyAge reads; 18-24 is "in".
+const F2F_AGES = [
+  { label: "13-14", value: "13-15" },
+  { label: "15-17", value: "15-17" },
+  { label: "18-24", value: "18-24" },
+] as const;
+const ageValueOf = (label: string) =>
+  F2F_AGES.find((b) => b.label === label)?.value ?? AGE_BANDS.find((b) => b.label === label)?.value ?? label;
 
 function valid(step: Step, v: string): string | null {
   const t = (v ?? "").trim();
@@ -250,7 +257,7 @@ export function Application({
     // Same for the weak-intent answers Anthony wants filtered: not the player's
     // idea, or only looking. Strong applications are the point, not volume.
     const weak = [
-      v.commit === "No" && "won't commit to a 10 week block",
+      v.commit === "No" && "won't commit to the long term",
       v.whose === "Mostly mine" && "parent's idea, not the player's",
       v.start === "Just looking for now" && "just looking",
     ].filter(Boolean) as string[];
@@ -270,7 +277,7 @@ export function Application({
       `Why now: ${v.whyNow}`,
       `Held back: ${v.heldBack}`,
       `Watched VSL: ${v.watched}`,
-      `Commit to a block: ${v.commit}`,
+      `Commits long term: ${v.commit}`,
       `Parent on call: ${v.parentOnCall}`,
       "Page: /apply-v2 (Haynes layout)",
     ].join(" | ");
@@ -384,7 +391,7 @@ export function Application({
         <p className="mt-4 text-lg leading-relaxed text-gray-700">
           {online
             ? "The online programme is for athletes 24 and over who are still training and paying for their own coaching, so it isn't the right fit yet. Start with the free 10-bound test instead. It takes five minutes on any patch of grass and shows you where you stand."
-            : "This programme is for players 13 and over who are already in a squad, so it isn't the right fit yet. Start with the free 10-bound test instead. It takes five minutes on any patch of grass and shows you where your player stands."}
+            : "This programme is for athletes 13 to 24 who are already on a high-level pathway in their sport, so it isn't the right fit yet. Start with the free 10-bound test instead. It takes five minutes on any patch of grass and shows you where your player stands."}
         </p>
         <Link href="/bound-test" className="mt-7 inline-block rounded-[15px] bg-accent px-8 py-4 text-lg font-bold text-white hover:bg-accent-dark">
           Take the free 10-bound test

@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
     const utmIn = b.utm && typeof b.utm === "object" ? (b.utm as Record<string, string>) : {};
     const reasonList = Array.isArray(b.qualify_reasons) ? (b.qualify_reasons as unknown[]).map(String) : [];
     const notes = [
-      `Program: ${str(b.program) ?? "SPEED COACHING"} ($100/wk, 10wk block + $250 assessment)`,
+      `Program: ${str(b.program) ?? "SPEED COACHING"} ($100-$200/wk ongoing + $250 assessment)`,
       `Athlete: ${str(b.athlete_name) ?? "n/a"}`,
       // The website form now sends a banded `age`; Meta lead forms always did.
       // `dob` is still read first for any older payload still in flight.

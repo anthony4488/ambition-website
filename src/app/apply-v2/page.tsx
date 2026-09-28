@@ -16,7 +16,7 @@ import { FunnelLogo } from "@/components/haynes/Logo";
 export const metadata: Metadata = {
   title: "Apply, Ambition Sports Performance",
   description:
-    "For Sydney players 13 and over already in an NPL, IFA or academy squad. Watch the video, then apply.",
+    "For Sydney athletes 13 to 24 on a high-level pathway in any sport: academy, rep, state league, semi-pro or professional. Watch the video, then apply.",
   robots: { index: false },
 };
 
@@ -38,7 +38,7 @@ export default function ApplyV2() {
           Ambition Sports Performance presents...
         </p>
         <h1 className="mx-auto mt-3 max-w-4xl text-[30px] font-extrabold uppercase leading-[1.08] tracking-tight text-[#2F2F2F] [text-wrap:balance] sm:text-5xl lg:text-[58px]">
-          How Sydney&apos;s NPL, IFA and academy players get to the level above their squad
+          How Sydney athletes chasing semi-pro and professional sport get to the level above
         </h1>
 
         {/* Hand-drawn pointer: watch first. */}
@@ -69,8 +69,8 @@ export default function ApplyV2() {
 
       <section className="mx-auto max-w-[1100px] px-4 pb-6 text-center">
         <p className="mx-auto max-w-3xl text-xl font-bold leading-snug text-accent sm:text-[28px]">
-          Enter your name and email to open the application. Players 13 and over, already in an NPL,
-          IFA or academy squad. Every application is read, and not every one is accepted.
+          Enter your name and email to open the application. Athletes 13 to 24, already on a high-level
+          pathway in their sport. Every application is read, and not every one is accepted.
         </p>
       </section>
 
@@ -140,9 +140,9 @@ export default function ApplyV2() {
           <div className="space-y-3">
             <p className="text-lg font-bold text-gray-900">What you need to bring</p>
             <ul className="list-disc space-y-1.5 pl-5">
-              <li>A player 13 or over, already in an NPL, IFA or academy squad, or the same level in their sport.</li>
+              <li>An athlete 13 to 24, already on a high-level pathway in their sport: an academy, rep or state league side, semi-pro or professional. Football, AFL, rugby league, rugby union, basketball, athletics or any other sport.</li>
               <li>A player who wants this themselves. If it&apos;s only your idea, it won&apos;t work.</li>
-              <li>Ten week blocks, face to face every week, and the work done in between.</li>
+              <li>The long term: face to face every week, the work done in between, and most athletes stay two years or more. This is not a ten week course.</li>
               <li>A realistic budget: the programme after the assessment runs $100 to $200 a week.</li>
               <li>Parents who answer the phone, turn up when they say they will, and give straight answers.</li>
             </ul>
@@ -151,7 +151,7 @@ export default function ApplyV2() {
           <div className="space-y-3">
             <p className="text-lg font-bold text-gray-900">Don&apos;t apply if</p>
             <ul className="list-disc space-y-1.5 pl-5">
-              <li>your player is under 13, or not yet in a squad. Start with the free 10-bound test instead.</li>
+              <li>your athlete is under 13, or not on a high-level pathway yet. Start with the free 10-bound test instead. Over 24? The online assessment is built for you.</li>
               <li>you want a quick fix before trials in three weeks.</li>
               <li>you&apos;re comparing us with the cheapest session in Sydney.</li>
               <li>you want a guarantee before you commit.</li>
