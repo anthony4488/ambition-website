@@ -66,7 +66,7 @@ const wall: WallCard[] = [
   { name: "Nik (clip 1)", result: "29 → 33 km/h", context: "+4 km/h top speed · clip 1 of 2", bunnyId: "ff3d1722-2007-4e0b-9556-8e62031d442a" },
   { name: "Nik (clip 2)", result: "29 → 33 km/h", context: "+4 km/h top speed · clip 2 of 2", bunnyId: "37ff42e1-f7ad-4194-9d99-0e68c7ba4776" },
   { name: "Billy", result: "Low 20s → 36 km/h", context: "1.60s 0 to 10m · elite acceleration · semi-pro breakthrough", bunnyId: "02e84ac0-1687-461f-8bf3-9005a9ff68cf" },
-  { name: "Jess", result: "21 → 27.3 km/h", context: "Age 14 · A-League Women's Youth U18 (4 years up) · +6.3 km/h", bunnyId: "4c1d5826-3253-4657-81c5-19b1d4bb8fad" },
+  { name: "Jess", result: "21 → 27.3 km/h", context: "Started at 12 · +6.3 km/h in 15 months · same gates, before and after", bunnyId: "4c1d5826-3253-4657-81c5-19b1d4bb8fad" },
   { name: "Dylan", result: "28 → 36 km/h", context: "European trialist · Portugal · NPL U20s debut for Hills", bunnyId: "9d01d2ff-8af0-4ffe-ae3b-84bd8c85d293" },
   { name: "Marc Sylla", result: "28 → 34 km/h", context: "Plateaued for months · broke through with mechanical fixes in 4 weeks", youtubeId: "_EFSqA7eqek" },
   { name: "Abdullah", result: "27 → 34.8 km/h", context: "Complete mechanical rebuild · acceleration posture, arm drive, ground contact", mp4Src: "/abdullah-after.mp4" },

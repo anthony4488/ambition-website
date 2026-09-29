@@ -129,9 +129,9 @@ const ALL: Result[] = [
     quote: "Plus 4 km/h at top speed.",
   },
   {
-    title: "Jess, 14: 21 km/h to 27.3 km/h",
+    title: "Jess: 21 km/h to 27.3 km/h in 15 months",
     bunnyId: "4c1d5826-3253-4657-81c5-19b1d4bb8fad",
-    quote: "Plus 6.3 km/h at 14, and now playing A-League Women's Youth U18, four years above her age.",
+    quote: "Started at 12. Plus 6.3 km/h in fifteen months, same gates, before and after.",
   },
   {
     title: "Abi: 1.7s first 10 metres",
