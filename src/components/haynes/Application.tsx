@@ -150,7 +150,7 @@ const STEPS_ONLINE: Step[] = [
   },
   {
     key: "commit", kind: "choice",
-    q: () => "If the assessment shows it's worth doing, the programme is 30 weeks, coached over WhatsApp around your job. Could you commit to that?",
+    q: () => "If the assessment shows it's worth doing, the programme is 40 weeks, coached over WhatsApp around your job. Could you commit to that?",
     options: () => ["Yes", "Need to think it through", "No"],
   },
   {
@@ -336,7 +336,7 @@ export function Application({
       `Country: ${v.country}`,
       `Start: ${v.start}`,
       `Film the tests: ${v.filming}`,
-      `Commit to 30 weeks: ${v.commit}`,
+      `Commit to 40 weeks: ${v.commit}`,
       `Why now: ${v.whyNow}`,
       `Held back: ${v.heldBack}`,
       `Watched VSL: ${v.watched}`,
@@ -488,7 +488,7 @@ export function Application({
 
       <p className="mt-10 border-t border-gray-200 pt-5 text-center text-[14px] text-gray-500">
         {online
-          ? "Expected programme price after the assessment: $4,000 USD for 30 weeks, paid in two halves."
+          ? "Expected programme price after the assessment: $4,000 USD for 40 weeks, paid upfront."
           : "Expected programme price after the assessment: $100 to $200 a week."}
       </p>
     </div>

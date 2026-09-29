@@ -105,8 +105,8 @@ export default function AthletePage() {
           <div>
             <h2 className="text-sm font-bold uppercase tracking-widest text-gray-900">If you want to go further</h2>
             <p className="mt-3 text-[15px] leading-relaxed">
-              The 30-week programme is built off your limiter and coached over WhatsApp around your
-              job. $4,000 USD, paid in two halves. One call with Anthony once your report is back, if
+              The 40-week programme is built off your limiter and coached over WhatsApp around your
+              job. $4,000 USD, paid upfront. One call with Anthony once your report is back, if
               you want it.
             </p>
             <p className="mt-4 text-[15px] leading-relaxed">

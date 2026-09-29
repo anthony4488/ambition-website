@@ -64,7 +64,7 @@ const COPY = {
       },
     ] as Alt[],
     ours:
-      "We start from your own footage. We name the one limiter costing you the most, build 30 weeks around it, and you retest the same way you tested, so you see whether it moved.",
+      "We start from your own footage. We name the one limiter costing you the most, build 40 weeks around it, and you retest the same way you tested, so you see whether it moved.",
   },
 } as const;
 

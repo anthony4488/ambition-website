@@ -136,7 +136,7 @@ export default function AthleteV2() {
               <li>Any particular speed. Not 35 km/h, not 30 km/h, not any number.</li>
               <li>A contract, a trial, a selection or a minute of game time.</li>
               <li>Results if you skip the sessions or the work between them.</li>
-              <li>Results in weeks. The programme is 30 weeks for a reason.</li>
+              <li>Results in weeks. The programme is 40 weeks for a reason.</li>
             </ul>
             <p>Your result is decided by you. We can&apos;t do the work for you.</p>
           </div>
@@ -146,8 +146,8 @@ export default function AthleteV2() {
             <ul className="list-disc space-y-1.5 pl-5">
               <li>You&apos;re 24 or over, still training or competing, and paying for your own coaching.</li>
               <li>A phone that films in slow motion, a patch of grass or a track, and about an hour.</li>
-              <li>If the assessment shows it&apos;s worth it: 30 weeks, coached over WhatsApp around your job.</li>
-              <li>A realistic budget: the programme after the assessment is $4,000 USD, paid in two halves.</li>
+              <li>If the assessment shows it&apos;s worth it: 40 weeks, coached over WhatsApp around your job.</li>
+              <li>A realistic budget: the programme after the assessment is $4,000 USD, paid upfront.</li>
               <li>Straight answers about where you are, and replies when we message you.</li>
             </ul>
           </div>

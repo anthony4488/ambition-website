@@ -19,7 +19,7 @@ const STEPS = [
   { t: "Book the assessment", d: "$250 USD, paid securely through Stripe." },
   { t: "Film five tests", d: "On your phone, in slow motion. About an hour on grass or a track. The upload page walks you through each one." },
   { t: "Get your report", d: "A written report and a 15 minute voiceover on your own footage, within 5 to 7 business days." },
-  { t: "Decide on the programme", d: "If it's worth doing, one call with Anthony about the 30 weeks. If it isn't, he'll tell you." },
+  { t: "Decide on the programme", d: "If it's worth doing, one call with Anthony about the 40 weeks. If it isn't, he'll tell you." },
 ];
 
 const VIDEOS: { title: string; embed: string }[] = [
@@ -27,7 +27,7 @@ const VIDEOS: { title: string; embed: string }[] = [
   { title: "What's in the report", embed: "" },
   { title: "What results to expect, in real numbers", embed: "" },
   { title: "Why athletes who are already good still do this", embed: "" },
-  { title: "What the 30 weeks look like", embed: "" },
+  { title: "What the 40 weeks look like", embed: "" },
 ];
 
 export default function OnlineThankYou({ searchParams }: { searchParams: { name?: string } }) {

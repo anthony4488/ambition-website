@@ -20,7 +20,7 @@ const services = [
   },
   {
     title: "Online Coaching",
-    description: "The Speed Diagnostic System™ delivered remotely. $250 assessment, optional 30-week program. Worldwide.",
+    description: "The Speed Diagnostic System™ delivered remotely. $250 assessment, optional 40-week program. Worldwide.",
     href: "/online-coaching#apply",
     image: "/online-coaching-filming.jpg",
     imagePosition: "object-[70%_50%]",

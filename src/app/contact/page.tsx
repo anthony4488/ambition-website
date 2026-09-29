@@ -28,11 +28,11 @@ const programs = [
   {
     eyebrow: "Worldwide · Online",
     name: "Online Coaching",
-    pitch: "The Speed Diagnostic System™ delivered remotely. $250 assessment, optional 30-week program.",
+    pitch: "The Speed Diagnostic System™ delivered remotely. $250 assessment, optional 40-week program.",
     bullets: [
       "5 tests filmed on your phone",
       "8 to 10 page report + 15-min voiceover",
-      "Custom 30-week program if you continue",
+      "Custom 40-week program if you continue",
     ],
     href: "/online-coaching#apply",
     cta: "Apply For Online Coaching",
@@ -215,7 +215,7 @@ export default function ContactPage() {
               },
               {
                 q: "Can we actually afford it?",
-                a: "It isn't cheap and we won't pretend otherwise, this is a serious investment in an athlete's development. Online coaching is paid in two blocks rather than up front, and the $250 assessment is a low-risk way to get the diagnosis first and decide on the program later. If the timing is wrong, say so on the call and we'll tell you what's worth doing in the meantime for free.",
+                a: "It isn't cheap and we won't pretend otherwise, this is a serious investment in an athlete's development. Online coaching is paid upfront, and the $250 assessment is a low-risk way to get the diagnosis first and decide on the program later. If the timing is wrong, say so on the call and we'll tell you what's worth doing in the meantime for free.",
               },
               {
                 q: "Are your coaches checked and insured?",
