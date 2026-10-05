@@ -3,7 +3,8 @@ import { eventNameForProduct, loadAttribution } from "@/lib/checkoutAttribution"
 import crypto from "crypto";
 import { sendSms, normaliseAu } from "@/lib/nurture";
 import { sendTelegramMessage, escapeHtml } from "@/lib/telegram";
-import { enrollFlow, whatsappWelcome } from "@/lib/emailFlows";
+import { enrollFlow } from "@/lib/emailFlows";
+import { postOnboardCard } from "@/lib/onboarding";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { sendCapiEvent, sendLeadStage, splitName } from "@/lib/metaCapi";
 import { parseClientRef, ASSESSMENT_CURRENCY } from "@/lib/booking";
@@ -317,21 +318,12 @@ export async function POST(req: NextRequest) {
       /* non-fatal */
     }
     if (programme) {
-      await sendTelegramMessage(
-        [
-          "🟢 <b>NEW CLIENT: set up their WhatsApp group</b>",
-          "",
-          `👤 <b>${escapeHtml(name)}</b> · ${track === "online" ? "Online" : "Face to face"}`,
-          `📞 ${escapeHtml(phone)}`,
-          "",
-          "1. Create the group: <b>Ambition · " + escapeHtml(name) + "</b>",
-          "2. Add them and the coach, then paste this:",
-          "",
-          `<code>${escapeHtml(whatsappWelcome(name ?? "", track))}</code>`,
-          "",
-          "3. Drop their programme link in the group.",
-        ].join("\n"),
-      );
+      // 🟢 NEW CLIENT card with 🚀 Onboard (lib/onboarding.ts): one tap = emails, athlete app, WhatsApp welcome
+      try {
+        await postOnboardCard({ name: name ?? email, email, phone, track }, `$${(value ?? 0).toLocaleString("en-AU")} ${currency} by card (Stripe)`);
+      } catch {
+        /* non-fatal */
+      }
     }
   }
 

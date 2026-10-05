@@ -24,7 +24,8 @@ export async function sendTelegramMessage(text: string): Promise<boolean> {
   }
 }
 
-export type TgButton = { text: string; callback_data: string };
+// callback_data for a tap the bot handles, url for a link button (e.g. a wa.me WhatsApp draft)
+export type TgButton = { text: string; callback_data?: string; url?: string };
 
 /**
  * Same as sendTelegramMessage but with an inline keyboard. Used to put a

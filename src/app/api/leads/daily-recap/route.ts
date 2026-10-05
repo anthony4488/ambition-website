@@ -3,6 +3,7 @@ import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { sendTelegramMessage, escapeHtml } from "@/lib/telegram";
 import { upcomingAssessments } from "@/lib/assessmentBooking";
 import { sendDueInvoices } from "@/lib/billing";
+import { enrollRecent, postDueFollowUps } from "@/lib/followUps";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -111,6 +112,7 @@ export async function GET(req: NextRequest) {
   sections.push(
     "\n🔑 <b>KEYWORDS</b> (type to this chat)\n" +
       "<b>calls</b>: who to call this week, who's been called, booked\n" +
+      "<b>followups</b>: today's follow-up cards (WhatsApp / SMS / email, one tap each)\n" +
       "<b>funnel</b>: starts vs completed applications, which question loses people, who stopped\n" +
       "<b>viewers</b>: who watched each VSL to 25/50/75/90/100%, when, and whether they applied\n" +
       "<b>/paid email-or-phone amount</b>: log a bank-transfer payment (starts their emails too)\n" +
@@ -130,5 +132,13 @@ export async function GET(req: NextRequest) {
   } catch {
     /* non-fatal */
   }
-  return Response.json({ ok: true, telegram: sent ? "sent" : "not configured", new: fresh.length, catchUp: catchUp.length, drafts });
+  // follow-up cards due today (lib/followUps.ts); enrollRecent is the safety net for leads that missed enrolment
+  let followUps = 0;
+  try {
+    await enrollRecent(7);
+    followUps = await postDueFollowUps();
+  } catch {
+    /* non-fatal */
+  }
+  return Response.json({ ok: true, telegram: sent ? "sent" : "not configured", new: fresh.length, catchUp: catchUp.length, drafts, followUps });
 }

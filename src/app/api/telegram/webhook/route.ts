@@ -10,6 +10,8 @@ import { bookAssessment, parseBooking } from "@/lib/assessmentBooking";
 import { enrollFlow } from "@/lib/emailFlows";
 import { stopNurtureByPhone } from "@/lib/enrollNurture";
 import { sendReviewPrompt, saveReviewNote, INBOX_MARK } from "@/lib/reviewInbox";
+import { handleFollowUpTap, followUpsCommand } from "@/lib/followUps";
+import { handleOnboardTap, onboardCommand, postOnboardCard } from "@/lib/onboarding";
 import { handleAttendanceTap, handleAttendanceNote, downloadTelegramFile, previewInvoice, sendInvoice, editInvoice, weekSummary, sendCheckin, sendDueInvoices } from "@/lib/billing";
 
 export const runtime = "nodejs";
@@ -120,6 +122,36 @@ export async function POST(req: NextRequest) {
     return Response.json({ ok: true });
   }
 
+  // 🚀 Onboard on a NEW CLIENT card (lib/onboarding.ts): "ob:<staged row id>".
+  if (cb?.data?.startsWith("ob:")) {
+    const cbChat = String(cb.message?.chat?.id ?? "");
+    const allowedChat = process.env.TELEGRAM_CHAT_ID;
+    if (allowedChat && cbChat !== String(allowedChat)) return Response.json({ ok: true });
+    let msg = "";
+    try {
+      msg = await handleOnboardTap(cb.data);
+    } catch (e) {
+      msg = `Failed: ${e instanceof Error ? e.message : "error"}`;
+    }
+    await answerCallbackQuery(cb.id ?? "", msg.slice(0, 190));
+    return Response.json({ ok: true });
+  }
+
+  // Follow-up cards (lib/followUps.ts): "fu:<s|e|x>:<step>:<lead id>" = send by SMS / email, or stop.
+  if (cb?.data?.startsWith("fu:")) {
+    const cbChat = String(cb.message?.chat?.id ?? "");
+    const allowedChat = process.env.TELEGRAM_CHAT_ID;
+    if (allowedChat && cbChat !== String(allowedChat)) return Response.json({ ok: true });
+    let msg = "";
+    try {
+      msg = await handleFollowUpTap(cb.data);
+    } catch (e) {
+      msg = `Failed: ${e instanceof Error ? e.message : "error"}`;
+    }
+    await answerCallbackQuery(cb.id ?? "", msg.slice(0, 190));
+    return Response.json({ ok: true });
+  }
+
   // A tap on Spoke / No answer / Booked on a lead alert. callback_data is
   // "lead:<action>:<row id>". This is the only thing that has ever written to
   // status, contacted_at or booked_at, so pick-up rate and booking rate become
@@ -205,6 +237,20 @@ export async function POST(req: NextRequest) {
     return Response.json({ ok: true });
   }
 
+  // "followups": every lead from the last 7 days gets a follow-up schedule, and anything due is posted now.
+  if (text && /^\/?follow-?ups?$/i.test(text.trim())) {
+    if (allowed && chatId !== String(allowed)) return Response.json({ ok: true });
+    await followUpsCommand();
+    return Response.json({ ok: true });
+  }
+
+  // "/onboard <email|phone|name> [online]": the NEW CLIENT card by hand (bank transfer, cash).
+  if (text && /^\/onboard\b/i.test(text.trim())) {
+    if (allowed && chatId !== String(allowed)) return Response.json({ ok: true });
+    await onboardCommand(text.trim());
+    return Response.json({ ok: true });
+  }
+
   // "viewers" (or /viewers, video): who watched each VSL, how far, when, and whether they then applied.
   if (text && /^\/?(viewers?|videos?)$/i.test(text.trim())) {
     if (allowed && chatId !== String(allowed)) return Response.json({ ok: true });
@@ -267,6 +313,15 @@ export async function POST(req: NextRequest) {
       }
     } catch {
       /* non-fatal */
+    }
+    if (programme) {
+      // 🟢 NEW CLIENT card with 🚀 Onboard (lib/onboarding.ts)
+      try {
+        const isEmail = parsed.identifier.includes("@");
+        await postOnboardCard({ name: parsed.identifier, email: isEmail ? parsed.identifier : null, phone: isEmail ? null : parsed.identifier, track: "f2f" }, `${money} by bank transfer (/paid)`);
+      } catch {
+        /* non-fatal */
+      }
     }
     if (!programme) flowNote += `${flowNote ? "\n" : ""}🗓 When's the assessment? <code>/booked ${parsed.identifier} sun 9am homebush</code>`;
     await sendTelegramMessage(

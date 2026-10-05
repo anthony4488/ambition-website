@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { enrollNurture } from "@/lib/enrollNurture";
 import { leadButtons } from "@/lib/leadStatus";
+import { enrollFollowUp } from "@/lib/followUps";
 import { sendApplicationReceived } from "@/lib/applicationEmail";
 import { enrollFlow } from "@/lib/emailFlows";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
@@ -305,6 +306,14 @@ export async function POST(req: NextRequest) {
     });
     const j = await res.json();
     if (!j.ok) throw new Error(j.description || "telegram send failed");
+    // the intro follow-up card (WhatsApp / SMS / email, lib/followUps.ts) lands right under the alert
+    if (leadRowId) {
+      try {
+        await enrollFollowUp(leadRowId, { postNow: true });
+      } catch {
+        /* non-fatal */
+      }
+    }
     return Response.json({ ok: true });
   } catch (e) {
     return Response.json({ ok: false, error: e instanceof Error ? e.message : "failed" }, { status: 200 });
