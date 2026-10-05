@@ -65,7 +65,7 @@ export function followUpText(step: number, c: Ctx): string {
   const hi = `Hi ${c.first}`;
   if (c.spoke) {
     return [
-      `${hi}, great speaking with you. The next step is the assessment: we time ${c.self ? "you" : who}, film ${c.self ? "you" : "them"} and find exactly what's holding ${c.self ? "you" : "them"} back. Want me to send you the times we have this week?`,
+      `${hi}, great speaking with you. The next step is the assessment, where we film ${c.self ? "you" : who} at full speed to find exactly what's holding ${c.self ? "you" : "them"} back. Want me to send you the times we have this week?`,
       `${hi}, Anthony here. Any questions come up after our chat? Happy to answer them here.`,
       `${hi}, just checking in. Are you still keen to lock in ${c.self ? "your" : whose} assessment, or should I leave it for now? Either is completely fine.`,
       `${hi}, I'll leave it here so I'm not chasing you. If anything changes, reply to this message and we'll pick it up.`,
@@ -79,7 +79,7 @@ export function followUpText(step: number, c: Ctx): string {
     case 1:
       return `${hi}, Anthony from Ambition here. I tried to give you a call about ${c.self ? "your application" : who}. When's a good time today or tomorrow?`;
     case 2:
-      return `${hi}, following up on ${c.self ? "your" : whose} application. Everything starts with an assessment: we time ${c.self ? "you" : who}, film ${c.self ? "you" : "them"} and find exactly what's limiting ${c.self ? "your" : "their"} speed. Want me to send you the times we have this week?`;
+      return `${hi}, following up on ${c.self ? "your" : whose} application. Everything starts with an assessment, where we film ${c.self ? "you" : who} at full speed to find exactly what's limiting ${c.self ? "your" : "their"} speed. Want me to send you the times we have this week?`;
     case 3:
       return `${hi}, thought you'd like to see what a few of our athletes have done: ${SITE}/success-stories. Every one of them started with the same assessment. Happy to chat about ${c.self ? "yours" : who} whenever suits.`;
     case 4:
