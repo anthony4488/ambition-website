@@ -22,6 +22,8 @@ import { wrap, unsubSig } from "./emailFlows";
 
 const SITE = process.env.NEXT_PUBLIC_APP_URL || "https://ambitionsportsperformance.com";
 const H = 3600_000;
+// every text and WhatsApp is signed with the full name (Anthony 2026-10-05); the SMS sender can only show "AmbitionSP"
+const SIGN = "Anthony, Ambition Sports Performance";
 
 type Lead = {
   id: string;
@@ -108,7 +110,7 @@ function card(l: Lead, step: number, total: number, text: string): { body: strin
   ].filter((s) => s !== "").join("\n");
   const id = l.id;
   const row1: TgButton[] = [];
-  if (l.phone) row1.push({ text: "💬 WhatsApp", url: waLink(l.phone, text) });
+  if (l.phone) row1.push({ text: "💬 WhatsApp", url: waLink(l.phone, `${text}\n\n${SIGN}`) });
   if (l.phone) row1.push({ text: "📱 SMS", callback_data: `fu:s:${step}:${id}` });
   if (l.email) row1.push({ text: "📧 Email", callback_data: `fu:e:${step}:${id}` });
   const rows: TgButton[][] = [row1, [{ text: "🛑 Stop follow-ups", callback_data: `fu:x:0:${id}` }]];
@@ -212,7 +214,7 @@ export async function handleFollowUpTap(data: string): Promise<string> {
   if (kind === "s") {
     if (!lead.phone) return "No phone on this lead";
     // the sender can only show "AmbitionSP" (11 characters max), so the full name signs the text (Anthony 2026-10-05)
-    const r = await sendSms(lead.phone, `${text}\n\nAnthony, Ambition Sports Performance`);
+    const r = await sendSms(lead.phone, `${text}\n\n${SIGN}`);
     if ("paused" in r && r.paused) return "SMS is switched off (needs a business sender). Use WhatsApp.";
     return r.ok ? `SMS sent to ${lead.name ?? "lead"} ✅` : "SMS failed (check ClickSend)";
   }
