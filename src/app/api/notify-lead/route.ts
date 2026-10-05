@@ -189,11 +189,22 @@ export async function POST(req: NextRequest) {
   // reopening the SMS question. Fire and forget, a mail failure must not cost
   // us the lead.
   if (str(b.source) === "apply") {
-    void sendApplicationReceived({
-      name: str(b.name),
-      email: str(b.email),
-      athleteName: str(b.athlete_name),
-    });
+    // email + text, written from their answers and honest about when the call comes (2026-10-05). Awaited: a
+    // fire-and-forget promise can be cut off when the serverless function returns.
+    try {
+      await sendApplicationReceived({
+        name: str(b.name),
+        email: str(b.email),
+        phone: str(b.phone),
+        athleteName: str(b.athlete_name),
+        club: str(b.club),
+        goal: str(b.goal),
+        online: String(b.placement ?? "").startsWith("athlete") || /online/i.test(String(b.program ?? "")),
+        tier: str(b.tier),
+      });
+    } catch {
+      /* non-fatal */
+    }
     // 0c) The "applied" email flow (lib/emailFlows.ts, Resend). No-op until EMAIL_FLOWS_ENABLED=true.
     try {
       const online = String(b.placement ?? "").startsWith("athlete") || /online/i.test(String(b.program ?? ""));

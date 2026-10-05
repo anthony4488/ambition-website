@@ -145,9 +145,14 @@ export async function enrollFollowUp(leadId: string, opts: { postNow?: boolean }
   const age = Date.now() - new Date(lead.created_at).getTime();
   let step = 0;
   for (let i = 0; i < OFFSETS.length; i++) if (age >= OFFSETS[i] * H) step = i;
+  // a website applicant already got the instant email + text (lib/applicationEmail.ts) and gave their budget on the
+  // form, so their first card is the next day's, not the intro
+  const fromForm = lead.source === "apply";
+  if (fromForm && step === 0) step = 1;
+  const due = fromForm && age < OFFSETS[1] * H ? new Date(new Date(lead.created_at).getTime() + OFFSETS[1] * H) : new Date();
   await sb.from("nurture_enrollments").insert({
     name: lead.name, email: lead.email, phone: lead.phone, source: fsrc(leadId), step, status: "active",
-    next_send_at: new Date().toISOString(),
+    next_send_at: due.toISOString(),
   });
   if (opts.postNow) await postDueFollowUps();
   return { ok: true, step };
