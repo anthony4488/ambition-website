@@ -211,7 +211,8 @@ export async function handleFollowUpTap(data: string): Promise<string> {
   const text = followUpText(Number(stepS) || 0, ctxFor(lead as Lead));
   if (kind === "s") {
     if (!lead.phone) return "No phone on this lead";
-    const r = await sendSms(lead.phone, text);
+    // the sender can only show "AmbitionSP" (11 characters max), so the full name signs the text (Anthony 2026-10-05)
+    const r = await sendSms(lead.phone, `${text}\n\nAnthony, Ambition Sports Performance`);
     if ("paused" in r && r.paused) return "SMS is switched off (needs a business sender). Use WhatsApp.";
     return r.ok ? `SMS sent to ${lead.name ?? "lead"} ✅` : "SMS failed (check ClickSend)";
   }
