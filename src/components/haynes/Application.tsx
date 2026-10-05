@@ -287,7 +287,13 @@ export function Application({
     setErr("");
     const next = { ...a, [step.key]: val };
     setA(next);
-    trackFormStep(formId, step.key);
+    // the answer rides with the step (Anthony 2026-10-05: "the answers ... even ... who didn't finish the form"), so a
+    // form someone quits still shows what they said. Phone excluded: it's the last step and arrives with the submit.
+    trackFormStep(formId, step.key, step.kind === "tel" ? undefined : {
+      answer: String(val).slice(0, 600),
+      ...(next.name ? { name: next.name } : {}),
+      ...(next.email ? { email: next.email } : {}),
+    });
 
     if (step.key === "gate" && val === GATE_NO) {
       trackFormStep(formId, "gate_failed", { name: next.name, email: next.email });
