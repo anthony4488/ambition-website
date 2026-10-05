@@ -111,7 +111,10 @@ function card(l: Lead, step: number, total: number, text: string): { body: strin
   const id = l.id;
   const row1: TgButton[] = [];
   if (l.phone) row1.push({ text: "💬 WhatsApp", url: waLink(l.phone, `${text}\n\n${SIGN}`) });
-  if (l.phone) row1.push({ text: "📱 SMS", callback_data: `fu:s:${step}:${id}` });
+  // opens Messages with the text typed, from his own number (app/go/sms); old cards' "fu:s" taps still work
+  if (l.phone) row1.push({ text: "📱 Text", url: `${SITE}/go/sms?to=${encodeURIComponent(normaliseAu(l.phone))}&body=${encodeURIComponent(`${text}
+
+${SIGN}`)}` });
   if (l.email) row1.push({ text: "📧 Email", callback_data: `fu:e:${step}:${id}` });
   const rows: TgButton[][] = [row1, [{ text: "🛑 Stop follow-ups", callback_data: `fu:x:0:${id}` }]];
   if (step === 1) rows.splice(1, 0, ...leadButtons(id));

@@ -1,13 +1,14 @@
 import { sendMail } from "./mailer";
 import { sendSms } from "./nurture";
+import { queueText } from "./smsOutbox";
 
 // The instant reply to every application: an email AND a text, written from what they told us on the form, and
 // honest about WHEN the call comes (Anthony 2026-10-05: "sometimes these people apply when I'm asleep, so everyone
 // should get an automated email and text ... based on what they say. Then I follow through with a call.").
 //
 // Its whole job: make an unknown Sydney mobile a number they're expecting, and keep them warm overnight.
-// The email always sends. The text sends through ClickSend once SMS_ENABLED=true (a business sender is set);
-// until then sendSms is a no-op and the email carries it alone.
+// The email always sends. The text goes out from Anthony's own iPhone (lib/smsOutbox.ts: queued here, sent by his
+// Shortcuts automation, so it shows in his Messages); ClickSend only if SMS_ENABLED=true is ever switched back on.
 // Writing rules: no em dashes, no list-of-three rhythm, no "quietly", no programme price.
 
 export const ANTHONY_MOBILE = "0450 205 033";
@@ -76,7 +77,9 @@ export async function sendApplicationReceived(a: Applicant) {
   let sms: { ok: boolean } = { ok: false };
   if (a.phone && !review) {
     try {
-      sms = await sendSms(a.phone, applicationText(a));
+      sms = process.env.SMS_ENABLED === "true"
+        ? await sendSms(a.phone, applicationText(a))
+        : await queueText(a.phone, applicationText(a), "application");
     } catch {
       /* non-fatal */
     }
