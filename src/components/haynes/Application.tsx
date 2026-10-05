@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react";
 import { AGE_BANDS, GOALS } from "@/components/ApplyForm";
 import { fireLeadPixel, qualifyLead, type QualifyResult } from "@/lib/qualify";
 import { trackFormComplete, trackFormStep } from "@/lib/formTelemetry";
-import { loadFunnel } from "./funnelState";
+import { loadFunnel, TRACKED } from "./funnelState";
 import { Honeypot, honeypotValue } from "@/components/Honeypot";
 
 // The Haynes application, 2026-09-28: one question per screen, the hard gate
@@ -179,6 +179,10 @@ export function Application({
     if (f) {
       setA((p) => ({ ...p, name: f.name, email: f.email }));
       utm.current = f.utm ?? {};
+    } else {
+      // straight from an ad to the form (no video page first, the 2026-10-06 test): read the ad attribution here
+      const q = new URLSearchParams(window.location.search);
+      utm.current = Object.fromEntries(TRACKED.map((k) => [k, q.get(k) ?? ""]).filter(([, v]) => v));
     }
     setSkip([...(f ? ["name", "email"] : []), ...(dm ? DM_SKIP : [])]);
   }, []);
