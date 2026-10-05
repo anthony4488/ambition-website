@@ -39,7 +39,7 @@ const BUDGET_50 = "$50 to $100 a week";
 const BUDGET_NO = "Under $50 a week";
 const BUDGETS = [BUDGET_150, BUDGET_100, BUDGET_50, BUDGET_NO] as const;
 // Screens the DM already covered (who, age, level, location, budget). "watched" too: a DM lead may not have seen the VSL.
-const DM_SKIP = ["gate", "budget", "ageBand", "level", "watched"];
+const DM_SKIP = ["gate", "budget", "ageBand", "level"];
 const GATE_NO = "Not yet";
 const player = (a: Answers) => a.athleteName?.trim() || "your athlete";
 
@@ -58,6 +58,12 @@ const STEPS_F2F: Step[] = [
   },
   { key: "name", kind: "text", q: () => "What's your name?", placeholder: "Your name" },
   { key: "email", kind: "email", q: () => "Which email should we use?", placeholder: "you@example.com" },
+  {
+    key: "phone", kind: "tel",
+    q: () => "What's the best number for Anthony to call you on?",
+    hint: "So he can call you about the assessment. Nothing else.",
+    placeholder: "04xx xxx xxx",
+  },
   { key: "athleteName", kind: "text", q: () => "What's the athlete's first name?", hint: "If you're the athlete, put your own name.", placeholder: "First name" },
   {
     key: "ageBand", kind: "choice",
@@ -75,52 +81,14 @@ const STEPS_F2F: Step[] = [
   { key: "location", kind: "choice", q: () => "Which location is closest to you?", options: () => LOCATIONS },
   { key: "goal", kind: "choice", q: (a) => `What would you most like to change in how ${player(a)} moves?`, options: () => GOALS },
   {
-    key: "trainingLoad", kind: "choice",
-    q: (a) => `How many times a week does ${player(a)} train with their team now?`,
-    options: () => ["1-2", "3", "4 or more"],
-  },
-  {
-    key: "whose", kind: "choice",
-    q: (a) => `Whose idea is this: ${player(a)}'s, or yours?`,
-    hint: "Be honest. If the player doesn't want it, it won't work.",
-    options: (a) => [`${player(a)} asked for it`, "We both want it", "Mostly mine"],
-  },
-  {
-    key: "heldBack", kind: "long",
-    q: (a) => `What has held ${player(a)} back so far? Be specific.`,
-    placeholder: "Injuries, coaches, time, not knowing what to work on...",
-  },
-  {
-    key: "whyNow", kind: "long",
-    q: () => "Why now? What has changed this season?",
-    placeholder: "A trial coming up, dropped to the bench, moved up an age group...",
-  },
-  {
     key: "start", kind: "choice",
     q: (a) => `If ${player(a)} is accepted, when would you want to start?`,
     options: () => ["This week", "Within a month", "Later this year", "Just looking for now"],
   },
   {
-    key: "watched", kind: "choice",
-    q: () => "Did you watch the video on the last page all the way through?",
-    hint: "Most of what the call covers is in it.",
-    options: () => ["Yes, all of it", "Some of it", "Not yet"],
-  },
-  {
     key: "commit", kind: "choice",
     q: (a) => `The programme is long term: face to face every week, and most athletes stay two years or more. If the assessment shows it's worth doing, can ${player(a)} commit to that?`,
     options: () => ["Yes", "Need to talk it through", "No"],
-  },
-  {
-    key: "parentOnCall", kind: "choice",
-    q: () => "Anthony speaks with every family before the assessment. Will a parent be on that call?",
-    options: () => ["Yes", "I'm the athlete (18+), I'll take the call myself"],
-  },
-  {
-    key: "phone", kind: "tel",
-    q: (a) => `What's the best number for Anthony to call you if ${player(a)} is accepted?`,
-    hint: "If you're a fit, he calls you, usually within the hour.",
-    placeholder: "04xx xxx xxx",
   },
 ];
 
@@ -141,6 +109,14 @@ const STEPS_ONLINE: Step[] = [
   },
   { key: "name", kind: "text", q: () => "What's your name?", placeholder: "Your name" },
   { key: "email", kind: "email", q: () => "Which email should we use?", placeholder: "you@example.com" },
+  { key: "country", kind: "text", q: () => "Which country are you in?", placeholder: "Country" },
+  {
+    key: "phone", kind: "tel",
+    q: () => "What's your best WhatsApp number?",
+    hint: "Pick your country code, then your number. The coaching runs on WhatsApp, so this is where you'll hear from Anthony.",
+    placeholder: "Mobile number",
+    intl: true,
+  },
   { key: "ageBand", kind: "choice", q: () => "How old are you?", options: () => ["24-29", "30-39", "40+"] },
   { key: "sport", kind: "choice", q: () => "What's your sport?", options: () => SPORTS },
   {
@@ -148,31 +124,10 @@ const STEPS_ONLINE: Step[] = [
     q: () => "What level do you play or compete at now?",
     options: () => ["Professional", "Semi-professional", "Amateur, competitive", "Social or recreational", "I train but don't compete"],
   },
-  { key: "country", kind: "text", q: () => "Which country are you in?", placeholder: "Country" },
   {
     key: "goal", kind: "choice",
     q: () => "What would you most like to change in how you move?",
     options: () => ["Faster off the mark", "More top speed", "Sharper change of direction", "Stay injury free", "Not sure yet, that's why I'm here"],
-  },
-  {
-    key: "heldBack", kind: "long",
-    q: () => "What has held you back so far? Be specific.",
-    placeholder: "Injuries, time, coaching, not knowing what to work on...",
-  },
-  {
-    key: "whyNow", kind: "long",
-    q: () => "Why now? What has changed?",
-    placeholder: "A new season, a trial, a plateau you can't get past...",
-  },
-  {
-    key: "filming", kind: "choice",
-    q: () => "The assessment is five tests filmed on your phone in slow motion, about an hour on grass or a track. When could you film them?",
-    options: () => ["This week", "Within a month", "Not sure"],
-  },
-  {
-    key: "watched", kind: "choice",
-    q: () => "Did you watch the video on the last page all the way through?",
-    options: () => ["Yes, all of it", "Some of it", "Not yet"],
   },
   {
     key: "commit", kind: "choice",
@@ -183,13 +138,6 @@ const STEPS_ONLINE: Step[] = [
     key: "start", kind: "choice",
     q: () => "When do you want to start?",
     options: () => ["This week", "Within a month", "Later this year", "Just looking for now"],
-  },
-  {
-    key: "phone", kind: "tel",
-    q: () => "What's your best WhatsApp number?",
-    hint: "Pick your country code, then your number. The coaching runs on WhatsApp, so this is where you'll hear from Anthony.",
-    placeholder: "Mobile number",
-    intl: true,
   },
 ];
 
@@ -288,8 +236,9 @@ export function Application({
     const next = { ...a, [step.key]: val };
     setA(next);
     // the answer rides with the step (Anthony 2026-10-05: "the answers ... even ... who didn't finish the form"), so a
-    // form someone quits still shows what they said. Phone excluded: it's the last step and arrives with the submit.
-    trackFormStep(formId, step.key, step.kind === "tel" ? undefined : {
+    // form someone quits still shows what they said. The phone number is asked early (2026-10-06) and saved the
+    // same way, so a half-finished application still leaves a number to call.
+    trackFormStep(formId, step.key, {
       answer: String(val).slice(0, 600),
       ...(next.name ? { name: next.name } : {}),
       ...(next.email ? { email: next.email } : {}),
@@ -327,7 +276,6 @@ export function Application({
     // idea, or only looking. Strong applications are the point, not volume.
     const weak = [
       v.commit === "No" && "won't commit to the long term",
-      v.whose === "Mostly mine" && "parent's idea, not the player's",
       v.start === "Just looking for now" && "just looking",
       v.budget === BUDGET_50 && "budget: $50 to $100 a week (borderline)",
     ].filter(Boolean) as string[];
@@ -348,14 +296,8 @@ export function Application({
 
     const extra = [
       `Budget: ${fromDm ? "answered in DM ($100+)" : v.budget}`,
-      `Trains: ${v.trainingLoad}/wk`,
-      `Whose idea: ${v.whose}`,
       `Start: ${v.start}`,
-      `Why now: ${v.whyNow}`,
-      `Held back: ${v.heldBack}`,
-      `Watched VSL: ${v.watched}`,
       `Commits long term: ${v.commit}`,
-      `Parent on call: ${v.parentOnCall}`,
       fromDm ? "Page: /apply-v2 from the ManyChat DM" : "Page: /apply-v2 (Haynes layout)",
     ].join(" | ");
 
@@ -421,11 +363,7 @@ export function Application({
       `Budget: ${fromDm ? "answered in DM ($100+)" : v.budget}`,
       `Country: ${v.country}`,
       `Start: ${v.start}`,
-      `Film the tests: ${v.filming}`,
       `Commit to 40 weeks: ${v.commit}`,
-      `Why now: ${v.whyNow}`,
-      `Held back: ${v.heldBack}`,
-      `Watched VSL: ${v.watched}`,
       fromDm ? "Page: /athlete-v2 from the ManyChat DM" : "Page: /athlete-v2 (Haynes layout, online)",
     ].join(" | ");
     const payload = {
