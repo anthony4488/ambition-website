@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import { AGE_BANDS, GOALS, LOCATIONS, SPORTS, levelsFor } from "@/components/ApplyForm";
+import { AGE_BANDS, GOALS } from "@/components/ApplyForm";
 import { fireLeadPixel, qualifyLead, type QualifyResult } from "@/lib/qualify";
 import { trackFormComplete, trackFormStep } from "@/lib/formTelemetry";
 import { loadFunnel } from "./funnelState";
@@ -64,32 +64,12 @@ const STEPS_F2F: Step[] = [
     hint: "So he can call you about the assessment. Nothing else.",
     placeholder: "04xx xxx xxx",
   },
-  { key: "athleteName", kind: "text", q: () => "What's the athlete's first name?", hint: "If you're the athlete, put your own name.", placeholder: "First name" },
   {
     key: "ageBand", kind: "choice",
     q: (a) => `How old is ${player(a)}?`,
     options: () => F2F_AGES.map((b) => b.label),
   },
-  { key: "sport", kind: "choice", q: (a) => `What does ${player(a)} play?`, options: () => SPORTS },
-  {
-    key: "level", kind: "choice",
-    q: (a) => `What level does ${player(a)} play at right now?`,
-    hint: "Pick the competition, not how good they are. We check it on the call.",
-    options: (a) => levelsFor(a.sport ?? ""),
-  },
-  { key: "club", kind: "text", q: (a) => `Which club, academy or team is ${player(a)} with?`, placeholder: "Club, academy or team" },
-  { key: "location", kind: "choice", q: () => "Which location is closest to you?", options: () => LOCATIONS },
   { key: "goal", kind: "choice", q: (a) => `What would you most like to change in how ${player(a)} moves?`, options: () => GOALS },
-  {
-    key: "start", kind: "choice",
-    q: (a) => `If ${player(a)} is accepted, when would you want to start?`,
-    options: () => ["This week", "Within a month", "Later this year", "Just looking for now"],
-  },
-  {
-    key: "commit", kind: "choice",
-    q: (a) => `The programme is long term: face to face every week, and most athletes stay two years or more. If the assessment shows it's worth doing, can ${player(a)} commit to that?`,
-    options: () => ["Yes", "Need to talk it through", "No"],
-  },
 ];
 
 // Online: athletes 24+ who pay for their own training, any sport, anywhere.
@@ -117,27 +97,10 @@ const STEPS_ONLINE: Step[] = [
     placeholder: "Mobile number",
     intl: true,
   },
-  { key: "ageBand", kind: "choice", q: () => "How old are you?", options: () => ["24-29", "30-39", "40+"] },
-  { key: "sport", kind: "choice", q: () => "What's your sport?", options: () => SPORTS },
-  {
-    key: "level", kind: "choice",
-    q: () => "What level do you play or compete at now?",
-    options: () => ["Professional", "Semi-professional", "Amateur, competitive", "Social or recreational", "I train but don't compete"],
-  },
   {
     key: "goal", kind: "choice",
     q: () => "What would you most like to change in how you move?",
     options: () => ["Faster off the mark", "More top speed", "Sharper change of direction", "Stay injury free", "Not sure yet, that's why I'm here"],
-  },
-  {
-    key: "commit", kind: "choice",
-    q: () => "If the assessment shows it's worth doing, the programme is 40 weeks, coached over WhatsApp around your job. Could you commit to that?",
-    options: () => ["Yes", "Need to think it through", "No"],
-  },
-  {
-    key: "start", kind: "choice",
-    q: () => "When do you want to start?",
-    options: () => ["This week", "Within a month", "Later this year", "Just looking for now"],
   },
 ];
 
@@ -270,6 +233,15 @@ export function Application({
       level: v.level,
       remote: false,
     });
+    // 7-question form (2026-10-06): sport, ground and level are asked on the call now. Passing the pathway gate and a
+    // $100+ budget is the qualification; age still keeps 11-12s off the Lead event and turns away under 11s.
+    if (!v.sport && !v.location) {
+      result = {
+        ...result,
+        tier: result.tier === "unqualified" ? "unqualified" : result.noLead ? "review" : "qualified",
+        reasons: result.reasons.filter((r) => !/Suburb not recognised|Sport not provided/.test(r)),
+      };
+    }
     // A family that won't commit to a block is never a QualifiedLead, so Meta
     // is never told to find more of them. They still get the call.
     // Same for the weak-intent answers Anthony wants filtered: not the player's
