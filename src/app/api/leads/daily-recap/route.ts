@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
-import { sendTelegramMessage, escapeHtml } from "@/lib/telegram";
+import { sendTelegramMessage, escapeHtml, sendMenu } from "@/lib/telegram";
 import { upcomingAssessments } from "@/lib/assessmentBooking";
 import { sendDueInvoices } from "@/lib/billing";
 import { enrollRecent, postDueFollowUps } from "@/lib/followUps";
@@ -107,22 +107,8 @@ export async function GET(req: NextRequest) {
 
   sections.push(`\n📊 ${leads.length} application${leads.length === 1 ? "" : "s"} in the last 7 days.`);
 
-  // Keyword cheat sheet every morning (Anthony 2026-10-03: "push all those keywords every morning so I can
-  // remember them"). Type any of these to this chat, any time.
-  sections.push(
-    "\n🔑 <b>KEYWORDS</b> (type to this chat)\n" +
-      "<b>calls</b>: who to call this week, who's been called, booked\n" +
-      "<b>followups</b>: today's follow-up cards (WhatsApp / SMS / email, one tap each)\n" +
-      "<b>funnel</b>: starts vs completed applications, which question loses people, who stopped\n" +
-      "<b>viewers</b>: who watched each VSL to 25/50/75/90/100%, when, and whether they applied\n" +
-      "<b>/paid email-or-phone amount</b>: log a bank-transfer payment (starts their emails too)\n" +
-      "<b>/booked name day time ground</b>: e.g. /booked jared sun 11:45am homebush, times their emails to the day " +
-      "(or reply to a 💰 PAID alert with the day, time and ground)\n" +
-      "<b>voice note</b>: who came / cancelled this week, e.g. \"Kosta cancelled Tuesday, everyone else came\"\n" +
-      "<b>review</b>: send Claude a screen recording (mic on) of you talking over a video, or a voice note\n" +
-      "<b>week</b>: sessions in the app · <b>checkin</b>: today's attendance buttons · <b>invoices</b>: drafts due now\n" +
-      "Tap <b>Spoke / No answer / Booked</b> on any lead alert to update the call sheet.",
-  );
+  // The keyword cheat sheet is now the button menu under the chat (lib/telegram.ts sendMenu, Anthony 2026-10-05:
+  // "I don't want to be having to remember the keywords"); it is re-sent after the recap so it is always there.
 
   const sent = await sendTelegramMessage(sections.join("\n"));
   // invoices due: one draft per athlete with one session left, [Send] [Preview] (lib/billing.ts)
@@ -137,6 +123,11 @@ export async function GET(req: NextRequest) {
   try {
     await enrollRecent(7);
     followUps = await postDueFollowUps();
+  } catch {
+    /* non-fatal */
+  }
+  try {
+    await sendMenu("☀️ <b>Today's buttons</b> (always under the chat box):");
   } catch {
     /* non-fatal */
   }

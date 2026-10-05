@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { sendSms } from "@/lib/nurture";
-import { sendTelegramMessage, answerCallbackQuery } from "@/lib/telegram";
+import { sendTelegramMessage, answerCallbackQuery, menuKeyword, sendMenu, askReply, ASK } from "@/lib/telegram";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { sendAssessmentLink, parseClientRef } from "@/lib/booking";
 import { parsePaidCommand, recordManualPayment } from "@/lib/manualPayment";
@@ -178,9 +178,26 @@ export async function POST(req: NextRequest) {
 
   const msg = update.message;
   const quoted = msg?.reply_to_message?.text;
-  const text = msg?.text;
+  let msgOverride: string | null = null;
+  // a tap on the button menu (lib/telegram.ts MENU_ROWS) arrives as its label: turn it into the keyword
+  const menu = menuKeyword(msg?.text);
+  const text = menu && !menu.startsWith("?") ? menu : msg?.text;
   const chatId = String(msg?.chat?.id ?? "");
   const allowed = process.env.TELEGRAM_CHAT_ID;
+
+  // The button menu (Anthony 2026-10-05: no keywords to remember). "/start", "menu" or "help" shows it; the buttons
+  // that need details ask a question, and a reply to that question runs the command.
+  if (allowed && chatId === String(allowed)) {
+    if (text && /^\/?(start|menu|help|buttons)$/i.test(text.trim())) { await sendMenu(); return Response.json({ ok: true }); }
+    if (menu === "?book") { await askReply(ASK.book); return Response.json({ ok: true }); }
+    if (menu === "?onboard") { await askReply(ASK.onboard); return Response.json({ ok: true }); }
+    if (menu === "?paid") { await askReply(ASK.paid); return Response.json({ ok: true }); }
+    if (quoted && text && !menu) {
+      if (quoted.startsWith(ASK.book.slice(0, 12))) { await sendTelegramMessage(await bookAssessment(`/booked ${text}`)); return Response.json({ ok: true }); }
+      if (quoted.startsWith(ASK.onboard.slice(0, 12))) { await onboardCommand(`/onboard ${text}`); return Response.json({ ok: true }); }
+      if (quoted.startsWith(ASK.paid.slice(0, 12))) { msgOverride = `/paid ${text}`; }
+    }
+  }
 
   // Review notes for Claude (lib/reviewInbox.ts): "review" sends the prompt; a voice (or text) REPLY to it is saved
   // for Claude's machine. Checked before billing so a review note is never read as attendance.
@@ -289,10 +306,11 @@ export async function POST(req: NextRequest) {
   // on it, so Meta could never match those buyers. The pixel was therefore
   // trained on card payers only. This is the human step that closes that gap,
   // and it doubles as the first structured record of who paid what.
-  if (text?.trim().toLowerCase().startsWith("/paid")) {
+  const paidText = msgOverride ?? text;
+  if (paidText?.trim().toLowerCase().startsWith("/paid")) {
     if (allowed && chatId !== String(allowed)) return Response.json({ ok: true });
 
-    const parsed = parsePaidCommand(text);
+    const parsed = parsePaidCommand(paidText);
     if ("error" in parsed) {
       await sendTelegramMessage(`⚠️ ${parsed.error}`);
       return Response.json({ ok: true });
