@@ -4,7 +4,13 @@ import { sendTelegramMessage, answerCallbackQuery } from "@/lib/telegram";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { sendAssessmentLink, parseClientRef } from "@/lib/booking";
 import { parsePaidCommand, recordManualPayment } from "@/lib/manualPayment";
-import { markLead } from "@/lib/leadStatus";
+import { markLead, weekCallSheet } from "@/lib/leadStatus";
+import { funnelReport, viewerReport } from "@/lib/funnelReport";
+import { bookAssessment, parseBooking } from "@/lib/assessmentBooking";
+import { enrollFlow } from "@/lib/emailFlows";
+import { stopNurtureByPhone } from "@/lib/enrollNurture";
+import { sendReviewPrompt, saveReviewNote, INBOX_MARK } from "@/lib/reviewInbox";
+import { handleAttendanceTap, handleAttendanceNote, downloadTelegramFile, previewInvoice, sendInvoice, editInvoice, weekSummary, sendCheckin, sendDueInvoices } from "@/lib/billing";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,6 +23,12 @@ export const dynamic = "force-dynamic";
 type TgUpdate = {
   message?: {
     text?: string;
+    voice?: { file_id: string; mime_type?: string; duration?: number };
+    audio?: { file_id: string; mime_type?: string; duration?: number };
+    video?: { file_id: string; mime_type?: string; duration?: number; file_size?: number };
+    video_note?: { file_id: string; mime_type?: string; duration?: number };
+    document?: { file_id: string; mime_type?: string; duration?: number; file_size?: number };
+    caption?: string;
     chat?: { id?: number | string };
     reply_to_message?: { text?: string };
   };
@@ -28,7 +40,7 @@ type TgUpdate = {
   };
 };
 
-// A tap on "Send $199 payment link" on a lead alert. callback_data looks like
+// A tap on "Send $250 payment link" on a lead alert. callback_data looks like
 // "sendlink:lg_123__ph_61400000000", everything needed is in the payload, so
 // the handler works even if the Supabase row is missing.
 async function handleSendLink(cb: NonNullable<TgUpdate["callback_query"]>) {
@@ -89,6 +101,25 @@ export async function POST(req: NextRequest) {
     return Response.json({ ok: true });
   }
 
+  // Billing (lib/billing.ts): attendance taps "at:..." and invoice taps "iv:<s|p>:<id>".
+  if (cb?.data?.startsWith("at:") || cb?.data?.startsWith("iv:")) {
+    const cbChat = String(cb.message?.chat?.id ?? "");
+    const allowedChat = process.env.TELEGRAM_CHAT_ID;
+    if (allowedChat && cbChat !== String(allowedChat)) return Response.json({ ok: true });
+    let msg = "";
+    try {
+      if (cb.data.startsWith("at:")) msg = await handleAttendanceTap(cb.data);
+      else {
+        const [, kind, id] = cb.data.split(":");
+        msg = kind === "s" ? await sendInvoice(id) : await previewInvoice(id);
+      }
+    } catch (e) {
+      msg = `Failed: ${e instanceof Error ? e.message : "error"}`;
+    }
+    await answerCallbackQuery(cb.id ?? "", msg.slice(0, 190));
+    return Response.json({ ok: true });
+  }
+
   // A tap on Spoke / No answer / Booked on a lead alert. callback_data is
   // "lead:<action>:<row id>". This is the only thing that has ever written to
   // status, contacted_at or booked_at, so pick-up rate and booking rate become
@@ -119,6 +150,93 @@ export async function POST(req: NextRequest) {
   const chatId = String(msg?.chat?.id ?? "");
   const allowed = process.env.TELEGRAM_CHAT_ID;
 
+  // Review notes for Claude (lib/reviewInbox.ts): "review" sends the prompt; a voice (or text) REPLY to it is saved
+  // for Claude's machine. Checked before billing so a review note is never read as attendance.
+  if (allowed && chatId === String(allowed)) {
+    if (text && /^\/?review$/i.test(text.trim())) { await sendReviewPrompt(); return Response.json({ ok: true }); }
+    // a video (an iPhone screen recording with the mic on, talking over a breakdown) is always a review note
+    const vid = msg?.video ?? msg?.video_note ?? (msg?.document?.mime_type?.startsWith("video/") ? msg.document : undefined);
+    if (vid) {
+      // bots can only download files up to 20 MB
+      if (Number((vid as { file_size?: number }).file_size || 0) > 20_000_000) {
+        await sendTelegramMessage("⚠️ Over 20 MB, too big for the bot. Send it again: pick the video, tap the quality button at the bottom of the editor (HD / gear), choose 480p or 720p, send.");
+        return Response.json({ ok: true });
+      }
+      await saveReviewNote({ fileId: vid.file_id, mime: vid.mime_type || "video/mp4", duration: vid.duration, text: msg?.caption });
+      return Response.json({ ok: true });
+    }
+    if (quoted && quoted.includes(INBOX_MARK)) {
+      const m = msg?.voice ?? msg?.audio;
+      if (m) await saveReviewNote({ fileId: m.file_id, mime: m.mime_type, duration: m.duration });
+      else if (text) await saveReviewNote({ fileId: "", text });
+      return Response.json({ ok: true });
+    }
+  }
+
+  // Billing from the phone: a voice note = who came / cancelled this week; "attendance ..." typed = same;
+  // "week" = sessions in the app; "checkin" / "invoices" = run the evening / morning jobs now;
+  // a reply to a draft invoice = change it ("credit 100", "size 4", "email x@y.com").
+  if (allowed && chatId === String(allowed)) {
+    const media = msg?.voice ?? msg?.audio;
+    try {
+      if (media) {
+        const bytes = await downloadTelegramFile(media.file_id);
+        if (bytes) await handleAttendanceNote({ audio: bytes, mime: media.mime_type || "audio/ogg" });
+        return Response.json({ ok: true });
+      }
+      const t = text?.trim() ?? "";
+      if (/^\/?attendance/i.test(t)) { await handleAttendanceNote({ text: t.replace(/^\/?attendance\s*:?/i, "") }); return Response.json({ ok: true }); }
+      if (/^\/?week$/i.test(t)) { await weekSummary(); return Response.json({ ok: true }); }
+      if (/^\/?check-?in$/i.test(t)) { await sendCheckin(); return Response.json({ ok: true }); }
+      if (/^\/?invoices?$/i.test(t)) { const r = await sendDueInvoices(); if (!r.drafts) await sendTelegramMessage("🧾 No invoices due right now."); return Response.json({ ok: true }); }
+      const invId = quoted?.match(/inv:([0-9a-f-]{36})/)?.[1];
+      if (invId && t) { await editInvoice(invId, t); return Response.json({ ok: true }); }
+    } catch (e) {
+      await sendTelegramMessage(`⚠️ Billing: ${e instanceof Error ? e.message : "failed"}`);
+      return Response.json({ ok: true });
+    }
+  }
+
+  // "calls" (or /calls, leads): the week's call sheet, every applicant since Monday, face to face and online,
+  // grouped by needs a call / no answer / booked / spoke (Anthony 2026-10-03).
+  if (text && /^\/?(calls?|leads)$/i.test(text.trim())) {
+    if (allowed && chatId !== String(allowed)) return Response.json({ ok: true });
+    for (const chunk of await weekCallSheet()) await sendTelegramMessage(chunk);
+    return Response.json({ ok: true });
+  }
+
+  // "viewers" (or /viewers, video): who watched each VSL, how far, when, and whether they then applied.
+  if (text && /^\/?(viewers?|videos?)$/i.test(text.trim())) {
+    if (allowed && chatId !== String(allowed)) return Response.json({ ok: true });
+    for (const chunk of await viewerReport()) await sendTelegramMessage(chunk);
+    return Response.json({ ok: true });
+  }
+
+  // "funnel" (or /funnel, forms): opt-ins vs completions per VSL, video watch depth, and who stopped where.
+  if (text && /^\/?(funnel|forms?)$/i.test(text.trim())) {
+    if (allowed && chatId !== String(allowed)) return Response.json({ ok: true });
+    for (const chunk of await funnelReport()) await sendTelegramMessage(chunk);
+    return Response.json({ ok: true });
+  }
+
+  // `/booked <who> <day> <time> <ground>`: the assessment day and time (lib/assessmentBooking.ts). Or REPLY to a
+  // 💰 ASSESSMENT PAID alert with "jared sun 9am homebush"; the card holder's generic emails stop.
+  if (text && /^\/booked?\b/i.test(text.trim())) {
+    if (allowed && chatId !== String(allowed)) return Response.json({ ok: true });
+    await sendTelegramMessage(await bookAssessment(text));
+    return Response.json({ ok: true });
+  }
+  if (text && quoted && /ASSESSMENT PAID/i.test(quoted)) {
+    if (allowed && chatId !== String(allowed)) return Response.json({ ok: true });
+    const payerEmail = quoted.match(/✉️\s*(\S+@\S+)/)?.[1] ?? null;
+    const payerName = quoted.match(/👤\s*(.+)/)?.[1]?.trim() ?? "";
+    // no name typed: it's the payer themselves
+    const p = parseBooking(text);
+    const line = "who" in p && p.who ? text : `${payerEmail ?? payerName} ${text}`;
+    await sendTelegramMessage(await bookAssessment(line, { payerEmail }));
+    return Response.json({ ok: true });
+  }
+
   // `/paid <email|phone> <amount> [product]`
   //
   // Most programme money arrives by bank transfer, and a bank feed has no email
@@ -136,12 +254,28 @@ export async function POST(req: NextRequest) {
 
     const r = await recordManualPayment(parsed);
     const money = `$${parsed.amount.toLocaleString("en-AU")}`;
+    // A bank transfer is a payment like any other (2026-10-02): stop the chasers and start the right emails,
+    // same as the Stripe webhook does for a card.
+    let flowNote = "";
+    const programme = parsed.amount >= 1000 || /programme|program/i.test(parsed.product ?? "");
+    try {
+      if (parsed.identifier.includes("@")) {
+        const e = await enrollFlow(programme ? "client" : "booked", "f2f", { email: parsed.identifier });
+        flowNote = e.ok ? `✉️ ${programme ? "Welcome" : "Booked"} emails started` : "";
+      } else {
+        await stopNurtureByPhone(parsed.identifier, "stopped");
+      }
+    } catch {
+      /* non-fatal */
+    }
+    if (!programme) flowNote += `${flowNote ? "\n" : ""}🗓 When's the assessment? <code>/booked ${parsed.identifier} sun 9am homebush</code>`;
     await sendTelegramMessage(
       [
         r.ok ? `✅ Logged ${money}` : `⚠️ Logged ${money}, but Meta rejected it`,
         `👤 ${parsed.identifier} (matched on ${r.matchedOn})`,
         `📡 ${r.eventName}: ${r.capi.ok ? "sent" : r.capi.detail ?? "failed"}`,
         r.logged ? "" : "🗄 Not saved to the payments table, run the SQL",
+        flowNote,
       ]
         .filter(Boolean)
         .join("\n"),

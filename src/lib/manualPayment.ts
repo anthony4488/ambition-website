@@ -101,7 +101,7 @@ export async function recordManualPayment(
  * Parse `/paid <email|phone> <amount> [product]`.
  *
  * Deliberately forgiving about how the amount is typed, because this gets used
- * one-handed on a phone: "$3,500", "3500", "199.00" all work.
+ * one-handed on a phone: "$3,500", "3500", "250.00" all work.
  */
 export function parsePaidCommand(text: string): ManualPaymentInput | { error: string } {
   const parts = text.trim().split(/\s+/);
@@ -110,13 +110,13 @@ export function parsePaidCommand(text: string): ManualPaymentInput | { error: st
   const rawAmount = (parts.shift() ?? "").replace(/[$,]/g, "");
   const product = parts.length ? parts.join(" ") : null;
 
-  if (!identifier) return { error: "Who paid? Try /paid john@example.com 199" };
+  if (!identifier) return { error: "Who paid? Try /paid john@example.com 250" };
   if (!isEmail(identifier) && identifier.replace(/\D/g, "").length < 8) {
     return { error: `"${identifier}" is not an email or a phone number.` };
   }
   const amount = Number(rawAmount);
   if (!rawAmount || !Number.isFinite(amount) || amount <= 0) {
-    return { error: "How much? Try /paid john@example.com 199" };
+    return { error: "How much? Try /paid john@example.com 250" };
   }
   return { identifier, amount, product };
 }

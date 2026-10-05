@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
 import { sendTelegramMessage, escapeHtml } from "@/lib/telegram";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { enrollFlow, stopFlow } from "@/lib/emailFlows";
+import { sameOrigin, rateLimit } from "@/lib/guard";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -16,6 +18,7 @@ type Body = {
   meta?: Record<string, unknown>;
   page?: string;
   referrer?: string;
+  quiet?: boolean;
 };
 
 const EVENT_BADGE: Record<NonNullable<Body["event"]>, { emoji: string; label: string }> = {
@@ -27,6 +30,9 @@ const EVENT_BADGE: Record<NonNullable<Body["event"]>, { emoji: string; label: st
 const BOT_UA = /bot|crawl|spider|slurp|preview|facebookexternalhit|headless|lighthouse|monitor|pingdom/i;
 
 export async function POST(req: NextRequest) {
+  // abuse guard (security check 2026-10-03): our own pages only, and a per-IP cap
+  if (!sameOrigin(req)) return Response.json({ ok: false, error: "forbidden" }, { status: 403 });
+  if (!rateLimit(req, "form-event", 60, 600)) return Response.json({ ok: false, error: "slow down" }, { status: 429 });
   let b: Body = {};
   try {
     b = (await req.json()) as Body;
@@ -83,6 +89,20 @@ export async function POST(req: NextRequest) {
     /* non-fatal. Telegram alert still fires */
   }
 
-  await sendTelegramMessage(lines.join("\n"));
+  // "Started but didn't finish" follow-up (2026-10-02): the VSL opt-in enrols them in the "started" email flow;
+  // submitting the application stops it (enrollFlow "applied"), and so does failing the gate (not a fit, no nudges).
+  const track = b.form_id === "apply-v2" ? "f2f" : b.form_id === "athlete-v2" ? "online" : null;
+  const optEmail = typeof b.meta?.email === "string" ? (b.meta.email as string) : null;
+  if (track && optEmail) {
+    try {
+      if (event === "started") await enrollFlow("started", track, { email: optEmail, name: String(b.meta?.name || "") || null });
+      if (event === "step" && b.meta?.step === "gate_failed") await stopFlow("started", optEmail);
+    } catch {
+      /* non-fatal */
+    }
+  }
+
+  // quiet = VSL watch-depth events: stored for the funnel, no Telegram per event (2026-10-02)
+  if (!b.quiet) await sendTelegramMessage(lines.join("\n"));
   return Response.json({ ok: true });
 }

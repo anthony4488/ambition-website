@@ -4,6 +4,7 @@ import {
   saveAttribution,
   type CheckoutAttribution,
 } from "@/lib/checkoutAttribution";
+import { sameOrigin, rateLimit } from "@/lib/guard";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -32,6 +33,9 @@ function firstIp(h: string | null): string | null {
 }
 
 export async function POST(req: NextRequest) {
+  // abuse guard (security check 2026-10-03)
+  if (!sameOrigin(req)) return Response.json({ ok: false, error: "forbidden" }, { status: 403 });
+  if (!rateLimit(req, "checkout", 10, 600)) return Response.json({ ok: false, error: "slow down" }, { status: 429 });
   let body: { link?: string; product?: string } = {};
   try {
     body = await req.json();

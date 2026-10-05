@@ -16,6 +16,19 @@ const nextConfig = {
       },
     ],
   },
+  // Security headers (security check 2026-10-03): no framing by other sites (clickjacking), no MIME sniffing,
+  // trimmed referrers, and no camera/mic/location access (nothing on the site uses them).
+  async headers() {
+    return [{
+      source: "/(.*)",
+      headers: [
+        { key: "X-Frame-Options", value: "SAMEORIGIN" },
+        { key: "X-Content-Type-Options", value: "nosniff" },
+        { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+        { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+      ],
+    }];
+  },
   async redirects() {
     return [
       // E-signature page retired — route any old /policy links to the terms page.
@@ -24,8 +37,8 @@ const nextConfig = {
       // signed off). Temporary (307) so reverting is one deletion. Query strings
       // (utm_*, fbclid) are carried across by Next automatically. Old links that
       // asked for the online program land on the online funnel, not the Sydney one.
-      { source: "/apply", has: [{ type: "query", key: "program", value: "online" }], destination: "/athlete-v2", permanent: false },
-      { source: "/apply", destination: "/apply-v2", permanent: false },
+      // 2026-10-02: /apply is now the choice page (face to face or online -> the matching VSL), so the two /apply
+      // redirects are gone; src/app/apply/page.tsx forwards ?track= and ?program=online itself.
       { source: "/athlete", destination: "/athlete-v2", permanent: false },
     ];
   },

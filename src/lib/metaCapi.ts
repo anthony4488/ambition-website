@@ -84,6 +84,10 @@ export type CapiEvent = {
     | "BoundTestLead"
     // /athlete-v2 online application. Custom so it never trains the Sydney Lead optimiser.
     | "OnlineApplication"
+    // 11-12 Sydney applicants (2026-10-04). Custom so it never trains the Lead optimiser.
+    | "AmbitionYoungLead"
+    | "DmApplication"
+    | "AmbitionBudgetReview"
     | (typeof LEAD_STAGE_EVENT)[LeadStage];
   /** Must match the browser pixel's eventID when both fire, or Meta double-counts. */
   eventId: string;

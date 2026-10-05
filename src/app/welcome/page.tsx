@@ -74,7 +74,7 @@ export default function WelcomePage() {
           {[
             { icon: <ClipboardCheck size={20} />, t: "We review your application", d: "Anthony goes through your answers personally before reaching out." },
             { icon: <Phone size={20} />, t: "Anthony calls you from a Sydney number", d: "A real call from Anthony, not an automated calendar link. No booking, no chasing." },
-            { icon: <Target size={20} />, t: "We lock in your $199 assessment", d: "240fps biomechanical analysis to find, and fix, what's limiting speed." },
+            { icon: <Target size={20} />, t: "We lock in your $250 assessment", d: "240fps biomechanical analysis to find, and fix, what's limiting speed." },
           ].map((s, i) => (
             <div key={i} className="flex items-start gap-4 rounded-2xl border border-gray-100 bg-gray-50 p-5">
               <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-accent/10 text-accent">{s.icon}</span>

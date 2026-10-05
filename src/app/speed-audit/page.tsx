@@ -9,7 +9,7 @@ import { Check, ArrowRight, Video, Ruler, Activity, Sparkles } from "lucide-reac
 export const metadata: Metadata = {
   title: "Free Speed Audit, Diagnose your bottleneck | Ambition Sports Performance",
   description:
-    "Anthony's $299 speed assessment - the protocol and the diagnostic, free. Film the 5 tests at home, enter your numbers, get an instant biomechanical diagnosis benchmarked against elite for your cohort.",
+    "Anthony's $250 speed assessment - the protocol and the diagnostic, free. Film the 5 tests at home, enter your numbers, get an instant biomechanical diagnosis benchmarked against elite for your cohort.",
 };
 
 export default function SpeedAuditPage() {
@@ -165,7 +165,7 @@ export default function SpeedAuditPage() {
               <span className="text-accent">Anthony tells you HOW to close it.</span>
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-gray-300">
-              The $299 full assessment is Anthony watching your 5 sprint videos at 240fps,
+              The $250 full assessment is Anthony watching your 5 sprint videos at 240fps,
               finding the exact mechanical fixes, writing the report, and recording a 15-minute
               voice walkthrough back to you within 3-6 business days.
             </p>
@@ -173,7 +173,7 @@ export default function SpeedAuditPage() {
               href="/apply?track=online"
               className="group mt-8 inline-flex items-center gap-3 rounded-full bg-accent px-9 py-4 text-sm font-extrabold uppercase tracking-[0.15em] text-white transition hover:bg-orange-500 hover:shadow-xl hover:shadow-accent/30"
             >
-              Book the $299 assessment
+              Book the $250 assessment
               <ArrowRight size={18} strokeWidth={2.5} className="transition group-hover:translate-x-1" />
             </Link>
             <p className="mt-5 text-xs text-gray-500">

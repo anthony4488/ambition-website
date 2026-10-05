@@ -3,7 +3,7 @@
 // Stripe Payment Links accept ?client_reference_id=… on the URL. We put the
 // Meta leadgen_id there, Stripe echoes it back on the webhook, and that's what
 // lets the Purchase event attribute to the ad that produced the lead. Without
-// it a payment is just an anonymous $199.
+// it a payment is just an anonymous $250.
 
 import { sendSms, normaliseAu } from "./nurture";
 import { sendTelegramMessage, escapeHtml } from "./telegram";
@@ -13,7 +13,7 @@ import { getSupabaseAdmin } from "./supabaseAdmin";
 // NOT taken from here, it reads Stripe's amount_total, so reporting stays
 // correct even if this drifts. This only controls what the SMS says.
 // Set ASSESSMENT_PRICE in Vercel when the price changes; never hardcode it in copy.
-export const ASSESSMENT_PRICE = Number(process.env.ASSESSMENT_PRICE) || 199;
+export const ASSESSMENT_PRICE = Number(process.env.ASSESSMENT_PRICE) || 250;
 export const ASSESSMENT_CURRENCY = "AUD";
 
 /**

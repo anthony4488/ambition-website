@@ -3,6 +3,7 @@ import { eventNameForProduct, loadAttribution } from "@/lib/checkoutAttribution"
 import crypto from "crypto";
 import { sendSms, normaliseAu } from "@/lib/nurture";
 import { sendTelegramMessage, escapeHtml } from "@/lib/telegram";
+import { enrollFlow, whatsappWelcome } from "@/lib/emailFlows";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { sendCapiEvent, sendLeadStage, splitName } from "@/lib/metaCapi";
 import { parseClientRef, ASSESSMENT_CURRENCY } from "@/lib/booking";
@@ -10,8 +11,8 @@ import { stopNurtureByPhone } from "@/lib/enrollNurture";
 
 /**
  * The tier this buyer's lead was scored at, so Purchase carries the same
- * qualification the Lead event already does. Without it a $199 from an
- * 8-year-old's parent and a $199 from an NPL 15-year-old train the optimiser
+ * qualification the Lead event already does. Without it a $250 from an
+ * 8-year-old's parent and a $250 from an NPL 15-year-old train the optimiser
  * as the same signal, and Meta goes looking for whichever is cheaper.
  *
  * Two storage shapes to read: Meta lead-form leads have a `lead_tier` column,
@@ -57,7 +58,7 @@ async function lookupLeadTier(opts: {
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// Stripe webhook. Fires on checkout.session.completed for the $199 assessment.
+// Stripe webhook. Fires on checkout.session.completed for the $250 assessment.
 //
 // Does four things, in this order of importance:
 //   1. Meta CAPI Purchase, points the ad algorithm at buyers, not form-fillers
@@ -70,7 +71,7 @@ export const dynamic = "force-dynamic";
 
 function verifyStripe(raw: string, header: string | null): boolean {
   // Live and test mode have DIFFERENT signing secrets. Accepting both lets the
-  // whole chain be exercised with a 4242 test card instead of a real $199.
+  // whole chain be exercised with a 4242 test card instead of a real $250.
   // Remove STRIPE_WEBHOOK_SECRET_TEST once testing is done.
   const secrets = [
     process.env.STRIPE_WEBHOOK_SECRET,
@@ -185,7 +186,7 @@ export async function POST(req: NextRequest) {
   // Stripe and carries no cookies, no IP and no user agent of its own. Without
   // it Meta scored Purchase 3.2 out of 10 on match quality against 8.7 for Lead.
   const attr = await loadAttribution(ref);
-  // One event name, one meaning. A $200 report and a $3,500 programme are
+  // One event name, one meaning. A $250 report and a $3,500 programme are
   // different buyers, so they must not train the optimiser as the same event.
   const eventName = eventNameForProduct(attr?.product);
 
@@ -200,7 +201,7 @@ export async function POST(req: NextRequest) {
   // 1. META CAPI PURCHASE, the whole point of this route.
   //
   // A Stripe TEST payment must never reach live optimisation data. Meta would
-  // learn from a $199 that nobody paid, which is the exact pollution this whole
+  // learn from a $250 that nobody paid, which is the exact pollution this whole
   // build exists to prevent. Test payments only go to Meta if a test bucket is
   // configured; otherwise CAPI is skipped and everything else still runs, so the
   // rest of the chain is still fully exercised.
@@ -299,9 +300,40 @@ export async function POST(req: NextRequest) {
       `${attr ? "" : " · no browser match keys"}`,
       `💬 Confirmation SMS: ${smsOk ? "✅" : "❌"}`,
       "",
-      "👉 Text them to book the time.",
+      "👉 Text them to book the time, then REPLY to this message with the day, time and ground,",
+      "e.g. <code>sun 9am homebush</code> (add the applicant's name if someone else's card paid).",
     ].join("\n"),
   );
+
+  // 5. EMAIL FLOWS (lib/emailFlows.ts, 2026-10-01). The $250 assessment starts the "booked" flow; a
+  // programme payment starts "client" onboarding and sends Anthony the WhatsApp group welcome to paste.
+  // No-op until EMAIL_FLOWS_ENABLED=true. Test-mode payments never enrol anyone.
+  if (!isTest && email) {
+    const track = currency === "USD" ? "online" : "f2f";
+    const programme = (value ?? 0) >= 1000;
+    try {
+      await enrollFlow(programme ? "client" : "booked", track, { email, name });
+    } catch {
+      /* non-fatal */
+    }
+    if (programme) {
+      await sendTelegramMessage(
+        [
+          "🟢 <b>NEW CLIENT: set up their WhatsApp group</b>",
+          "",
+          `👤 <b>${escapeHtml(name)}</b> · ${track === "online" ? "Online" : "Face to face"}`,
+          `📞 ${escapeHtml(phone)}`,
+          "",
+          "1. Create the group: <b>Ambition · " + escapeHtml(name) + "</b>",
+          "2. Add them and the coach, then paste this:",
+          "",
+          `<code>${escapeHtml(whatsappWelcome(name ?? "", track))}</code>`,
+          "",
+          "3. Drop their programme link in the group.",
+        ].join("\n"),
+      );
+    }
+  }
 
   return Response.json({ ok: true, capi: capi.ok });
 }

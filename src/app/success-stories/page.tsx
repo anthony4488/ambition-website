@@ -52,7 +52,7 @@ const proAthletes: WallCard[] = [
 
 const wall: WallCard[] = [
   { name: "James", result: "Low 20s → 32 km/h", context: "+9 km/h max velocity · 25% KPI gain · 14 months", bunnyId: "2ea7ecba-23c4-4d1c-b513-0157f1b307d7" },
-  { name: "Xavi", result: "23 → 32 km/h", context: "Coordination · ground power · reactive off every contact · 17 months", bunnyId: "a31a6862-c26c-4337-878c-87a6b0ac94c4" },
+  { name: "Xavi", result: "22.3 → 31.2 km/h", context: "Coordination · ground power · reactive off every contact · 17 months", bunnyId: "a31a6862-c26c-4337-878c-87a6b0ac94c4" },
   { name: "Maksim", href: "/success-stories/maksim", result: "23 → 32 km/h", context: "+27.2% avg speed · +56% bound power · -27% across splits · 3 years", bunnyId: "9ad7f8a3-4d47-4948-a72f-db1f06180c8f" },
   { name: "George Francis", result: "17-19 → 35 km/h", context: "Started at 11 · stride, hip, contact rebuilt · faster than most semi-pros", bunnyId: "3e0332a8-49cb-4ac7-9422-4dd81a207078" },
   { name: "George Francis, 35 km/h run", result: "35 km/h on camera", context: "Timed top-speed run · the number, on film", bunnyId: "38fb4d8f-6eda-4ccb-b803-85721759a37c" },
@@ -67,7 +67,7 @@ const wall: WallCard[] = [
   { name: "Nik (clip 2)", result: "29 → 33 km/h", context: "+4 km/h top speed · clip 2 of 2", bunnyId: "37ff42e1-f7ad-4194-9d99-0e68c7ba4776" },
   { name: "Billy", result: "Low 20s → 36 km/h", context: "1.60s 0 to 10m · elite acceleration · semi-pro breakthrough", bunnyId: "02e84ac0-1687-461f-8bf3-9005a9ff68cf" },
   { name: "Jess", result: "21 → 27.3 km/h", context: "Started at 12 · +6.3 km/h in 15 months · same gates, before and after", bunnyId: "4c1d5826-3253-4657-81c5-19b1d4bb8fad" },
-  { name: "Dylan", result: "28 → 36 km/h", context: "European trialist · Portugal · NPL U20s debut for Hills", bunnyId: "9d01d2ff-8af0-4ffe-ae3b-84bd8c85d293" },
+  { name: "Dylan", result: "28 → 35 km/h", context: "European trialist · Portugal · NPL U20s debut for Hills", bunnyId: "9d01d2ff-8af0-4ffe-ae3b-84bd8c85d293" },
   { name: "Marc Sylla", result: "28 → 34 km/h", context: "Plateaued for months · broke through with mechanical fixes in 4 weeks", youtubeId: "_EFSqA7eqek" },
   { name: "Abdullah", result: "27 → 34.8 km/h", context: "Complete mechanical rebuild · acceleration posture, arm drive, ground contact", mp4Src: "/abdullah-after.mp4" },
   { name: "Dom", result: "Power Transformation", context: "Side-by-side power development · force production rebuilt", mp4Src: "/dom-before-after.mp4" },
@@ -75,6 +75,12 @@ const wall: WallCard[] = [
 ];
 
 const whatsappWall = [
+  // 1 Oct 2026: newest first (names, numbers and the parent's details removed from the screenshots)
+  { src: "/screenshots/xavi-golden-boot.jpg", name: "Xavi Nedelkovski, IFA Youth League U14 Golden Boot", caption: "31 goals this season, top speed with us 22.3 to 31.2 km/h, 17 months apart" },
+  { src: "/screenshots/isaac-lebanon-debut-3.jpg", name: "Isaac Kadouh · Lebanon youth national team debut", caption: "started in goal for Lebanon and played the full match, “excelled on more than one occasion”" },
+  { src: "/screenshots/swans-night-before-2.jpg", name: "Sydney Swans youth player, the night before v GWS Giants", caption: "our cues the night before: body position, energy at stoppages, hold your frame" },
+  { src: "/screenshots/swans-took-over.jpg", name: "Sydney Swans youth player", caption: "the next day, straight after the game: “in the last quarter I flicked a switch and took over”" },
+  { src: "/screenshots/swans-last-year.jpg", name: "Sydney Swans youth player, a year in", caption: "“this time last year I was crying on how I couldn't impact a game. Which is when we came to you”" },
   { src: "/screenshots/testimonial-1.jpeg", name: "Maciek", caption: "week 2 PB, “sprints feel weirdly easy”" },
   { src: "/screenshots/testimonial-2.jpeg", name: "Track session", caption: "jumped a basketball-hoop PR after a sprint block" },
   { src: "/screenshots/testimonial-3.jpeg", name: "Parent of Stefan", caption: "10 weeks in, “a lot lighter on his feet, even scored a goal”" },

@@ -7,6 +7,7 @@ import { ProAthleteVideo } from "@/components/ProAthleteVideo";
 import { LazyBunny } from "@/components/LazyBunny";
 import { CredibilityStrip } from "@/components/CredibilityStrip";
 import { ArrowRight, Play, ChevronDown } from "lucide-react";
+import { WhatsAppWall } from "@/components/haynes/Testimonials";
 
 const services = [
   {
@@ -468,6 +469,11 @@ export default function HomePage() {
                 </div>
               </FadeIn>
             ))}
+          </div>
+
+          {/* 1 Oct 2026: this week's wins, straight from the WhatsApp groups (Isaac's Lebanon debut, the Swans player) */}
+          <div className="mt-14">
+            <WhatsAppWall count={5} title="This week, straight from our WhatsApp groups" />
           </div>
 
           <FadeIn delay={500}>

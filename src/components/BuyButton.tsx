@@ -28,11 +28,16 @@ export function BuyButton({
   href,
   product,
   className = "",
+  value = 200,
+  currency = "AUD",
   children,
 }: {
   href: string;
   /** Tags the sale so the webhook fires the right event. */
   product?: string;
+  /** InitiateCheckout value. Defaults keep the falcon page unchanged. */
+  value?: number;
+  currency?: string;
   className?: string;
   children: React.ReactNode;
 }) {
@@ -44,8 +49,8 @@ export function BuyButton({
       if (typeof fbq === "function") {
         fbq("track", "InitiateCheckout", {
           content_name: product ?? "Online Speed Assessment",
-          value: 200,
-          currency: "AUD",
+          value,
+          currency,
         });
       }
 
@@ -76,7 +81,7 @@ export function BuyButton({
 
       window.location.href = url;
     },
-    [href, product],
+    [href, product, value, currency],
   );
 
   return (

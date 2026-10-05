@@ -61,7 +61,7 @@ const STEPS: Step[] = [
     // Absorbed the old "are you ready to invest" step, the budget band is the
     // harder money signal and asking both was redundant.
     q: "What's your weekly budget for your athlete's development?",
-    sub: "Our program runs from $130/week ongoing, plus a $199 starting assessment.",
+    sub: "Our program runs from $130/week ongoing, plus a $250 starting assessment.",
     // The floor is stated explicitly, but a below-floor option is kept on
     // purpose: classifyBudget() disqualifies on max(nums) <= 130, so this is the
     // trap that catches anyone who said "ready to invest" but can't clear $130.
@@ -175,7 +175,7 @@ export function SpeedSystemForm() {
     const utm = tracking.current;
 
     const notes = [
-      "Program: SPEED COACHING ($130-160/wk + $199 assessment)",
+      "Program: SPEED COACHING ($130-160/wk + $250 assessment)",
       `Email: ${a.email}`,
       `Athlete age: ${a.age}`,
       `Sport: ${a.sport}`,

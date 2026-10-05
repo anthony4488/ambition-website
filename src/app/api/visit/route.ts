@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { sendTelegramMessage, escapeHtml } from "@/lib/telegram";
+import { sameOrigin, rateLimit } from "@/lib/guard";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -29,6 +30,9 @@ const host = (r: string) => {
 };
 
 export async function POST(req: NextRequest) {
+  // abuse guard (security check 2026-10-03): our own pages only, and a per-IP cap
+  if (!sameOrigin(req)) return Response.json({ ok: false, error: "forbidden" }, { status: 403 });
+  if (!rateLimit(req, "visit", 120, 600)) return Response.json({ ok: false, error: "slow down" }, { status: 429 });
   const level = (process.env.VISIT_ALERT_LEVEL || "all").toLowerCase();
   if (level === "off") return Response.json({ ok: true, skipped: "off" });
 

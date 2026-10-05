@@ -235,12 +235,12 @@ export async function POST(req: NextRequest) {
         if (autoSent || !lead.phone) {
           await sendTelegramMessage(lines.join("\n"));
         } else {
-          // One tap sends the $199 link. Callback payload carries the ref so the
+          // One tap sends the $250 link. Callback payload carries the ref so the
           // handler doesn't need to look anything up.
           await sendTelegramWithButtons(lines.join("\n"), [
             [
               {
-                text: "💳 Send $199 payment link",
+                text: "💳 Send $250 payment link",
                 callback_data: `sendlink:${buildClientRef(String(leadgenId), lead.phone)}`,
               },
             ],

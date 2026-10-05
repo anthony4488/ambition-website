@@ -9,7 +9,7 @@ import { Check, ArrowRight, PlayCircle, ShieldCheck } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Online Coaching, The Speed Diagnostic System | Ambition Sports Performance",
-  description: "Elite biomechanical speed assessment + 30-week custom program delivered remotely. $200 assessment. Same system trusted by Bundesliga, Paralympic, and NPL athletes.",
+  description: "Elite biomechanical speed assessment + 40-week custom program delivered remotely. $250 assessment. Same system trusted by Bundesliga, Paralympic, and NPL athletes.",
 };
 
 const tests = [
@@ -31,18 +31,18 @@ const reportItems = [
 ];
 
 const blocks = [
-  { n: "01", weeks: "Weeks 1 to 6", name: "Foundation", items: ["General physical preparedness", "Movement quality and mobility", "Aerobic and tendon conditioning"] },
-  { n: "02", weeks: "Weeks 7 to 12", name: "Acceleration Development", items: ["Drive-phase sprint mechanics", "Horizontal force production", "Resisted acceleration work"] },
-  { n: "03", weeks: "Weeks 13 to 18", name: "Max Velocity", items: ["Top-end speed mechanics", "Reactive strength & plyometrics", "Stride frequency & ground contact"] },
-  { n: "04", weeks: "Weeks 19 to 24", name: "Power + Transfer", items: ["Force expression at speed", "Elastic strength", "Sport-specific application"] },
-  { n: "05", weeks: "Weeks 25 to 30", name: "Peaking + Expression", items: ["Speed expression at full output", "Match readiness", "Testing and performance lock"] },
+  { n: "01", weeks: "Weeks 1 to 8", name: "Foundation", items: ["General physical preparedness", "Movement quality and mobility", "Aerobic and tendon conditioning"] },
+  { n: "02", weeks: "Weeks 9 to 16", name: "Acceleration Development", items: ["Drive-phase sprint mechanics", "Horizontal force production", "Resisted acceleration work"] },
+  { n: "03", weeks: "Weeks 17 to 24", name: "Max Velocity", items: ["Top-end speed mechanics", "Reactive strength & plyometrics", "Stride frequency & ground contact"] },
+  { n: "04", weeks: "Weeks 25 to 32", name: "Power + Transfer", items: ["Force expression at speed", "Elastic strength", "Sport-specific application"] },
+  { n: "05", weeks: "Weeks 33 to 40", name: "Peaking + Expression", items: ["Speed expression at full output", "Match readiness", "Testing and performance lock"] },
 ];
 
 const weekFlow = [
   { day: "Monday", title: "Block Drop", body: "Anthony sends the week's programming via WhatsApp, every session, drill, and load. Demo videos and form cues included." },
   { day: "Tue to Fri", title: "Train + Film", body: "The athlete runs the sessions, films key exercises on their phone, typically technical work and prescribed sprints. 30 seconds per drill." },
   { day: "End of Week", title: "Review + Check-In", body: "Anthony reviews uploaded footage, sends specific form feedback, and delivers a voice-note check-in, what got hit, what got missed, what to adjust." },
-  { day: "Sunday", title: "Next Week's Plan", body: "Repeat. Every week. For 30 weeks." },
+  { day: "Sunday", title: "Next Week's Plan", body: "Repeat. Every week. For 40 weeks." },
 ];
 
 const builtFor = [
@@ -63,15 +63,15 @@ const bestResults = [
 
 const tiers = [
   {
-    name: "Speed Assessment", price: "$200", period: "one-time", commitment: "5 to 7 business days",
+    name: "Speed Assessment", price: "$250", period: "one-time", commitment: "5 to 7 business days",
     description: "Step 1 of the system. 5 tests filmed on your phone, an 8 to 10 page biomechanical report, and a 15-minute voiceover walkthrough from Anthony.",
     features: ["5-test biomechanical breakdown", "8 to 10 page custom report", "15-minute voiceover from Anthony", "#1 speed limiter named explicitly", "Elite benchmark comparisons", "Done remotely, anywhere in the world"],
     cta: "Apply For Assessment", highlight: true, tag: "Most Popular",
   },
   {
-    name: "30-Week Program", price: "Premium", period: "paid in 2 blocks", commitment: "30 weeks · custom coaching",
-    description: "Step 2 of the system. The full custom 30-week build, programmed around the athlete's specific limiters from the assessment.",
-    features: ["Custom 30-week program (5 blocks)", "Weekly WhatsApp coaching", "Form review on every upload", "Weekly voice-note check-ins", "Direct access to Anthony", "Pricing confirmed on qualification call"],
+    name: "40-Week Program", price: "Premium", period: "paid upfront", commitment: "40 weeks · custom coaching",
+    description: "Step 2 of the system. The full custom 40-week build, programmed around the athlete's specific limiters from the assessment.",
+    features: ["Custom 40-week program (5 blocks)", "Weekly WhatsApp coaching", "Form review on every upload", "Weekly voice-note check-ins", "Direct access to Anthony", "Pricing confirmed on qualification call"],
     cta: "Apply Now", highlight: false,
   },
   {
@@ -89,9 +89,9 @@ const faqs = [
   { q: "What if my athlete isn't elite level yet?", a: "The program is built for serious athletes who compete at representative, academy, state league, or pathway level, and want to get to elite. If the athlete is committed to that pathway, the system works." },
   { q: "Can my athlete keep doing their club training?", a: "Yes. Programming fits around match schedules and team training. Periodisation works around the athlete's existing load, not against it. Many of our athletes peak during their competitive season." },
   { q: "What if my athlete gets injured during the program?", a: "We adjust. Short periods out get modified programming. Long-term injuries get refunded against unused weeks. Honest conversations always." },
-  { q: "Do you accept payment plans?", a: "The program is paid in 2 blocks, one to start, one at the halfway point (week 15). Exact pricing is discussed on the qualification call once we've confirmed the athlete is the right fit." },
-  { q: "How long until we see results?", a: "Most athletes see measurable speed gains within the first 6-week block. The full 30-week program is structured to peak performance by month 7. Durable, periodised improvement, not quick spikes." },
-  { q: "What's the difference between the $200 assessment and the full program?", a: "The assessment is a one-off deliverable, biomechanical report plus voiceover. It tells you exactly where the athlete sits and what's limiting them. The full program is the 30-week build that addresses those limiters with custom coaching. Many buyers use the assessment for clarity; some continue into the program after." },
+  { q: "Do you accept payment plans?", a: "No. The program is paid upfront, in full, before it starts. Exact pricing is discussed on the qualification call once we've confirmed the athlete is the right fit." },
+  { q: "How long until we see results?", a: "Most athletes see measurable speed gains within the first 8-week block. The full 40-week program is structured to peak performance by month 9. Durable, periodised improvement, not quick spikes." },
+  { q: "What's the difference between the $250 assessment and the full program?", a: "The assessment is a one-off deliverable, biomechanical report plus voiceover. It tells you exactly where the athlete sits and what's limiting them. The full program is the 40-week build that addresses those limiters with custom coaching. Many buyers use the assessment for clarity; some continue into the program after." },
   { q: "Why do I have to apply instead of just paying?", a: "We only work with athletes who are the right fit. Applications get reviewed within 24 hours. If you're right for the system, we'll be in touch. If not, we'll tell you honestly, no chasing, no false promises." },
 ];
 
@@ -119,7 +119,7 @@ export default function OnlineCoachingPage() {
           </FadeIn>
           <FadeIn delay={200}>
             <p className="text-lg sm:text-xl text-gray-300 max-w-2xl leading-relaxed mb-10">
-              Elite biomechanical assessment delivered remotely. $200. 5 tests filmed on your phone. Full report and 15-minute voiceover analysis within 5 to 7 days. Same system trusted by Bundesliga, Paralympic, and NPL athletes.
+              Elite biomechanical assessment delivered remotely. $250. 5 tests filmed on your phone. Full report and 15-minute voiceover analysis within 5 to 7 days. Same system trusted by Bundesliga, Paralympic, and NPL athletes.
             </p>
           </FadeIn>
           <FadeIn delay={300}>
@@ -180,7 +180,7 @@ export default function OnlineCoachingPage() {
         <FadeIn>
           <div className="mb-12">
             <div className="accent-line mb-6" />
-            <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">Step 1, The Assessment ($200)</p>
+            <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">Step 1, The Assessment ($250)</p>
             <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
               5 tests. Filmed on your phone. <span className="text-accent">Full biomechanical breakdown.</span>
             </h2>
@@ -279,16 +279,16 @@ export default function OnlineCoachingPage() {
         </div>
       </section>
 
-      {/* Step 2, The 30-Week Program */}
+      {/* Step 2, The 40-Week Program */}
       <Section>
         <FadeIn>
           <div className="mb-12">
             <div className="accent-line mb-6" />
             <p className="text-accent text-xs uppercase tracking-[0.3em] mb-3 font-semibold">Step 2, The Program</p>
             <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
-              The 30-week build, <span className="text-accent">custom programming</span> around the athlete&apos;s limiters.
+              The 40-week build, <span className="text-accent">custom programming</span> around the athlete&apos;s limiters.
             </h2>
-            <p className="text-gray-500 max-w-2xl">If the assessment shows the right fit, we move into the full program. 5 training blocks. New block every 6 weeks. Built specifically around what&apos;s holding the athlete back.</p>
+            <p className="text-gray-500 max-w-2xl">If the assessment shows the right fit, we move into the full program. 5 training blocks. New block every 8 weeks. Built specifically around what&apos;s holding the athlete back.</p>
           </div>
         </FadeIn>
         <FadeIn>
@@ -357,7 +357,7 @@ export default function OnlineCoachingPage() {
                   Most athletes are <span className="text-accent">overtraining</span> their speed.
                 </h3>
                 <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-3">
-                  The CNS fatigues differently from muscles. If you stack speed days back-to-back the nervous system loads, the legs get heavy, and the gains stall, without you realising it&apos;s the cause. The 30-week program builds CNS recovery into the rhythm: stress, then recover, then peak.
+                  The CNS fatigues differently from muscles. If you stack speed days back-to-back the nervous system loads, the legs get heavy, and the gains stall, without you realising it&apos;s the cause. The 40-week program builds CNS recovery into the rhythm: stress, then recover, then peak.
                 </p>
                 <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                   This is why the WhatsApp coaching matters. Weekly load is adjusted athlete-by-athlete based on the footage you send.
@@ -564,10 +564,10 @@ export default function OnlineCoachingPage() {
                 <div>
                   <p className="text-accent text-[10px] uppercase tracking-[0.3em] font-bold mb-2">Our Guarantee</p>
                   <h3 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight mb-3 leading-tight">
-                    Report quality guarantee. <span className="text-accent">Or your $200 back.</span>
+                    Report quality guarantee. <span className="text-accent">Or your $250 back.</span>
                   </h3>
                   <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                    If your assessment report doesn&apos;t deliver three things, specific numbers benchmarked vs. elite, your #1 limiter named explicitly, and a clear training prescription, we&apos;ll refund the $200 in full within 14 days of delivery. No quibbles.
+                    If your assessment report doesn&apos;t deliver three things, specific numbers benchmarked vs. elite, your #1 limiter named explicitly, and a clear training prescription, we&apos;ll refund the $250 in full within 14 days of delivery. No quibbles.
                   </p>
                 </div>
               </div>
@@ -597,7 +597,7 @@ export default function OnlineCoachingPage() {
               </FadeIn>
               <FadeIn delay={200}>
                 <p className="text-base sm:text-lg text-gray-300 max-w-md leading-relaxed mb-8">
-                  Application takes 3 minutes. We review every application within 24 hours. If you&apos;re the right fit, Anthony will be in touch to lock in your <strong className="text-white">$200 assessment</strong>.
+                  Application takes 3 minutes. We review every application within 24 hours. If you&apos;re the right fit, Anthony will be in touch to lock in your <strong className="text-white">$250 assessment</strong>.
                 </p>
               </FadeIn>
               <FadeIn delay={300}>

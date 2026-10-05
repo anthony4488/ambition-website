@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { sendTelegramMessage, escapeHtml } from "@/lib/telegram";
 import { sendSms } from "@/lib/nurture";
+import { sameOrigin, rateLimit } from "@/lib/guard";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -42,6 +43,9 @@ type Body = {
 };
 
 export async function POST(req: NextRequest) {
+  // abuse guard (security check 2026-10-03): our own pages only, and a per-IP cap
+  if (!sameOrigin(req)) return Response.json({ ok: false, error: "forbidden" }, { status: 403 });
+  if (!rateLimit(req, "speed-audit", 5, 3600)) return Response.json({ ok: false, error: "slow down" }, { status: 429 });
   let b: Body = {};
   try {
     b = (await req.json()) as Body;

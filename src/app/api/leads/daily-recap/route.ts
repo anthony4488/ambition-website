@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { sendTelegramMessage, escapeHtml } from "@/lib/telegram";
+import { upcomingAssessments } from "@/lib/assessmentBooking";
+import { sendDueInvoices } from "@/lib/billing";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -94,8 +96,39 @@ export async function GET(req: NextRequest) {
     );
   }
 
+  // who's on the gates today and tomorrow (/booked, lib/assessmentBooking.ts)
+  try {
+    const up = await upcomingAssessments();
+    if (up) sections.splice(1, 0, up);
+  } catch {
+    /* non-fatal */
+  }
+
   sections.push(`\n📊 ${leads.length} application${leads.length === 1 ? "" : "s"} in the last 7 days.`);
 
+  // Keyword cheat sheet every morning (Anthony 2026-10-03: "push all those keywords every morning so I can
+  // remember them"). Type any of these to this chat, any time.
+  sections.push(
+    "\n🔑 <b>KEYWORDS</b> (type to this chat)\n" +
+      "<b>calls</b>: who to call this week, who's been called, booked\n" +
+      "<b>funnel</b>: starts vs completed applications, which question loses people, who stopped\n" +
+      "<b>viewers</b>: who watched each VSL to 25/50/75/90/100%, when, and whether they applied\n" +
+      "<b>/paid email-or-phone amount</b>: log a bank-transfer payment (starts their emails too)\n" +
+      "<b>/booked name day time ground</b>: e.g. /booked jared sun 11:45am homebush, times their emails to the day " +
+      "(or reply to a 💰 PAID alert with the day, time and ground)\n" +
+      "<b>voice note</b>: who came / cancelled this week, e.g. \"Kosta cancelled Tuesday, everyone else came\"\n" +
+      "<b>review</b>: send Claude a screen recording (mic on) of you talking over a video, or a voice note\n" +
+      "<b>week</b>: sessions in the app · <b>checkin</b>: today's attendance buttons · <b>invoices</b>: drafts due now\n" +
+      "Tap <b>Spoke / No answer / Booked</b> on any lead alert to update the call sheet.",
+  );
+
   const sent = await sendTelegramMessage(sections.join("\n"));
-  return Response.json({ ok: true, telegram: sent ? "sent" : "not configured", new: fresh.length, catchUp: catchUp.length });
+  // invoices due: one draft per athlete with one session left, [Send] [Preview] (lib/billing.ts)
+  let drafts = 0;
+  try {
+    drafts = (await sendDueInvoices()).drafts;
+  } catch {
+    /* non-fatal */
+  }
+  return Response.json({ ok: true, telegram: sent ? "sent" : "not configured", new: fresh.length, catchUp: catchUp.length, drafts });
 }

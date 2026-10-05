@@ -31,7 +31,7 @@ const ALL: Result[] = [
   // 2026-08-07; his report is public at sean-report-deploy.vercel.app.
   {
     title: "Sean Dulic: 3rd division to the Bundesliga",
-    mp4: "/sean-story.mp4",
+    mp4: "/ty/res-sean.mp4", // 2026-10-01: Sean playing + his Hoffenheim photo (the old clip was Anthony to camera)
     vertical: true,
     quote:
       "Sean came to us at 1860 Munich in the German third division. A standout season, a German U20s international debut, then a five year deal at TSG Hoffenheim in the Bundesliga. He joined the programme before the transfer, not after.",
@@ -74,7 +74,7 @@ const ALL: Result[] = [
     quote: "Top speed from the low 20s to 36 km/h, with a 1.60s first 10 metres. Elite acceleration, and his semi-pro breakthrough.",
   },
   {
-    title: "Dylan: 28 km/h to 36 km/h, NPL first team",
+    title: "Dylan: 28 km/h to 35 km/h, NPL first team",
     bunnyId: "9d01d2ff-8af0-4ffe-ae3b-84bd8c85d293",
     quote: "From 28 to 36 km/h. European trialist in Portugal, debuted for Hills' U20s, and now plays first team football in the NPL.",
   },
@@ -90,7 +90,10 @@ const ALL: Result[] = [
   },
   {
     title: "George: 17-19 km/h to 35 km/h",
-    bunnyId: "3e0332a8-49cb-4ac7-9422-4dd81a207078",
+    // Anthony 2026-10-01: his George breakdown reel (the one posted on Instagram) replaces the old clip
+    // (was bunnyId 3e0332a8-49cb-4ac7-9422-4dd81a207078).
+    mp4: "/george-breakdown.mp4",
+    vertical: true,
     quote: "Started with us at 11. Stride, hips and ground contact rebuilt, and now he's faster than most semi-professionals.",
   },
   {
@@ -114,7 +117,7 @@ const ALL: Result[] = [
     quote: "Plus 9 km/h at max velocity over 14 months, and a 25% gain across his key measures.",
   },
   {
-    title: "Xavi: 23 km/h to 32 km/h",
+    title: "Xavi: 22.3 km/h to 31.2 km/h",
     bunnyId: "a31a6862-c26c-4337-878c-87a6b0ac94c4",
     quote: "Coordination, ground power and a reactive push off every contact, built over 17 months.",
   },
@@ -159,7 +162,7 @@ const VARIANT = {
     base: "/apply-v2",
     bar: <>Sydney, in person <span className="mx-2 text-white/40">·</span> Georges Hall, Arncliffe, Homebush</>,
     cta: "Find out what's holding your athlete back.",
-    sub: "Athletes 13 to 24, on a high-level pathway in any sport.",
+    sub: "Athletes 11 to 24, on a high-level pathway in any sport.",
     button: "Apply for an assessment",
     label: "Athlete results",
     turn: "your athlete's turn",
@@ -193,7 +196,6 @@ function splitTitle(r: Result): { name: string; result: string } {
   return { name: "Player result", result: r.title };
 }
 
-const pad = (n: number) => String(n).padStart(2, "0");
 
 /** "28 km/h to 36 km/h, NPL first team" -> started / now / note. Null when there is no journey to draw. */
 function journey(result: string): { before: string; after: string; note?: string } | null {
@@ -247,15 +249,18 @@ export function ResultView({ idx, variant }: { idx: number; variant: Variant }) 
 
       <section className="mx-auto max-w-[1100px] px-4 pb-10 pt-6 text-center sm:pt-8">
         <FunnelLogo />
-        <div className="mt-5 flex items-center justify-center gap-4 text-[13px] font-bold uppercase tracking-[0.18em] sm:text-sm">
-          <Link href={`${v.base}/results/${prev}`} aria-label="Previous result" className="text-gray-300 transition-colors hover:text-accent">
-            <Chevron dir="left" className="h-7 w-3.5" />
+        {/* 2026-10-01 (Anthony: "make this area even cleaner"): one bordered pill, solid round arrows. */}
+        <div className="mt-5 inline-flex items-center gap-2 rounded-full border-2 border-black bg-white p-1.5 shadow-[3px_3px_0_0_rgba(0,0,0,0.9)]">
+          <Link href={`${v.base}/results/${prev}`} aria-label="Previous result"
+            className="grid h-9 w-9 place-items-center rounded-full bg-black text-white transition-colors hover:bg-accent">
+            <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </Link>
-          <span className="text-gray-400">{v.label}</span>
-          <span className="h-1 w-1 rounded-full bg-gray-300" aria-hidden />
-          <span className="tabular-nums text-gray-400">{pad(idx + 1)} / {pad(total)}</span>
-          <Link href={`${v.base}/results/${next}`} aria-label="Next result" className="text-gray-300 transition-colors hover:text-accent">
-            <Chevron dir="right" className="h-7 w-3.5" />
+          <span className="px-2 text-[13px] font-black uppercase tracking-[0.12em] text-black sm:text-sm">
+            {v.label} <span className="ml-1 tabular-nums text-accent">{idx + 1} / {total}</span>
+          </span>
+          <Link href={`${v.base}/results/${next}`} aria-label="Next result"
+            className="grid h-9 w-9 place-items-center rounded-full bg-black text-white transition-colors hover:bg-accent">
+            <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </Link>
         </div>
         <p className="mt-5 text-[15px] font-bold uppercase tracking-[0.14em] text-accent sm:text-xl">{name}</p>
@@ -384,10 +389,6 @@ export function ResultView({ idx, variant }: { idx: number; variant: Variant }) 
         </Link>
       </section>
 
-      <footer className="px-4 py-6 text-center text-xs leading-relaxed text-gray-400">
-        Results shown are not typical. They are the best results from our most driven athletes, over months and
-        years of work. All testimonials are real.
-      </footer>
     </main>
   );
 }

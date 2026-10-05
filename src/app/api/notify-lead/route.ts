@@ -2,8 +2,11 @@ import { NextRequest } from "next/server";
 import { enrollNurture } from "@/lib/enrollNurture";
 import { leadButtons } from "@/lib/leadStatus";
 import { sendApplicationReceived } from "@/lib/applicationEmail";
+import { enrollFlow } from "@/lib/emailFlows";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { sendCapiEvent, splitName } from "@/lib/metaCapi";
+import { mailConfigured, sendMail } from "@/lib/mailer";
+import { sameOrigin, rateLimit, isBot } from "@/lib/guard";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -33,16 +36,13 @@ function invalidApplication(b: Record<string, unknown>): string | null {
 }
 
 /**
- * Emails the full submission to the inbox. Uses the Resend REST API directly,
- * the same way nurture.ts does, so this adds no dependency. No-ops when
- * RESEND_API_KEY is unset, the Telegram alert below is then the only notice,
- * which is the behaviour that existed before.
+ * Emails the full submission to the inbox, through src/lib/mailer.ts (Google Workspace
+ * SMTP, else Resend). No-ops when neither is configured; the Telegram alert below is
+ * then the only notice.
  */
 async function emailSubmission(b: Record<string, unknown>, rows: [string, unknown][]) {
-  const key = process.env.RESEND_API_KEY;
-  if (!key) return "not configured";
+  if (!mailConfigured()) return "not configured";
   const to = process.env.APPLY_INBOX || "info@ambitionsportsperformance.com";
-  const from = process.env.NURTURE_FROM_EMAIL || "Ambition <onboarding@resend.dev>";
   const athlete = str(b.athlete_name) || str(b.name) || "New applicant";
   const level = str(b.level) || "level not given";
 
@@ -57,30 +57,21 @@ async function emailSubmission(b: Record<string, unknown>, rows: [string, unknow
     `</table>`,
   ].join("");
 
-  try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        from,
-        to: [to],
-        reply_to: str(b.email) || undefined,
-        subject: `New application, ${athlete} (${level})`,
-        html,
-      }),
-    });
-    return res.ok ? "sent" : `failed ${res.status}`;
-  } catch {
-    return "failed";
-  }
+  // Google Workspace SMTP when configured, else Resend (src/lib/mailer.ts)
+  const ok = await sendMail({ to, subject: `New application, ${athlete} (${level})`, html, replyTo: str(b.email) || undefined, fromName: "Ambition applications" });
+  return ok ? "sent" : "failed";
 }
 
 export async function POST(req: NextRequest) {
+  // abuse guard (security check 2026-10-03): our own pages only, and a per-IP cap
+  if (!sameOrigin(req)) return Response.json({ ok: false, error: "forbidden" }, { status: 403 });
+  if (!rateLimit(req, "lead", 6, 3600)) return Response.json({ ok: false, error: "slow down" }, { status: 429 });
   let b: Record<string, unknown> = {};
   try {
     b = await req.json();
   } catch {
     return Response.json({ ok: false, error: "invalid JSON" }, { status: 400 });
+  if (isBot(b)) return Response.json({ ok: true }); // honeypot filled: a bot, pretend success
   }
 
   const bad = invalidApplication(b);
@@ -99,7 +90,7 @@ export async function POST(req: NextRequest) {
     const utmIn = b.utm && typeof b.utm === "object" ? (b.utm as Record<string, string>) : {};
     const reasonList = Array.isArray(b.qualify_reasons) ? (b.qualify_reasons as unknown[]).map(String) : [];
     const notes = [
-      `Program: ${str(b.program) ?? "SPEED COACHING"} ($100-$200/wk ongoing + $250 assessment)`,
+      `Program: ${str(b.program) ?? "SPEED COACHING"} ($100-$150/wk ongoing + $250 assessment)`,
       `Athlete: ${str(b.athlete_name) ?? "n/a"}`,
       // The website form now sends a banded `age`; Meta lead forms always did.
       // `dob` is still read first for any older payload still in flight.
@@ -149,6 +140,12 @@ export async function POST(req: NextRequest) {
       // Meta sees a browser event with no server twin and dedupe breaks.
       if (tier === "unqualified") {
         void sendCapiEvent({ ...shared, eventName: "AmbitionDisqualifiedLead" });
+      } else if (str(b.capi_event) === "AmbitionYoungLead") {
+        // 11-12 year olds (2026-10-04): accepted, but the Lead event is 13+ only.
+        void sendCapiEvent({ ...shared, eventName: "AmbitionYoungLead" });
+      } else if (str(b.capi_event) === "DmApplication" || str(b.capi_event) === "AmbitionBudgetReview") {
+        // 2026-10-05: DM-qualified applicants and $50-$100 budgets reach Anthony but never train the Lead optimiser.
+        void sendCapiEvent({ ...shared, eventName: str(b.capi_event) as "DmApplication" | "AmbitionBudgetReview" });
       } else if (str(b.capi_event) === "OnlineApplication") {
         // /athlete-v2: adults worldwide. Never the standard Lead the Sydney ad set
         // optimises on. Name matches the browser's trackCustom so the pair dedupes.
@@ -196,6 +193,13 @@ export async function POST(req: NextRequest) {
       email: str(b.email),
       athleteName: str(b.athlete_name),
     });
+    // 0c) The "applied" email flow (lib/emailFlows.ts, Resend). No-op until EMAIL_FLOWS_ENABLED=true.
+    try {
+      const online = String(b.placement ?? "").startsWith("athlete") || /online/i.test(String(b.program ?? ""));
+      await enrollFlow("applied", online ? "online" : "f2f", { email: str(b.email), name: str(b.name) });
+    } catch {
+      /* non-fatal */
+    }
   }
 
   // 1) Auto-nurture enrollment (fires touch 0 email + SMS)

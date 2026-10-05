@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Check, Loader2 } from "lucide-react";
 import { fireLeadPixel, qualifyLead, type QualifyResult } from "@/lib/qualify";
 import { trackFormComplete, trackFormStart } from "@/lib/formTelemetry";
+import { Honeypot, honeypotValue } from "@/components/Honeypot";
 
 // Single-screen application form for /apply.
 //
@@ -254,6 +255,7 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
         ? crypto.randomUUID()
         : "lead_" + Date.now() + "_" + Math.random().toString(36).slice(2);
     const payload = {
+      company_website: honeypotValue(),
       event_id: eventId,
       name: v.parentName.trim(),
       email: v.email.trim(),
@@ -302,6 +304,15 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
     // Pixel fires only here, never on load, never on a validation failure.
     fireLeadPixel(result, { content_name: "Application Complete", placement }, eventId);
     trackFormComplete("apply", { source: "apply", placement, qualified: result.tier === "qualified" });
+    // Speed applicants land on the same thank-you page as the VSL funnel for
+    // their program (videos, what happens next); Football School keeps the
+    // inline confirmation below.
+    const thankYou =
+      v.program === "Speed, face to face" ? "/apply-v2/thank-you" : v.program === "Speed, online" ? "/athlete-v2/thank-you" : null;
+    if (thankYou) {
+      window.location.assign(`${thankYou}?name=${encodeURIComponent(v.parentName.trim().split(/\s+/)[0])}`);
+      return;
+    }
     setStatus("success");
   }
 
@@ -323,18 +334,6 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
           <strong className="font-semibold text-gray-900">today, usually within the hour.</strong>
         </p>
 
-        <p className="mt-6 text-xs font-semibold uppercase tracking-[0.14em] text-gray-400">
-          He&apos;ll be calling from
-        </p>
-        <a
-          href="tel:+61450205033"
-          className="mt-1 block text-2xl font-extrabold tracking-tight text-accent sm:text-3xl"
-        >
-          0450 205 033
-        </a>
-        <p className="mx-auto mt-2 max-w-xs text-sm text-gray-600">
-          Save it now so you know it&apos;s him and not a number you don&apos;t recognise.
-        </p>
 
         <p className="mx-auto mt-6 max-w-sm text-sm leading-relaxed text-gray-600">
           It takes about ten minutes and it isn&apos;t a sales call. If the assessment
@@ -396,6 +395,7 @@ export function ApplyForm({ placement }: { placement: "hero" | "footer" }) {
       className="rounded-2xl bg-white p-5 shadow-xl sm:p-7"
       aria-label="Application form"
     >
+      <Honeypot />
       <p className="mb-4 text-[13px] font-bold uppercase tracking-[0.18em] text-accent">
         Apply for an assessment
       </p>

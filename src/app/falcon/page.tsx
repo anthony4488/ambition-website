@@ -25,9 +25,10 @@ import { BuyButton } from "@/components/BuyButton";
 // THE THIRD RULE: this page must describe the product that is actually
 // delivered. See ambition-ad-library/BACKEND_CONVERSION_SPEC.md.
 
-// ⚠️ PRICE. The recorded decision on 2026-08-31 was $250 USD, but the live
-// Stripe link is still the $200 one, so this stays $200 until the Stripe product
-// and ASSESSMENT_PRICE move together.
+// ⚠️ PRICE. PARKED at $200 on 2026-09-17. The rest of the site moved to $250
+// that day, falcon deliberately did NOT: this page is not being deployed yet, and the
+// Stripe link below still charges $200. When falcon is un-parked, move the Stripe
+// product and this constant together. Decision recorded 2026-08-31 was $250 USD.
 const PRICE = "$200";
 const BUY = "https://book.stripe.com/4gMaEY1rI5RG72y4Y86Vq0u";
 const TURNAROUND = "48 to 72 hours";

@@ -12,6 +12,27 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "strong-in-the-duel-second-to-the-ball",
+    title: "Strong in the Duel. Second to the Ball.",
+    excerpt: "Nobody moves you off the ball, but you still lose the foot race. The duel and the race ask for different things.",
+    category: "Football",
+    date: "September 2026",
+  },
+  {
+    slug: "first-stride-where-strength-pays-off",
+    title: "The Gym Does Make You Faster. Just Not Everywhere.",
+    excerpt: "On the first stride from standing, you are on the ground long enough for strength to matter. Here's where the gym pays you back.",
+    category: "Acceleration",
+    date: "September 2026",
+  },
+  {
+    slug: "legs-feel-fresh-nervous-system-isnt",
+    title: "Your Legs Feel Fresh. Your Nervous System Isn't.",
+    excerpt: "Muscle recovers on one timeline, your nervous system on another. Why feeling ready and being ready to sprint are not the same thing.",
+    category: "Recovery",
+    date: "September 2026",
+  },
+  {
     slug: "genetics-myth",
     title: "It's Not a Genetic Deficit. It's a Knowledge Deficit.",
     excerpt: "Everyone wants to blame genetics. We've taken athletes from 17 km/h to 38 km/h. Here's how.",

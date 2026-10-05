@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { touchesFor, sendSms, nurtureCronEnabled } from "@/lib/nurture";
+import { runEmailFlows } from "@/lib/emailFlows";
+import { sendCheckin } from "@/lib/billing";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -16,8 +18,24 @@ export async function GET(req: NextRequest) {
     if (auth !== `Bearer ${secret}`) return Response.json({ error: "unauthorized" }, { status: 401 });
   }
 
+  // Email flows (Resend) run on their own switch, EMAIL_FLOWS_ENABLED, independent of the legacy SMS cron.
+  let flows: unknown = null;
+  try {
+    flows = await runEmailFlows();
+  } catch (e) {
+    flows = { ok: false, error: String(e) };
+  }
+
+  // Evening attendance check-in (lib/billing.ts, 2026-10-02): today's sessions with ❌ / 🚫 buttons.
+  let checkin: unknown = null;
+  try {
+    checkin = await sendCheckin();
+  } catch (e) {
+    checkin = { ok: false, error: String(e) };
+  }
+
   // Cron kill-switch: follow-up touches stay off until the legacy queue is cleared.
-  if (!nurtureCronEnabled()) return Response.json({ ok: true, skipped: "cron disabled" });
+  if (!nurtureCronEnabled()) return Response.json({ ok: true, skipped: "cron disabled", flows, checkin });
 
   let sb;
   try {

@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { ArrowRight, CheckCircle, Clock, Shield, Zap } from "lucide-react";
 import { trackFormStart, trackFormComplete } from "@/lib/formTelemetry";
 import { qualifyLead } from "@/lib/qualify";
+import { Honeypot, honeypotValue } from "@/components/Honeypot";
 
 type Program = "speed" | "football" | "online" | "waitlist";
 
@@ -101,7 +102,7 @@ const programCopy: Record<
     sub: "We only take athletes we're confident we can move.",
     successHeading: "Application Received.",
     successBody:
-      "We'll review your application within 24 hours. If you're the right fit, Anthony will be in touch to set up a quick call and lock in your $200 assessment.",
+      "We'll review your application within 24 hours. If you're the right fit, Anthony will be in touch to set up a quick call and lock in your $250 assessment.",
     nextLine: "Keep your phone close, calls come from a Sydney number.",
   },
   waitlist: {
@@ -280,6 +281,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          company_website: honeypotValue(),
           name: form.name,
           phone: form.phone,
           email: form.email,
@@ -387,6 +389,7 @@ export function EnquiryForm({ source = "website-contact", program = "online" }: 
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+      <Honeypot />
       {/* SHARED, Identity */}
       <div>
         <label className={fieldLabel} htmlFor="apply-name">

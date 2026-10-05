@@ -93,7 +93,7 @@ export async function loadAttribution(
  * Which Meta event a product should fire.
  *
  * One event name has to mean one thing. Until now every completed Stripe
- * checkout became `Purchase`, so a $200 assessment buyer and a $3,500 programme
+ * checkout became `Purchase`, so a $250 assessment buyer and a $3,500 programme
  * buyer were the same signal and Meta could not learn a buyer profile from
  * either. Recurring programme billing arrives as `invoice.paid` and is not
  * handled by the webhook at all, which is deliberate: one client paying weekly

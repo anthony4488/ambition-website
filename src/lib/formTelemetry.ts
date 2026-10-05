@@ -17,7 +17,7 @@ function getSessionId(): string {
   return fresh;
 }
 
-async function send(form_id: string, event: "started" | "step" | "completed", meta?: Record<string, unknown>) {
+async function send(form_id: string, event: "started" | "step" | "completed", meta?: Record<string, unknown>, quiet = false) {
   if (typeof window === "undefined") return;
   // Skip Vercel preview deploy UI / programmatic visitors
   if (navigator.webdriver) return;
@@ -32,6 +32,7 @@ async function send(form_id: string, event: "started" | "step" | "completed", me
         meta: meta ?? {},
         page: window.location.pathname,
         referrer: document.referrer || undefined,
+        quiet: quiet || undefined,
       }),
       keepalive: true,
     });
@@ -60,4 +61,13 @@ export function trackFormComplete(form_id: string, meta?: Record<string, unknown
   if (fired.has(key)) return;
   fired.add(key);
   void send(form_id, "completed", meta);
+}
+
+/** VSL watch depth (quiet: logged for the funnel, no Telegram). 0 = pressed play, 90 = watched it. */
+export function trackVideo(form_id: string, pct: number) {
+  const key = `video:${form_id}:${pct}`;
+  if (fired.has(key)) return;
+  fired.add(key);
+  const event = pct === 0 ? "started" : pct >= 90 ? "completed" : "step";
+  void send(form_id, event, { watched: `${pct}%`, step: pct }, true);
 }

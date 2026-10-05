@@ -64,6 +64,8 @@ export interface QualifyResult {
   investReady: boolean | null;
   /** Human-readable why, surfaced in the Telegram alert and lead notes. */
   reasons: string[];
+  /** True for 11-12 year olds: accepted, but never sent to Meta as a Lead (13+ only, 2026-10-04). */
+  noLead?: boolean;
 }
 
 const norm = (s: unknown): string =>
@@ -292,7 +294,7 @@ const normNum = (s: unknown): string =>
  * than unqualified, young athletes may still be worth taking, they just want
  * a closer look. Nothing here can produce `out` on its own any more.
  */
-export function classifyAge(band?: string): "in" | "edge" | "out" | "unknown" {
+export function classifyAge(band?: string): "in" | "young" | "edge" | "out" | "unknown" {
   // Some forms send the display label ("8–10", en dash) instead of the value.
   // "unknown" never downgrades, so an unnormalised dash let an 8-10 year old
   // through as QUALIFIED on 2026-09-14.
@@ -304,8 +306,14 @@ export function classifyAge(band?: string): "in" | "edge" | "out" | "unknown" {
   // is now unqualified, which fires AmbitionDisqualifiedLead instead of Lead.
   // Telegram still alerts on every tier, so Anthony still sees them.
   if (s.includes("under 8")) return "out";
-  if (s.includes("8-10") || s.includes("11-12") || s.includes("11-13")) return "out";
-  if (s.includes("10 or under") || s.includes("under 10") || s.includes("under 13")) return "out";
+  // CHANGED 2026-10-04: Anthony moved the F2F floor to 11 ("go to 11-24"), but
+  // "don't use the lead event for them, keep it for 13+". So 11-12 is accepted
+  // (never rejected, never unqualified) and kept out of the Lead optimiser.
+  if (s.includes("11-12") || s.includes("11-13")) return "young";
+  if (s.includes("8-10")) return "out";
+  if (s.includes("10 or under") || s.includes("under 10")) return "out";
+  // Legacy "Under 13" band can not tell 8 from 12, so a human decides.
+  if (s.includes("under 13")) return "edge";
   // Straddles 13, so a human decides.
   if (s.includes("under 14")) return "edge";
   // ⚠️ CHANGED 2026-09-28: the Sydney offer is 13-24 in any sport, aimed at
@@ -485,14 +493,20 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
   // scope via review, and the straddling legacy band gets a human look.
   if (age === "out") {
     tier = "unqualified";
-    reasons.push("Under 13, below the F2F age floor");
+    reasons.push("Under 11, below the F2F age floor");
+  }
+
+  const noLead = age === "young";
+  if (noLead) {
+    if (tier === "qualified") tier = "review";
+    reasons.push("Aged 11-12: accepted, kept off the Meta Lead event (13+ only)");
   }
 
   if (age === "edge" && tier === "qualified") {
     tier = "review";
     // Wording matters: this shows in the Telegram alert. Under-13s are taken,
     // they are just outside the 13-17 band the ads are buying.
-    reasons.push("Outside the 13-24 the ads sell to, still worth a look");
+    reasons.push("Outside the 11-24 the ads sell to, still worth a look");
   }
 
   if (lvl === "out") {
@@ -556,7 +570,7 @@ export function qualifyLead(input: QualifyInput): QualifyResult {
     reasons.push("In area, core sport, ready to invest");
   }
 
-  return { tier, area: area.fit, sportFit: sport.fit, investReady, reasons };
+  return { tier, area: area.fit, sportFit: sport.fit, investReady, reasons, noLead };
 }
 
 /**
@@ -597,6 +611,12 @@ export function fireLeadPixel(
 
   // Meta dedupes on (event_name, event_id), so the same id is correct on both.
   const opts = eventId ? { eventID: eventId } : undefined;
+
+  // 11-12 year olds (2026-10-04): reporting only, never the standard Lead.
+  if (result.noLead && result.tier !== "unqualified") {
+    fbq("trackCustom", "AmbitionYoungLead", params, opts);
+    return;
+  }
 
   if (result.tier === "unqualified") {
     // Reporting only. Never a standard event, so it can never be optimised

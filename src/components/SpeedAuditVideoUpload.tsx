@@ -439,7 +439,7 @@ export function SpeedAuditVideoUpload() {
             </div>
           </div>
 
-          {/* $299 paid review CTA */}
+          {/* $250 paid review CTA */}
           <div className="mt-8 rounded-xl border-2 border-accent/60 bg-black/40 p-6 sm:p-8">
             <h4 className="text-lg font-extrabold tracking-tight text-white sm:text-xl">
               Want Anthony&apos;s real frame-by-frame review?
@@ -453,7 +453,7 @@ export function SpeedAuditVideoUpload() {
               href="/apply?track=online"
               className="mt-5 inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3.5 text-sm font-extrabold uppercase tracking-[0.12em] text-white transition hover:bg-orange-500"
             >
-              Book your $299 assessment
+              Book your $250 assessment
             </a>
           </div>
 

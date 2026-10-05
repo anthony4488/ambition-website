@@ -22,6 +22,10 @@ function toE164(raw: string): string {
 }
 
 export async function POST(req: NextRequest) {
+  // Optional shared secret (security check 2026-10-03): once SMS_INBOUND_SECRET is set in Vercel, ClickSend's
+  // inbound URL must carry ?key=<secret>, so nobody can fake "STOP" texts. Unset = old behaviour (SMS is off).
+  const want = process.env.SMS_INBOUND_SECRET;
+  if (want && new URL(req.url).searchParams.get("key") !== want) return new Response("forbidden", { status: 403 });
   // ClickSend can POST form-encoded or JSON depending on the inbound rule.
   let from = "";
   let body = "";

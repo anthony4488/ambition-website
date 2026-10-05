@@ -135,7 +135,7 @@ const TOUCHES_ONLINE: Touch[] = [
   },
 ];
 
-// F2F / in-person track (Sydney youth + parents → $199 in-person assessment).
+// F2F / in-person track (Sydney youth + parents → $250 in-person assessment).
 const TOUCHES_F2F: Touch[] = [
   {
     dayOffset: 0,
@@ -173,7 +173,7 @@ const TOUCHES_F2F: Touch[] = [
   {
     dayOffset: 3,
     email: {
-      subject: "Is the $199 assessment worth it?",
+      subject: "Is the $250 assessment worth it?",
       html: (n, u) =>
         wrap(
           `<p>${firstName(n)},</p>
@@ -184,7 +184,7 @@ const TOUCHES_F2F: Touch[] = [
           u
         ),
     },
-    sms: (n) => `${firstName(n)}, the $199 assessment finds the exact thing capping your athlete's speed. We'll be in touch soon to sort it. - Anthony`,
+    sms: (n) => `${firstName(n)}, the $250 assessment finds the exact thing capping your athlete's speed. We'll be in touch soon to sort it. - Anthony`,
   },
   {
     dayOffset: 6,

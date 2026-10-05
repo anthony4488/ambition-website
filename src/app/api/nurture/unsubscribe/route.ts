@@ -1,11 +1,22 @@
 import { NextRequest } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { unsubSig } from "@/lib/emailFlows";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
-  const token = new URL(req.url).searchParams.get("token");
+  const q = new URL(req.url).searchParams;
+  const token = q.get("token");
+  // Email-flow links (lib/emailFlows.ts) carry the address plus a signature instead of a row token.
+  const e = q.get("e"), sig = q.get("s");
+  if (e && sig && sig === unsubSig(e)) {
+    try {
+      await getSupabaseAdmin().from("nurture_enrollments").update({ status: "unsubscribed" }).eq("email", e.trim().toLowerCase()).eq("status", "active");
+    } catch {
+      /* ignore */
+    }
+  }
   if (token) {
     try {
       const sb = getSupabaseAdmin();

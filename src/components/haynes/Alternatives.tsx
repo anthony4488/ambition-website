@@ -1,4 +1,4 @@
-import { Note } from "./Scribble";
+import { Card, PointList } from "./TyBlocks";
 
 // "Why not the alternatives?" for the thank-you pages. Haynes, New Rules of Meta
 // Ads (2027): between applying and the call, Meta floods the lead with every
@@ -32,7 +32,7 @@ const COPY = {
       {
         name: "A group speed and agility class",
         good: "Gets them running fast in a group.",
-        misses: "Everyone does the same session. It can't be built around one player's limiter because nobody has measured it.",
+        misses: "It can't be built around one player's limiter, because that takes constant measurement and data on that player.",
       },
     ] as Alt[],
     ours:
@@ -64,41 +64,21 @@ const COPY = {
       },
     ] as Alt[],
     ours:
-      "We start from your own footage. We name the one limiter costing you the most, build 40 weeks around it, and you retest the same way you tested, so you see whether it moved.",
+      "We start from your own footage. We name the one limiter costing you the most and build 40 weeks around it, and every video you send shows us how fast you're actually running, so you both see, week by week, whether it's moving.",
   },
 } as const;
 
 export function Alternatives({ variant }: { variant: "f2f" | "online" }) {
   const c = COPY[variant];
   return (
-    <section className="px-4 py-12">
-      <div className="mx-auto max-w-3xl">
-        <h2 className="text-center text-2xl font-extrabold leading-tight text-[#2F2F2F] [text-wrap:balance] sm:text-3xl">
-          {c.title}
-        </h2>
-        <p className="mx-auto mt-3 max-w-xl text-center text-[16px] text-gray-600">{c.intro}</p>
-
-        <div className="mt-8 grid gap-4 sm:grid-cols-2">
-          {c.alts.map((a) => (
-            <div key={a.name} className="rounded-xl border border-gray-200 bg-white p-5">
-              <p className="text-lg font-extrabold text-gray-900">{a.name}</p>
-              <p className="mt-2 text-[15px] leading-relaxed text-gray-600">
-                <span className="font-semibold text-gray-800">Good for: </span>
-                {a.good}
-              </p>
-              <p className="mt-2 text-[15px] leading-relaxed text-gray-600">
-                <span className="font-semibold text-gray-800">What it misses: </span>
-                {a.misses}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-6 rounded-xl bg-[#211B17] p-6 text-white">
-          <Note className="text-2xl text-accent">the difference</Note>
-          <p className="mt-2 text-[17px] leading-relaxed text-white/90">{c.ours}</p>
-        </div>
-      </div>
-    </section>
+    <div className="space-y-5">
+      <Card title={c.title}>
+        <p className="mb-5 text-[16px] leading-relaxed text-gray-600">{c.intro}</p>
+        <PointList ok={false} items={c.alts.map((a) => ({ lead: a.name, text: a.misses }))} />
+      </Card>
+      <Card title="The difference." tone="dark">
+        <PointList ok dark items={[{ lead: "Measured first", text: c.ours }]} />
+      </Card>
+    </div>
   );
 }

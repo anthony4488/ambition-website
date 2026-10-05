@@ -1,4 +1,4 @@
-import { sendEmail } from "./nurture";
+import { sendMail } from "./mailer";
 
 // The day-0 email to the applicant.
 //
@@ -35,15 +35,7 @@ export async function sendApplicationReceived(lead: {
 
   <p>Got your application${about}. I read every one of them myself.</p>
 
-  <p><strong>I'll call you today, usually within the hour.</strong> It'll come from a Sydney
-  mobile:</p>
-
-  <p style="font-size:22px;font-weight:700;letter-spacing:-0.5px;margin:18px 0">
-    <a href="tel:+61450205033" style="color:#8e4c07;text-decoration:none">${ANTHONY_MOBILE}</a>
-  </p>
-
-  <p style="margin-top:-6px;color:#57504a">Save that now so you know it's me rather than a
-  number you don't recognise.</p>
+  <p><strong>If you're a fit, I'll call you today, usually within the hour.</strong></p>
 
   <p>It takes about ten minutes and it isn't a sales call. I'll ask what's actually going on
   with ${athlete || "your athlete"}, and we'll work out whether the assessment is worth doing.
@@ -56,9 +48,12 @@ export async function sendApplicationReceived(lead: {
   <span style="color:#57504a">Ambition Sports Performance</span></p>
 </div>`.trim();
 
-  return sendEmail(
-    lead.email,
-    `${athlete ? athlete + ", y" : "Y"}our application is in. I'll call from ${ANTHONY_MOBILE}`,
+  // Google Workspace SMTP when configured, else Resend (src/lib/mailer.ts)
+  const ok = await sendMail({
+    to: lead.email,
+    subject: `${athlete ? athlete + ", y" : "Y"}our application is in`,
     html,
-  );
+    replyTo: process.env.APPLY_INBOX || "info@ambitionsportsperformance.com",
+  });
+  return { ok };
 }

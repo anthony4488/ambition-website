@@ -3,6 +3,7 @@ import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { sendTelegramMessage, sendTelegramWithButtons, escapeHtml } from "@/lib/telegram";
 import { leadButtons } from "@/lib/leadStatus";
 import { sendCapiEvent, splitName } from "@/lib/metaCapi";
+import { sameOrigin, rateLimit } from "@/lib/guard";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -47,6 +48,9 @@ const vsLine = (m: number) =>
   m >= LINE ? `${(m - LINE).toFixed(1)} m over the 30 m line` : `${(LINE - m).toFixed(1)} m under the 30 m line`;
 
 export async function POST(req: NextRequest) {
+  // abuse guard (security check 2026-10-03): our own pages only, and a per-IP cap
+  if (!sameOrigin(req)) return Response.json({ ok: false, error: "forbidden" }, { status: 403 });
+  if (!rateLimit(req, "bound-test", 6, 3600)) return Response.json({ ok: false, error: "slow down" }, { status: 429 });
   let b: Record<string, unknown> = {};
   try {
     b = await req.json();

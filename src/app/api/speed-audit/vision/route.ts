@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { sameOrigin, rateLimit } from "@/lib/guard";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -65,6 +66,9 @@ type Body = {
 };
 
 export async function POST(req: NextRequest) {
+  // abuse guard (security check 2026-10-03): our own pages only, and a per-IP cap
+  if (!sameOrigin(req)) return Response.json({ ok: false, error: "forbidden" }, { status: 403 });
+  if (!rateLimit(req, "vision", 6, 3600)) return Response.json({ ok: false, error: "slow down" }, { status: 429 });
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) {
     return Response.json({ ok: false, error: "ANTHROPIC_API_KEY not configured" }, { status: 500 });
