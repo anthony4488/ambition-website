@@ -3,6 +3,8 @@ import { pendingTexts, markTextSent } from "@/lib/smsOutbox";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+export const revalidate = 0;
 
 // Read by Anthony's iPhone Shortcut (lib/smsOutbox.ts). GET only, so the Shortcut needs nothing but "Get Contents
 // of URL":
@@ -18,5 +20,9 @@ export async function GET(req: NextRequest) {
     await markTextSent(done);
     return Response.json({ ok: true });
   }
-  return Response.json({ messages: await pendingTexts() });
+  try {
+    return Response.json({ messages: await pendingTexts() }, { headers: { "cache-control": "no-store" } });
+  } catch (e) {
+    return Response.json({ messages: [], error: e instanceof Error ? e.message : "failed" }, { status: 500 });
+  }
 }
